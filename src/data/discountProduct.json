@@ -1,0 +1,58 @@
+[
+  {
+    "id": 1,
+    "slug": "profitable-business-makes-your-profit-Best-Solution",
+    "image": "1.jpg",
+    "bannerImg": "1.jpg",
+    "category": "Business Solution",
+    "title": "Profitable business makes your profit Best Solution",
+    "author": "David Smith",
+    "publishedDate": "15 Jan, 2023",
+    "material": "Steel",
+    "price": "3600.00",
+    "del": "4000.00",
+    "descripTion": "Collaboratively pontificate bleeding edge resources with inexpensive methodologies globally initiate multidisciplinary compatible architectures pidiously repurpose leading edge growth strategies with just in time web readiness communicate timely meta services."
+  },
+  {
+    "id": 2,
+    "slug": "profitable-business-makes-your-profit-Best-Solution",
+    "image": "2.jpg",
+    "bannerImg": "2.jpg",
+    "category": "Business Solution",
+    "title": "Profitable business makes your profit Best Solution",
+    "author": "David Smith",
+    "publishedDate": "15 Jan, 2023",
+    "material": "Leather",
+    "price": "1200.00",
+    "del": "1500.00",
+    "descripTion": "Collaboratively pontificate bleeding edge resources with inexpensive methodologies globally initiate multidisciplinary compatible architectures pidiously repurpose leading edge growth strategies with just in time web readiness communicate timely meta services."
+  },
+  {
+    "id": 3,
+    "slug": "profitable-business-makes-your-profit-Best-Solution",
+    "image": "3.jpg",
+    "bannerImg": "3.jpg",
+    "category": "Business Solution",
+    "title": "Profitable business makes your profit Best Solution",
+    "author": "David Smith",
+    "publishedDate": "15 Jan, 2023",
+    "material": "50 ml pack",
+    "price": "200.00",
+    "del": "220.00",
+    "descripTion": "Collaboratively pontificate bleeding edge resources with inexpensive methodologies globally initiate multidisciplinary compatible architectures pidiously repurpose leading edge growth strategies with just in time web readiness communicate timely meta services."
+  },
+  {
+    "id": 4,
+    "slug": "profitable-business-makes-your-profit-Best-Solution",
+    "image": "4.jpg",
+    "bannerImg": "4.jpg",
+    "category": "Business Solution",
+    "title": "Profitable business makes your profit Best Solution",
+    "author": "David Smith",
+    "publishedDate": "15 Jan, 2023",
+    "material": "100 ml pack",
+    "price": "360.00",
+    "del": "400.00",
+    "descripTion": "Collaboratively pontificate bleeding edge resources with inexpensive methodologies globally initiate multidisciplinary compatible architectures pidiously repurpose leading edge growth strategies with just in time web readiness communicate timely meta services."
+  }
+]
