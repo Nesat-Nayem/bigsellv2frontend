@@ -77,35 +77,37 @@ const resolveThumbnail = (product: any): string => {
 
 const transformProductToPost = (product: any): PostType => {
   const name =
-    typeof product?.name === "object"
-      ? product.name.title ||
-        product.name._id ||
-        product.name.name ||
+    product?.name && typeof product.name === "object"
+      ? product.name?.title ||
+        product.name?._id ||
+        product.name?.name ||
         "Unknown Product"
-      : product?.name || product?.title || "Unknown Product";
+      : product?.name ?? product?.title ?? "Unknown Product";
 
   const category =
-    typeof product?.category === "object"
-      ? product.category.title ||
-        product.category._id ||
-        product.category.name ||
+    product?.category && typeof product.category === "object"
+      ? product.category?.title ||
+        product.category?._id ||
+        product.category?.name ||
         "Unknown"
-      : product?.category || "Unknown";
+      : typeof product?.category === "string"
+      ? product.category
+      : "Unknown";
 
   const priceValue =
-    typeof product?.price === "object"
-      ? product.price.amount ?? product.price.value ?? 0
-      : product?.price ?? 0;
+    product?.price && typeof product.price === "object"
+      ? product.price?.amount ?? product.price?.value ?? 0
+      : Number(product?.price ?? 0);
 
   const originalPriceValue =
-    typeof product?.originalPrice === "object"
-      ? product.originalPrice.amount ?? product.originalPrice.value ?? 0
-      : product?.originalPrice ?? priceValue;
+    product?.originalPrice && typeof product.originalPrice === "object"
+      ? product.originalPrice?.amount ?? product.originalPrice?.value ?? 0
+      : Number(product?.originalPrice ?? priceValue);
 
   const discountValue =
-    typeof product?.discount === "object"
-      ? product?.discount ?? 0
-      : product?.discount ?? 0;
+    product?.discount && typeof product.discount === "object"
+      ? Number((product.discount as any)?.amount ?? (product.discount as any)?.value ?? 0)
+      : Number(product?.discount ?? 0);
 
   const thumbnail = resolveThumbnail(product);
 
@@ -332,10 +334,10 @@ function ShopContent() {
             ? p.name.toLowerCase().replace(/\s+/g, "-")
             : "unknown");
         const brand =
-          typeof p.brand === "object"
-            ? p.brand.title || p.brand._id || p.brand.name
-            : p.brand;
-        brandsMap.set(slug, brand);
+          p?.brand && typeof p.brand === "object"
+            ? p.brand?.title || p.brand?._id || p.brand?.name
+            : p?.brand;
+        brandsMap.set(slug, brand || "");
       });
 
       products = products.filter((product) => {
