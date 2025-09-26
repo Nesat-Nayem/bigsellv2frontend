@@ -2,10 +2,10 @@ import { NextRequest, NextResponse } from 'next/server';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'https://bigsellv2backend.vercel.app/v1/api';
 
-export async function GET(request: NextRequest, context: { params: { id: string } }) {
+export async function GET(request: NextRequest, context: { params: Promise<{ id: string }> }) {
   try {
     const authHeader = request.headers.get('Authorization');
-    const { id } = context.params;
+    const { id } = await context.params;
 
     const response = await fetch(`${API_BASE_URL}/orders/${encodeURIComponent(id)}`, {
       method: 'GET',
