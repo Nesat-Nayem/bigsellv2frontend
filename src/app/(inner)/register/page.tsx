@@ -31,7 +31,7 @@ export default function Home() {
 
     try {
       const res = await axios.post(
-        "https://backend-node-vercel-bigsell.vercel.app//auth/signup",
+        "http://localhost:8080/v1/api/auth/signup",
         formData,
         {
           headers: { "Content-Type": "application/json" },
@@ -83,11 +83,11 @@ export default function Home() {
               <div className="col-lg-12">
                 <div className="registration-wrapper-1">
                   <div className="logo-area mb--0">
-                    <img
+                    {/* <img
                       className="mb--10"
                       src="assets/images/logo/fav.png"
                       alt="logo"
-                    />
+                    /> */}
                   </div>
                   <h3 className="title">Register Into Your Account</h3>
                   <form onSubmit={handleSubmit} className="registration-form">

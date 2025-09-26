@@ -94,7 +94,7 @@ const categoryTag = (categoryId: string): ProductTag =>
 export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${baseUrl}`, //ProdApis: https://backend-node-vercel-bigsell.vercel.app/
+    baseUrl: `${baseUrl}`, //ProdApis: http://localhost:8080/
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;
       const token = (state as any)?.auth?.token;

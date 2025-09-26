@@ -22,7 +22,7 @@ const nextConfig: NextConfig = {
       {
         source: "/api/:path*", // proxy path
         destination: "http://localhost:8080/v1/api/:path*", // your backend http://localhost:8080/v1/api/:path*
-        //prodApi: https://backend-node-vercel-bigsell.vercel.app//:path*
+        //prodApi: http://localhost:8080/:path*
       },
     ];
   },
