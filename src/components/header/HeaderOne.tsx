@@ -251,6 +251,8 @@ function HeaderOne() {
           </div>
         </div>
 
+        
+
         {/* logo + search */}
         <div className="search-header-area-main">
           <div className="container">
@@ -258,7 +260,7 @@ function HeaderOne() {
               <div className="col-lg-12">
                 <div className="logo-search-category-wrapper">
                   <Link href="/" className="logo-area">
-                    {/* <img
+                    <img
                       src={gs.logo ?? DEFAULT_SETTINGS.logo}
                       alt={gs.siteTitle ?? "logo-main"}
                       className="logo w-25 p-2"
@@ -267,7 +269,7 @@ function HeaderOne() {
                         (e.currentTarget as HTMLImageElement).src =
                           DEFAULT_SETTINGS.logo;
                       }}
-                    /> */}
+                    />
                   </Link>
                   <div className="category-search-wrapper">
                     {/* make the form wrapper position:relative so the absolute dropdown stays inside */}
