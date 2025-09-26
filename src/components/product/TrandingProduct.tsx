@@ -152,7 +152,6 @@ const TrandingProduct: React.FC<TrendingProductProps> = ({ limit = 8 }) => {
                   style={{
                     width: "100%",
                     height: "100%",
-                    objectFit: "contain",
                   }}
                 />
               </div>
@@ -164,8 +163,15 @@ const TrandingProduct: React.FC<TrendingProductProps> = ({ limit = 8 }) => {
               </Link>
 
               <span className="availability">
-                {product.brand ?? product.subcategory ?? "Available"}
-                {product.weight ? ` - ${product.weight}g` : ""}
+                {(
+                  product.brand ||
+                  (typeof (product as any).subcategory === 'object' && (product as any).subcategory
+                    ? (product as any).subcategory.title
+                    : typeof (product as any).subcategory === 'string'
+                    ? (product as any).subcategory
+                    : 'Available')
+                )}
+                {product.weight ? ` - ${product.weight}g` : ''}
               </span>
 
               <div className="price-area d-flex align-items-center gap-2">
