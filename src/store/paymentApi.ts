@@ -6,7 +6,7 @@ import type { RootState as IRootState } from "@/store";
  */
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:8080/v1/api";
+  "https://bigsellv2backend.vercel.app/v1/api";
 
 /** Payment refund shape */
 export interface IPaymentRefund {

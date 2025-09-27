@@ -53,7 +53,7 @@ export default function Home() {
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const res = await fetch("http://localhost:8080/v1/api/subscriptions?active=true&limit=3");
+        const res = await fetch("https://bigsellv2backend.vercel.app/v1/api/subscriptions?active=true&limit=3");
         const json = await res.json();
         const data = Array.isArray(json?.data) ? json.data : [];
         setPlans(data);
@@ -70,7 +70,7 @@ export default function Home() {
     try {
       const fd = new FormData();
       fd.append("document", file);
-      const res = await fetch("http://localhost:8080/v1/api/upload/kyc-document", { method: "POST", body: fd });
+      const res = await fetch("https://bigsellv2backend.vercel.app/v1/api/upload/kyc-document", { method: "POST", body: fd });
       const json = await res.json();
       if (json?.success && json?.data?.url) return json.data.url as string;
       return null;
@@ -106,7 +106,7 @@ export default function Home() {
         panUrl: formData.pan,
       };
 
-      const res = await fetch("http://localhost:8080/v1/api/vendors/apply", {
+      const res = await fetch("https://bigsellv2backend.vercel.app/v1/api/vendors/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
