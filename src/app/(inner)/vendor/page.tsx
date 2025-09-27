@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
@@ -34,6 +34,33 @@ export default function Home() {
   const selectPlan = (plan: string) => {
     setFormData({ ...formData, plan });
   };
+
+  // dynamic subscription plans (max 3)
+  const [plans, setPlans] = useState<
+    Array<{
+      _id?: string;
+      name: string;
+      price: number;
+      billingCycle?: "monthly" | "yearly";
+      features: string[];
+      color?: string;
+    }>
+  >([]);
+
+  useEffect(() => {
+    const loadPlans = async () => {
+      try {
+        const res = await fetch("/api/subscriptions?active=true&limit=3");
+        const json = await res.json();
+        const data = Array.isArray(json?.data) ? json.data : [];
+        setPlans(data);
+      } catch (e) {
+        // fallback silently if fetch fails, UI will still render
+        setPlans([]);
+      }
+    };
+    loadPlans();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -209,45 +236,51 @@ export default function Home() {
                 {step === 2 && (
                   <>
                     <div className="row g-4">
-                      {[
-                        {
-                          name: "Silver",
-                          price: "₹499 /month",
-                          features: ["Basic Listing", "Email Support"],
-                          color: "secondary",
-                        },
-                        {
-                          name: "Gold",
-                          price: "₹999 /month",
-                          features: [
-                            "Premium Listing",
-                            "Priority Support",
-                            "Discounts",
-                          ],
-                          color: "warning",
-                        },
-                        {
-                          name: "Platinum",
-                          price: "₹1999 /month",
-                          features: [
-                            "Top Listing",
-                            "24/7 Support",
-                            "Full Access",
-                          ],
-                          color: "info",
-                        },
-                      ].map((plan) => (
-                        <div className="col-md-4" key={plan.name}>
+                      {(plans.length > 0
+                        ? plans
+                        : [
+                            {
+                              name: "Silver",
+                              price: 499,
+                              billingCycle: "monthly" as const,
+                              features: ["Basic Listing", "Email Support"],
+                              color: "secondary",
+                            },
+                            {
+                              name: "Gold",
+                              price: 999,
+                              billingCycle: "monthly" as const,
+                              features: [
+                                "Premium Listing",
+                                "Priority Support",
+                                "Discounts",
+                              ],
+                              color: "warning",
+                            },
+                            {
+                              name: "Platinum",
+                              price: 1999,
+                              billingCycle: "monthly" as const,
+                              features: [
+                                "Top Listing",
+                                "24/7 Support",
+                                "Full Access",
+                              ],
+                              color: "info",
+                            },
+                          ]
+                      ).map((plan) => (
+                        <div className="col-md-4" key={(plan as any)._id || plan.name}>
                           <div
                             className={`pricing-card ${
                               formData.plan === plan.name ? "active" : ""
                             }`}
                             onClick={() => selectPlan(plan.name)}
                           >
-                            <h5 className={`fw-bold text-${plan.color}`}>
+                            <h5 className={`fw-bold text-${plan.color || "secondary"}`}>
                               {plan.name}
                             </h5>
-                            <h2 className="fw-bold">{plan.price}</h2>
+                            <h2 className="fw-bold">{`₹${plan.price} /${plan.billingCycle === "yearly" ? "year" : "month"}`}</h2>
                             <ul>
                               {plan.features.map((f, i) => (
                                 <li key={i}>{f}</li>
