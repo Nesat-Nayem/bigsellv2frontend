@@ -7,6 +7,8 @@ import { Card } from "react-bootstrap";
 
 export default function Home() {
   const [step, setStep] = useState(1);
+  const [isUploadingAadhar, setIsUploadingAadhar] = useState(false);
+  const [isUploadingPan, setIsUploadingPan] = useState(false);
 
   // form data state
   const [formData, setFormData] = useState({
@@ -50,7 +52,7 @@ export default function Home() {
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const res = await fetch("/api/subscriptions?active=true&limit=3");
+        const res = await fetch("http://localhost:8080/v1/api/subscriptions?active=true&limit=3");
         const json = await res.json();
         const data = Array.isArray(json?.data) ? json.data : [];
         setPlans(data);
@@ -62,10 +64,61 @@ export default function Home() {
     loadPlans();
   }, []);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Upload KYC document to backend and return URL
+  const uploadKyc = async (file: File): Promise<string | null> => {
+    try {
+      const fd = new FormData();
+      fd.append("document", file);
+      const res = await fetch("http://localhost:8080/v1/api/upload/kyc-document", { method: "POST", body: fd });
+      const json = await res.json();
+      if (json?.success && json?.data?.url) return json.data.url as string;
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log("Final Data:", formData);
-    alert("Vendor Registration Submitted");
+    if (!formData.aadhar || !formData.pan) {
+      alert("Please upload both Aadhar and PAN before submitting.");
+      return;
+    }
+    try {
+      const selected = plans.find((p) => p.name === formData.plan);
+      const payload: any = {
+        vendorName: formData.vendorName,
+        email: formData.email,
+        phone: formData.phone,
+        address: formData.address,
+        gstNo: formData.gstNo || undefined,
+        subscriptionId: selected?._id,
+        planName: selected?.name || formData.plan,
+        planPrice: selected?.price,
+        planBillingCycle: selected?.billingCycle,
+        planColor: selected?.color,
+        aadharUrl: formData.aadhar,
+        panUrl: formData.pan,
+      };
+
+      const res = await fetch("http://localhost:8080/v1/api/vendors/apply", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      const json = await res.json();
+      if (json?.success) {
+        alert("Vendor Registration Submitted");
+        setStep(4);
+      } else {
+        const backendMsg = Array.isArray(json?.errorMessages)
+          ? json.errorMessages.map((e: any) => e.message).join("\n")
+          : json?.message;
+        alert(backendMsg || "Failed to submit application");
+      }
+    } catch (err) {
+      alert("Failed to submit application");
+    }
   };
 
   return (
@@ -314,21 +367,24 @@ export default function Home() {
                         type="file"
                         accept="image/*"
                         className="form-control"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setFormData({
-                                ...formData,
-                                aadhar: reader.result as string,
-                              });
-                            };
-                            reader.readAsDataURL(file);
+                            setIsUploadingAadhar(true);
+                            const url = await uploadKyc(file);
+                            if (url) {
+                              setFormData((prev) => ({ ...prev, aadhar: url }));
+                            } else {
+                              alert('Failed to upload Aadhar. Please try again.');
+                            }
+                            setIsUploadingAadhar(false);
                           }
                         }}
                         required
                       />
+                      {isUploadingAadhar && (
+                        <small className="text-muted d-block mt-2">Uploading Aadhar...</small>
+                      )}
                       {formData.aadhar && (
                         <div className="mt-3">
                           <img
@@ -347,21 +403,24 @@ export default function Home() {
                         type="file"
                         accept="image/*"
                         className="form-control"
-                        onChange={(e) => {
+                        onChange={async (e) => {
                           const file = e.target.files?.[0];
                           if (file) {
-                            const reader = new FileReader();
-                            reader.onloadend = () => {
-                              setFormData({
-                                ...formData,
-                                pan: reader.result as string,
-                              });
-                            };
-                            reader.readAsDataURL(file);
+                            setIsUploadingPan(true);
+                            const url = await uploadKyc(file);
+                            if (url) {
+                              setFormData((prev) => ({ ...prev, pan: url }));
+                            } else {
+                              alert('Failed to upload PAN. Please try again.');
+                            }
+                            setIsUploadingPan(false);
                           }
                         }}
                         required
                       />
+                      {isUploadingPan && (
+                        <small className="text-muted d-block mt-2">Uploading PAN...</small>
+                      )}
                       {formData.pan && (
                         <div className="mt-3">
                           <img
@@ -455,7 +514,10 @@ export default function Home() {
                       type="button"
                       onClick={nextStep}
                       className="btn btn-dark px-4 py-3"
-                      disabled={step === 2 && !formData.plan}
+                      disabled={
+                        (step === 2 && !formData.plan) ||
+                        (step === 3 && (isUploadingAadhar || isUploadingPan || !formData.aadhar || !formData.pan))
+                      }
                     >
                       Next →
                     </button>
