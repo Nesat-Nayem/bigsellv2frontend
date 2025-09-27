@@ -9,6 +9,7 @@ export default function Home() {
   const [step, setStep] = useState(1);
   const [isUploadingAadhar, setIsUploadingAadhar] = useState(false);
   const [isUploadingPan, setIsUploadingPan] = useState(false);
+  const [agreeToTerms, setAgreeToTerms] = useState(false);
 
   // form data state
   const [formData, setFormData] = useState({
@@ -82,6 +83,10 @@ export default function Home() {
     e.preventDefault();
     if (!formData.aadhar || !formData.pan) {
       alert("Please upload both Aadhar and PAN before submitting.");
+      return;
+    }
+    if (!agreeToTerms) {
+      alert("Please agree to the vendor terms and conditions before submitting.");
       return;
     }
     try {
@@ -494,6 +499,31 @@ export default function Home() {
                           <span className="text-muted"> Not uploaded</span>
                         )}
                       </div>
+
+                      {/* Terms and Conditions Checkbox */}
+                      <div className="mt-4 pt-3 border-top">
+                        <div className="form-check">
+                          <input
+                            className="form-check-input"
+                            type="checkbox"
+                            id="agreeToTerms"
+                            checked={agreeToTerms}
+                            onChange={(e) => setAgreeToTerms(e.target.checked)}
+                            required
+                          />
+                          <label className="form-check-label text-dark" htmlFor="agreeToTerms">
+                            I agree to the{" "}
+                            <a
+                              href="http://localhost:3000/vendor-policy"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary fw-semibold text-decoration-underline"
+                            >
+                              vendor terms and conditions
+                            </a>
+                          </label>
+                        </div>
+                      </div>
                     </div>
                   </>
                 )}
@@ -523,7 +553,11 @@ export default function Home() {
                     </button>
                   )}
                   {step === 4 && (
-                    <button type="submit" className="btn btn-success px-4">
+                    <button 
+                      type="submit" 
+                      className="btn btn-success px-4"
+                      disabled={!agreeToTerms}
+                    >
                       Submit
                     </button>
                   )}
