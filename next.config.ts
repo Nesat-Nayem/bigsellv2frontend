@@ -21,8 +21,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*", // proxy path
-        destination: "https://bigsellv2backend.vercel.app/v1/api/:path*", // your backend https://bigsellv2backend.vercel.app/v1/api/:path*
-        //prodApi: https://bigsellv2backend.vercel.app/:path*
+        destination: "https://api.atpuae.com/v1/api/:path*", // your backend https://api.atpuae.com/v1/api/:path*
+        //prodApi: https://api.atpuae.com/:path*
       },
     ];
   },

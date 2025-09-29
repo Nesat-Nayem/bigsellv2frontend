@@ -27,7 +27,7 @@ interface GeneralSettingsResponse {
 export const generalSettingsApi = createApi({
   reducerPath: "generalSettingsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
     // prepareHeaders: (headers, { getState }) => {...} // optional auth
   }),
   tagTypes: ["generalSettings"],

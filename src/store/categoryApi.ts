@@ -16,7 +16,7 @@ interface CategoryResponse {
 export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api", //ProdApis:- https://bigsellv2backend.vercel.app/
+    baseUrl: "https://api.atpuae.com/v1/api", //ProdApis:- https://api.atpuae.com/
   }),
   tagTypes: ["category"],
   endpoints: (builder) => ({

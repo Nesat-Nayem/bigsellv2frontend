@@ -17,7 +17,7 @@ interface HelpSupport {
 export const helpSupportApi = createApi({
   reducerPath: "helpSupportApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["helpSupportApi"],
   endpoints: (builder) => ({

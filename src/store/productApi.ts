@@ -3,7 +3,7 @@ import type { RootState as IRootState } from "@/store";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://bigsellv2backend.vercel.app/v1/api";
+  "https://api.atpuae.com/v1/api";
 /**
  * Product model returned by backend.
  */
@@ -94,7 +94,7 @@ const categoryTag = (categoryId: string): ProductTag =>
 export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: `${baseUrl}`, //ProdApis: https://bigsellv2backend.vercel.app/
+    baseUrl: `${baseUrl}`, //ProdApis: https://api.atpuae.com/
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;
       const token = (state as any)?.auth?.token;

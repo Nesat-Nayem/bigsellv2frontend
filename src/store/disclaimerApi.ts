@@ -17,7 +17,7 @@ interface DisclaimerResponse {
 export const DisclaimerResponseApi = createApi({
   reducerPath: "DisclaimerResponseApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["DisclaimerResponse"],
   endpoints: (builder) => ({

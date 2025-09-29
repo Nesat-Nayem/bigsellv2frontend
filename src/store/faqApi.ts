@@ -19,7 +19,7 @@ interface FaqResponse {
 export const faqApi = createApi({
   reducerPath: "faqApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
     // optional: add headers if needed
     // prepareHeaders: (headers, { getState }) => {...}
   }),

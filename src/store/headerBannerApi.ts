@@ -16,7 +16,7 @@ interface HeaderBannerResponse {
 export const headerBannerApi = createApi({
   reducerPath: "headerBanner",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["headerBanner"],
   endpoints: (builder) => ({

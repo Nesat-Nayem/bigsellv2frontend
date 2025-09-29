@@ -5,7 +5,7 @@ import type { ApiResponse } from "./productApi"; // reuse ApiResponse if exporte
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://bigsellv2backend.vercel.app/v1/api";
+  "https://api.atpuae.com/v1/api";
 
 /** Cart item with optional populated product */
 export interface ICartProduct {

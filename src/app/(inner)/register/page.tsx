@@ -31,7 +31,7 @@ export default function Home() {
 
     try {
       const res = await axios.post(
-        "https://bigsellv2backend.vercel.app/v1/api/auth/signup",
+        "https://api.atpuae.com/v1/api/auth/signup",
         formData,
         {
           headers: { "Content-Type": "application/json" },

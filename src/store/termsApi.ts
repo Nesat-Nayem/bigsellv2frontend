@@ -17,7 +17,7 @@ interface TermsResponse {
 export const TermsApi = createApi({
   reducerPath: "termsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["terms"],
   endpoints: (builder) => ({
