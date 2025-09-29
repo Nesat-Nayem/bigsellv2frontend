@@ -9797,6 +9797,69 @@ input[type="radio"] {
   width: max-content;
 }
 
+/* Hide native checkbox visuals when a custom label pseudo-element is used.
+   Keep the native input accessible for screen readers and keyboard interaction. */
+.rn-hidden-checkbox {
+  /* visually hide the native checkbox but keep it in the accessibility tree */
+  position: absolute !important;
+  opacity: 0 !important;
+  width: 1px !important;
+  height: 1px !important;
+  margin: -1px !important;
+  padding: 0 !important;
+  border: 0 !important;
+  clip: rect(0 0 0 0) !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+}
+
+/* Visual styling for custom checkbox drawn by the label pseudo-elements.
+   Scoped to inputs using the rn-hidden-checkbox class to avoid global changes. */
+input.rn-hidden-checkbox ~ label {
+  position: relative; /* ensure pseudo-elements position correctly */
+  padding-left: 28px; /* space for the custom box */
+  cursor: pointer;
+}
+
+input.rn-hidden-checkbox ~ label::before {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  background-color: #fff !important; /* white background when unchecked */
+  border: 1px solid #000; /* black outline */
+  border-radius: 3px;
+  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+  box-sizing: border-box;
+}
+
+/* Checkmark (hidden when unchecked) */
+input.rn-hidden-checkbox ~ label::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 5px;
+  width: 6px;
+  height: 10px;
+  transform: translateY(-50%) rotate(45deg);
+  border: solid #fff; /* white check */
+  border-width: 0 2px 2px 0;
+  opacity: 0;
+  transition: opacity .12s ease, transform .12s ease;
+}
+
+/* Checked state: green background with white check */
+input.rn-hidden-checkbox:checked ~ label::before {
+  background-color: #28a745; /* green */
+  border-color: #28a745;
+}
+input.rn-hidden-checkbox:checked ~ label::after {
+  opacity: 1;
+}
+
 input[type="checkbox"] ~ label,
 input[type="radio"] ~ label {
   position: relative;

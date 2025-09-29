@@ -223,7 +223,7 @@ export default function Home() {
                           onChange={handleChange}
                           required
                           style={{
-                            textTransform: "capitalize",
+                           
                             borderRadius: "10px",
                             border: "1px solid #7777",
                             padding: "6px",
@@ -279,10 +279,11 @@ export default function Home() {
                           required
                           rows={3}
                           style={{
-                            textTransform: "capitalize",
+                         
                             borderRadius: "10px",
                             border: "1px solid #7777",
                             padding: "6px",
+                            fontSize: "15px",
                           }}
                         />
                       </div>
@@ -502,9 +503,9 @@ export default function Home() {
 
                       {/* Terms and Conditions Checkbox */}
                       <div className="mt-4 pt-3 border-top">
-                        <div className="form-check">
+                        <div >
                           <input
-                            className="form-check-input"
+                            className="rn-hidden-checkbox"
                             type="checkbox"
                             id="agreeToTerms"
                             checked={agreeToTerms}
