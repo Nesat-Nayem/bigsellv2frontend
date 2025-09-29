@@ -17,7 +17,7 @@ interface PrivacyPolicyResponse {
 export const privacyPolicyApi = createApi({
   reducerPath: "privacyPolicyApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://bigsellv2backend.vercel.app/v1/api",
   }),
   tagTypes: ["privacyPolicy"],
   endpoints: (builder) => ({
