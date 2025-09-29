@@ -13,7 +13,7 @@ function DemoContent() {
   const [message, setMessage] = useState("");
   const API =
     process.env.NEXT_PUBLIC_API_BASE_URL ||
-    "https://bigsellv2backend.vercel.app/";
+    "http://localhost:8080/";
 
   const handleChange = (e: any) => {
     setFormData({
