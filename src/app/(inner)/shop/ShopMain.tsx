@@ -140,7 +140,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
   return (
     <>
       <div className="image-and-action-area-wrapper">
-        <Link href={`/shop/${Id}/${Slug}/`} className="thumbnail-preview">
+        <Link href={`/shop/${Id}`} className="thumbnail-preview">
           <div className="badge">
             <span>
               {Discount}%<br />
@@ -195,7 +195,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
       </div>
 
       <div className="body-content">
-        <Link href={`/shop/${Id}/${Slug}`}>
+        <Link href={`/shop/${Id}`}>
           <h4 className="title">
             {ProductTitle?.slice(0, 20).concat("...") ??
               "How to growing your business"}
