@@ -211,7 +211,409 @@ const CompareElements: React.FC = () => {
     return [];
   }, [product]);
 
-  if (isLoading) return <div>Loading product details...</div>;
+  if (isLoading) {
+    return (
+      <div>
+        <HeaderOne />
+        {/* Breadcrumb Skeleton */}
+        <div className="rts-navigation-area-breadcrumb bg_light-1">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="navigator-breadcrumb-wrapper">
+                  <div className="skeleton-breadcrumb-line"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Details Skeleton */}
+        <div className="rts-chop-details-area rts-section-gap bg_light-1">
+          <div className="container">
+            <div className="shopdetails-style-1-wrapper">
+              <div className="row g-5">
+                <div className="d-flex col-12">
+                  {/* Left: Image Gallery */}
+                  <div className="col-xl-8 col-lg-8 col-md-12">
+                    <div className="product-details-popup-wrapper in-shopdetails">
+                      <div className="rts-product-details-section rts-product-details-section2 product-details-popup-section">
+                        <div className="product-details-popup">
+                          <div className="details-product-area">
+                            {/* Main Image Skeleton */}
+                            <div className="product-thumb-area">
+                              <div className="thumb-wrapper one filterd-items figure">
+                                <div className="skeleton-main-image"></div>
+                              </div>
+
+                              {/* Thumbnails Skeleton */}
+                              <div className="product-thumb-filter-group" style={{ marginTop: 12 }}>
+                                {[...Array(4)].map((_, idx) => (
+                                  <div key={idx} className="skeleton-thumbnail"></div>
+                                ))}
+                              </div>
+                            </div>
+
+                            {/* Product Info Skeleton */}
+                            <div className="contents">
+                              {/* Category */}
+                              <div className="skeleton-category"></div>
+                              
+                              {/* Title */}
+                              <div className="skeleton-title"></div>
+                              <div className="skeleton-title short"></div>
+                              
+                              {/* Description */}
+                              <div className="skeleton-description"></div>
+                              <div className="skeleton-description short"></div>
+                              
+                              {/* Price */}
+                              <div className="skeleton-price-row">
+                                <div className="skeleton-price-main"></div>
+                                <div className="skeleton-price-old"></div>
+                              </div>
+                              
+                              {/* Color & Size Options */}
+                              <div className="skeleton-options">
+                                <div className="skeleton-option-row">
+                                  <div className="skeleton-option-label"></div>
+                                  <div className="skeleton-color-swatches">
+                                    {[...Array(5)].map((_, i) => (
+                                      <div key={i} className="skeleton-color-swatch"></div>
+                                    ))}
+                                  </div>
+                                </div>
+                                <div className="skeleton-option-row">
+                                  <div className="skeleton-option-label"></div>
+                                  <div className="skeleton-size-buttons">
+                                    {[...Array(4)].map((_, i) => (
+                                      <div key={i} className="skeleton-size-button"></div>
+                                    ))}
+                                  </div>
+                                </div>
+                              </div>
+                              
+                              {/* Quantity + Add to Cart */}
+                              <div className="skeleton-cart-actions">
+                                <div className="skeleton-quantity-controls">
+                                  <div className="skeleton-qty-btn"></div>
+                                  <div className="skeleton-qty-input"></div>
+                                  <div className="skeleton-qty-btn"></div>
+                                </div>
+                                <div className="skeleton-add-cart-btn"></div>
+                              </div>
+                              
+                              {/* Product Meta */}
+                              <div className="skeleton-meta">
+                                {[...Array(4)].map((_, i) => (
+                                  <div key={i} className="skeleton-meta-line"></div>
+                                ))}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Right: Sidebar */}
+                  <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1">
+                    <div className="theiaStickySidebar">
+                      <div className="shop-sight-sticky-sidevbar mb--20">
+                        <div className="skeleton-sidebar-title"></div>
+                        <div className="skeleton-sidebar-content"></div>
+                      </div>
+                      <div className="our-payment-method">
+                        <div className="skeleton-sidebar-title"></div>
+                        <div className="skeleton-payment-image"></div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Tabs Skeleton */}
+                <div className="product-discription-tab-shop mt--50">
+                  <div className="skeleton-tabs">
+                    {[...Array(2)].map((_, i) => (
+                      <div key={i} className="skeleton-tab"></div>
+                    ))}
+                  </div>
+                  <div className="skeleton-tab-content"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <FeatureProduct />
+        <ShortService />
+        <FooterOne />
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+
+          .skeleton-breadcrumb-line {
+            height: 18px;
+            width: 200px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-main-image {
+            width: 100%;
+            height: 360px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+            border: 1px solid #eee;
+          }
+
+          .skeleton-thumbnail {
+            display: inline-block;
+            width: 56px;
+            height: 56px;
+            margin-right: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .contents {
+            animation: pulse 2s ease-in-out infinite;
+          }
+
+          .skeleton-category {
+            height: 20px;
+            width: 100px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 12px;
+          }
+
+          .skeleton-title {
+            height: 28px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+            margin-bottom: 12px;
+          }
+
+          .skeleton-title.short {
+            width: 60%;
+          }
+
+          .skeleton-description {
+            height: 14px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin: 8px 0;
+          }
+
+          .skeleton-description.short {
+            width: 75%;
+          }
+
+          .skeleton-price-row {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            margin: 20px 0;
+          }
+
+          .skeleton-price-main {
+            height: 32px;
+            width: 100px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-price-old {
+            height: 24px;
+            width: 80px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-options {
+            margin: 20px 0;
+          }
+
+          .skeleton-option-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin-bottom: 16px;
+          }
+
+          .skeleton-option-label {
+            height: 16px;
+            width: 50px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-color-swatches {
+            display: flex;
+            gap: 8px;
+          }
+
+          .skeleton-color-swatch {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 50%;
+          }
+
+          .skeleton-size-buttons {
+            display: flex;
+            gap: 8px;
+          }
+
+          .skeleton-size-button {
+            width: 50px;
+            height: 32px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-cart-actions {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+          }
+
+          .skeleton-quantity-controls {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+          }
+
+          .skeleton-qty-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-qty-input {
+            width: 60px;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-add-cart-btn {
+            flex: 1;
+            height: 48px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-meta {
+            margin-top: 24px;
+          }
+
+          .skeleton-meta-line {
+            height: 16px;
+            width: 200px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 10px;
+          }
+
+          .skeleton-sidebar-title {
+            height: 20px;
+            width: 150px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 16px;
+          }
+
+          .skeleton-sidebar-content {
+            height: 60px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-payment-image {
+            height: 80px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-tabs {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 20px;
+          }
+
+          .skeleton-tab {
+            height: 40px;
+            width: 150px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px 6px 0 0;
+          }
+
+          .skeleton-tab-content {
+            height: 200px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 0 6px 6px 6px;
+          }
+        `}</style>
+      </div>
+    );
+  }
+
   if (isError || !product) return <div>Product not found!</div>;
 
   const handleAdd = () => {

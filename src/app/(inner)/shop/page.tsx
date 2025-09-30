@@ -377,11 +377,326 @@ function ShopContent() {
   // Loading / error states
   if (productsLoading || filtersLoading) {
     return (
-      <div className="text-center py-20">
-        <div className="spinner-border text-primary" role="status">
-          <span className="visually-hidden">Loading...</span>
+      <div className="shop-page">
+        {/* Breadcrumb Skeleton */}
+        <div className="rts-navigation-area-breadcrumb bg_light-1">
+          <div className="container">
+            <div className="row">
+              <div className="col-lg-12">
+                <div className="navigator-breadcrumb-wrapper">
+                  <div className="skeleton-breadcrumb"></div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
-        <p className="mt-3">Loading products and filters...</p>
+
+        <div className="section-seperator bg_light-1">
+          <div className="container">
+            <hr className="section-seperator" />
+          </div>
+        </div>
+
+        <div className="shop-grid-sidebar-area rts-section-gap">
+          <div className="container">
+            <div className="row g-0">
+              {/* Sidebar Skeleton */}
+              <div className="col-xl-3 col-lg-12 pr--70 pr_lg--10 pr_sm--10 pr_md--5">
+                <div className="sidebar-filter-main">
+                  {/* Price Filter Skeleton */}
+                  <div className="single-filter-box mb-4">
+                    <div className="skeleton-filter-title"></div>
+                    <div className="skeleton-filter-body">
+                      <div className="skeleton-price-inputs"></div>
+                      <div className="skeleton-range"></div>
+                    </div>
+                  </div>
+
+                  {/* Category Filter Skeleton */}
+                  <div className="single-filter-box mb-4">
+                    <div className="skeleton-filter-title"></div>
+                    <div className="skeleton-filter-body">
+                      {[...Array(5)].map((_, i) => (
+                        <div key={i} className="skeleton-checkbox-item"></div>
+                      ))}
+                    </div>
+                  </div>
+
+                  {/* Brand Filter Skeleton */}
+                  <div className="single-filter-box">
+                    <div className="skeleton-filter-title"></div>
+                    <div className="skeleton-filter-body">
+                      {[...Array(4)].map((_, i) => (
+                        <div key={i} className="skeleton-checkbox-item"></div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Main Content Skeleton */}
+              <div className="col-xl-9 col-lg-12">
+                {/* Filter Bar Skeleton */}
+                <div className="filter-select-area mb-4">
+                  <div className="top-filter">
+                    <div className="skeleton-results-count"></div>
+                    <div className="right-end">
+                      <div className="skeleton-sort-button"></div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Product Grid Skeleton - 5 per row */}
+                <div className="row g-4">
+                  {[...Array(15)].map((_, index) => (
+                    <div
+                      key={index}
+                      className="col-lg-20 col-lg-4 col-md-6 col-sm-6 col-12"
+                    >
+                      <div className="single-shopping-card-one skeleton-product-card">
+                        {/* Image Skeleton */}
+                        <div className="skeleton-product-image"></div>
+
+                        {/* Badge Skeleton */}
+                        <div className="skeleton-badge"></div>
+
+                        {/* Content Skeleton */}
+                        <div className="skeleton-product-content">
+                          {/* Category */}
+                          <div className="skeleton-line short"></div>
+                          
+                          {/* Title */}
+                          <div className="skeleton-line long"></div>
+                          <div className="skeleton-line medium"></div>
+                          
+                          {/* Rating */}
+                          <div className="skeleton-rating">
+                            {[...Array(5)].map((_, i) => (
+                              <div key={i} className="skeleton-star"></div>
+                            ))}
+                          </div>
+                          
+                          {/* Price */}
+                          <div className="skeleton-price-wrapper">
+                            <div className="skeleton-price"></div>
+                            <div className="skeleton-price-old"></div>
+                          </div>
+                          
+                          {/* Actions */}
+                          <div className="skeleton-actions">
+                            <div className="skeleton-icon-btn"></div>
+                            <div className="skeleton-add-btn"></div>
+                            <div className="skeleton-icon-btn"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+
+          .skeleton-breadcrumb {
+            height: 20px;
+            width: 150px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-filter-title {
+            height: 24px;
+            width: 60%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 16px;
+          }
+
+          .skeleton-filter-body {
+            padding: 12px 0;
+          }
+
+          .skeleton-price-inputs {
+            height: 60px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+            margin-bottom: 12px;
+          }
+
+          .skeleton-range {
+            height: 8px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-checkbox-item {
+            height: 20px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 12px;
+          }
+
+          .skeleton-results-count {
+            height: 20px;
+            width: 150px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-sort-button {
+            height: 36px;
+            width: 120px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-product-card {
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+            animation: pulse 2s ease-in-out infinite;
+          }
+
+          .skeleton-product-image {
+            width: 100%;
+            padding-bottom: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+          }
+
+          .skeleton-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 50px;
+            height: 24px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 12px;
+          }
+
+          .skeleton-product-content {
+            padding: 16px;
+          }
+
+          .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 10px;
+          }
+
+          .skeleton-line.short {
+            width: 40%;
+            height: 10px;
+          }
+
+          .skeleton-line.medium {
+            width: 70%;
+            height: 14px;
+          }
+
+          .skeleton-line.long {
+            width: 90%;
+            height: 14px;
+          }
+
+          .skeleton-rating {
+            display: flex;
+            gap: 4px;
+            margin: 12px 0;
+          }
+
+          .skeleton-star {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 2px;
+          }
+
+          .skeleton-price-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 12px 0;
+          }
+
+          .skeleton-price {
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-price-old {
+            width: 50px;
+            height: 16px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 16px;
+          }
+
+          .skeleton-icon-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-add-btn {
+            flex: 1;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+        `}</style>
       </div>
     );
   }

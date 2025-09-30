@@ -262,10 +262,254 @@ const TrandingProduct: React.FC<TrendingProductProps> = ({ limit = 8 }) => {
   if (isLoading) {
     return (
       <section className="top-tranding-product rts-section-gap">
-        <div className="container text-center">
-          <h2 className="title-left mb--10">Top Trending Products</h2>
-          <p>Loading trending products...</p>
+        <div className="container">
+          <div className="row mb-3">
+            <div className="col-lg-12 d-flex justify-content-between align-items-center">
+              <div className="skeleton-title-main"></div>
+              <div className="skeleton-view-all-btn"></div>
+            </div>
+          </div>
+
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="cover-card-main-over">
+                <div className="row g-4">
+                  {[...Array(8)].map((_, index) => (
+                    <div key={index} className="col-xl-3 col-md-6 col-sm-12 col-6">
+                      <div className="single-shopping-card-one tranding-product skeleton-trending-card">
+                        {/* Image skeleton */}
+                        <div className="skeleton-thumbnail">
+                          <div className="skeleton-image-placeholder"></div>
+                          <div className="skeleton-badge"></div>
+                        </div>
+
+                        {/* Content skeleton */}
+                        <div className="body-content">
+                          {/* Title */}
+                          <div className="skeleton-product-title"></div>
+                          <div className="skeleton-product-title short"></div>
+
+                          {/* Availability */}
+                          <div className="skeleton-availability"></div>
+
+                          {/* Price */}
+                          <div className="skeleton-price-row">
+                            <div className="skeleton-current-price"></div>
+                            <div className="skeleton-old-price"></div>
+                          </div>
+
+                          {/* Rating */}
+                          <div className="skeleton-rating-area">
+                            {[...Array(5)].map((_, i) => (
+                              <div key={i} className="skeleton-star"></div>
+                            ))}
+                            <div className="skeleton-rating-text"></div>
+                          </div>
+
+                          {/* Quantity + Add button */}
+                          <div className="skeleton-cart-actions">
+                            <div className="skeleton-quantity-controls">
+                              <div className="skeleton-qty-btn"></div>
+                              <div className="skeleton-qty-input"></div>
+                              <div className="skeleton-qty-btn"></div>
+                            </div>
+                            <div className="skeleton-add-btn"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+          }
+
+          .skeleton-trending-card {
+            animation: pulse 2s ease-in-out infinite;
+            border: 1px solid #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            background: #fff;
+          }
+
+          .skeleton-title-main {
+            height: 32px;
+            width: 280px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-view-all-btn {
+            height: 40px;
+            width: 150px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+
+          .skeleton-thumbnail {
+            position: relative;
+            width: 100%;
+            height: 200px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fafafa;
+          }
+
+          .skeleton-image-placeholder {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+          }
+
+          .skeleton-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+          }
+
+          .body-content {
+            padding: 16px;
+          }
+
+          .skeleton-product-title {
+            height: 16px;
+            width: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+          }
+
+          .skeleton-product-title.short {
+            width: 70%;
+          }
+
+          .skeleton-availability {
+            height: 14px;
+            width: 50%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin: 12px 0;
+          }
+
+          .skeleton-price-row {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            margin: 12px 0;
+          }
+
+          .skeleton-current-price {
+            height: 22px;
+            width: 80px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-old-price {
+            height: 18px;
+            width: 60px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-rating-area {
+            display: flex;
+            gap: 6px;
+            align-items: center;
+            margin: 12px 0;
+          }
+
+          .skeleton-star {
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 2px;
+          }
+
+          .skeleton-rating-text {
+            height: 14px;
+            width: 60px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-left: 8px;
+          }
+
+          .skeleton-cart-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+          }
+
+          .skeleton-quantity-controls {
+            display: flex;
+            gap: 4px;
+            align-items: center;
+          }
+
+          .skeleton-qty-btn {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-qty-input {
+            width: 60px;
+            height: 32px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+
+          .skeleton-add-btn {
+            flex: 1;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+          }
+        `}</style>
       </section>
     );
   }

@@ -24,7 +24,7 @@ function BlogOne() {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="title-area-between">
-                                <h2 className="title-left mb--0">Latest Blog Post Insights</h2>
+                                <h2 className="title-left mb--0">Latest Blog Post Insights ss</h2>
                             </div>
                         </div>
                     </div>

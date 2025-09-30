@@ -65,12 +65,204 @@ function FeatureProduct() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="text-center">
-                <h2>Loading featured products...</h2>
+              <div className="title-area-between">
+                <div className="skeleton-title" style={{
+                  height: '32px',
+                  width: '200px',
+                  background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
+                  backgroundSize: '200% 100%',
+                  animation: 'shimmer 1.5s infinite',
+                  borderRadius: '4px'
+                }}></div>
+                <div className="next-prev-swiper-wrapper" style={{ opacity: 0.3 }}>
+                  <div className="swiper-button-prev">
+                    <i className="fa-regular fa-chevron-left" />
+                  </div>
+                  <div className="swiper-button-next">
+                    <i className="fa-regular fa-chevron-right" />
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <div className="container">
+          <div className="row">
+            <div className="col-lg-12">
+              <div className="category-area-main-wrapper-one">
+                <Swiper
+                  modules={[Navigation, Autoplay]}
+                  scrollbar={{ hide: true }}
+                  autoplay={false}
+                  loop={false}
+                  navigation={false}
+                  className="mySwiper-category-1"
+                  breakpoints={{
+                    0: { slidesPerView: 1, spaceBetween: 30 },
+                    320: { slidesPerView: 2, spaceBetween: 30 },
+                    480: { slidesPerView: 3, spaceBetween: 30 },
+                    640: { slidesPerView: 3, spaceBetween: 30 },
+                    840: { slidesPerView: 4, spaceBetween: 30 },
+                    1140: { slidesPerView: 6, spaceBetween: 30 },
+                  }}
+                >
+                  {[...Array(6)].map((_, index) => (
+                    <SwiperSlide key={index}>
+                      <div className="single-shopping-card-one skeleton-card">
+                        <div className="skeleton-product-card">
+                          {/* Image skeleton */}
+                          <div className="skeleton-image"></div>
+                          
+                          {/* Badge skeleton */}
+                          <div className="skeleton-badge"></div>
+                          
+                          {/* Content skeleton */}
+                          <div className="skeleton-content">
+                            <div className="skeleton-line short"></div>
+                            <div className="skeleton-line medium"></div>
+                            <div className="skeleton-line long"></div>
+                            <div className="skeleton-rating">
+                              {[...Array(5)].map((_, i) => (
+                                <div key={i} className="skeleton-star"></div>
+                              ))}
+                            </div>
+                            <div className="skeleton-price-wrapper">
+                              <div className="skeleton-price"></div>
+                              <div className="skeleton-price-old"></div>
+                            </div>
+                            <div className="skeleton-button"></div>
+                          </div>
+                        </div>
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <style jsx>{`
+          @keyframes shimmer {
+            0% { background-position: -200% 0; }
+            100% { background-position: 200% 0; }
+          }
+          
+          @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+          }
+          
+          .skeleton-card {
+            animation: pulse 2s ease-in-out infinite;
+          }
+          
+          .skeleton-product-card {
+            position: relative;
+            background: #fff;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #f0f0f0;
+          }
+          
+          .skeleton-image {
+            width: 100%;
+            padding-bottom: 100%;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+          }
+          
+          .skeleton-badge {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            width: 50px;
+            height: 24px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 12px;
+          }
+          
+          .skeleton-content {
+            padding: 16px;
+          }
+          
+          .skeleton-line {
+            height: 12px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+            margin-bottom: 8px;
+          }
+          
+          .skeleton-line.short {
+            width: 40%;
+            height: 10px;
+          }
+          
+          .skeleton-line.medium {
+            width: 90%;
+            height: 14px;
+          }
+          
+          .skeleton-line.long {
+            width: 70%;
+            height: 14px;
+          }
+          
+          .skeleton-rating {
+            display: flex;
+            gap: 4px;
+            margin: 12px 0;
+          }
+          
+          .skeleton-star {
+            width: 14px;
+            height: 14px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 2px;
+          }
+          
+          .skeleton-price-wrapper {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            margin: 12px 0;
+          }
+          
+          .skeleton-price {
+            width: 60px;
+            height: 20px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+          
+          .skeleton-price-old {
+            width: 50px;
+            height: 16px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 4px;
+          }
+          
+          .skeleton-button {
+            width: 100%;
+            height: 40px;
+            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 6px;
+            margin-top: 12px;
+          }
+        `}</style>
       </div>
     );
   }
