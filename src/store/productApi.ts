@@ -3,7 +3,7 @@ import type { RootState as IRootState } from "@/store";
 
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:8080/v1/api";
+  "https://api.bigsell.org/v1/api";
 /**
  * Product model returned by backend.
  */
@@ -95,7 +95,7 @@ export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
     credentials: 'include',
-    baseUrl: `${baseUrl}`, //ProdApis: http://localhost:8080/
+    baseUrl: `${baseUrl}`, //ProdApis: https://api.bigsell.org/
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;
       const token = (state as any)?.auth?.token;
