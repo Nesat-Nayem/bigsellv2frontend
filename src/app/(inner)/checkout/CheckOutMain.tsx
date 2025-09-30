@@ -251,7 +251,7 @@ const CheckOutMain: React.FC = () => {
 
         // Get order ID for redirect and display
         const orderId =
-          response._id || response.data?._id || response.orderNumber || (response as any).id;
+          response._id || response.orderNumber || (response as any).id;
         
         // Show success toast with order ID
         toast.success(

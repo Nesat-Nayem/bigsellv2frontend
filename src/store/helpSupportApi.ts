@@ -18,7 +18,7 @@ export const helpSupportApi = createApi({
   reducerPath: "helpSupportApi",
   baseQuery: fetchBaseQuery({
     credentials: 'include',
-    baseUrl: "https://api.bigsell.org/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["helpSupportApi"],
   endpoints: (builder) => ({

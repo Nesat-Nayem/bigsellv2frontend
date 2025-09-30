@@ -1,4 +1,5 @@
 "use client"
+import { Suspense } from "react";
 import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 import Accordion from "./Accordion";
@@ -12,8 +13,9 @@ export default function Home() {
             <>
                 
 
-
-            <Accordion/>
+            <Suspense fallback={<div>Loading...</div>}>
+                <Accordion/>
+            </Suspense>
 
                 
                 
