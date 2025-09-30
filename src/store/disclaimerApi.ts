@@ -17,6 +17,7 @@ interface DisclaimerResponse {
 export const DisclaimerResponseApi = createApi({
   reducerPath: "DisclaimerResponseApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["DisclaimerResponse"],

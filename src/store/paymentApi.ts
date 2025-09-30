@@ -103,6 +103,7 @@ const normalizeToArray = <T>(payload: T | T[] | undefined): T[] => {
 export const paymentsApi = createApi({
   reducerPath: "paymentsApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: `${baseUrl}`,
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;

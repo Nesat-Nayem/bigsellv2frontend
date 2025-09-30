@@ -19,6 +19,7 @@ interface FaqResponse {
 export const faqApi = createApi({
   reducerPath: "faqApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: "http://localhost:8080/v1/api",
     // optional: add headers if needed
     // prepareHeaders: (headers, { getState }) => {...}

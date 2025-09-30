@@ -17,6 +17,7 @@ interface TermsResponse {
 export const TermsApi = createApi({
   reducerPath: "termsApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["terms"],

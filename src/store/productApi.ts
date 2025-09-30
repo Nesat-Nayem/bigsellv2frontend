@@ -94,6 +94,7 @@ const categoryTag = (categoryId: string): ProductTag =>
 export const productsApi = createApi({
   reducerPath: "productsApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: `${baseUrl}`, //ProdApis: http://localhost:8080/
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;

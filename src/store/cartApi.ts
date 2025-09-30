@@ -72,6 +72,7 @@ const cartTag = (id = "LIST"): CartTag => ({ type: "Cart", id });
 export const cartApi = createApi({
   reducerPath: "cartApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;

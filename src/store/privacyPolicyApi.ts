@@ -17,6 +17,7 @@ interface PrivacyPolicyResponse {
 export const privacyPolicyApi = createApi({
   reducerPath: "privacyPolicyApi",
   baseQuery: fetchBaseQuery({
+    credentials: 'include',
     baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["privacyPolicy"],
