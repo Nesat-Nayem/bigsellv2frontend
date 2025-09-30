@@ -13,6 +13,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { IProducts } from "@/store/productApi";
 
 interface BlogGridMainProps {
+  Id: string;
   Slug: string;
   ProductImage: string;
   ProductTitle?: string;
@@ -23,6 +24,7 @@ interface BlogGridMainProps {
 }
 
 const FeaturedGlosary: React.FC<BlogGridMainProps> = ({
+  Id,
   Slug,
   ProductImage,
   ProductTitle,
@@ -146,7 +148,7 @@ const FeaturedGlosary: React.FC<BlogGridMainProps> = ({
   return (
     <>
       <div className="image-and-action-area-wrapper">
-        <a href={`/shop/${Slug}`} className="thumbnail-preview">
+        <a href={`/shop/${Id}`} className="thumbnail-preview">
           <div className="badge">
             <span>
               25% <br />
@@ -187,7 +189,7 @@ const FeaturedGlosary: React.FC<BlogGridMainProps> = ({
       </div>
 
       <div className="body-content">
-        <Link href={`/shop/${Slug}`}>
+        <Link href={`/shop/${Id}`}>
           <h4 className="title">
             {ProductTitle
               ? ProductTitle.slice(0, 15).concat("...")

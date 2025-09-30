@@ -162,6 +162,7 @@ function FeatureProduct() {
                     <SwiperSlide key={product._id || index}>
                       <div className="single-shopping-card-one">
                         <FeaturedGlosary
+                          Id={product._id || `product-${index}`}
                           Slug={
                             product.slug || product._id || `product-${index}`
                           }
