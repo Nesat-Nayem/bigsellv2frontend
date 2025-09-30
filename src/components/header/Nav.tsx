@@ -176,11 +176,11 @@ function NavItem() {
               CONTACT US
             </Link>
           </li>
-          <li className="parent">
+          {/* <li className="parent">
             <Link href="/payment-policy" className="fs-16">
               Pricing and Payment{" "}
             </Link>
-          </li>
+          </li> */}
         </ul>
       </nav>
     </div>
