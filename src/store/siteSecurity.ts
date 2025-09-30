@@ -17,7 +17,7 @@ interface SiteSecurityResponse {
 export const SiteSecurityApi = createApi({
   reducerPath: "SiteSecurity",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.atpuae.com/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["SiteSecurity"],
   endpoints: (builder) => ({

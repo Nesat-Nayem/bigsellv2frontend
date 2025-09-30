@@ -16,7 +16,7 @@ interface CategoryResponse {
 export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.atpuae.com/v1/api", //ProdApis:- https://api.atpuae.com/
+    baseUrl: "http://localhost:8080/v1/api", //ProdApis:- http://localhost:8080/
   }),
   tagTypes: ["category"],
   endpoints: (builder) => ({

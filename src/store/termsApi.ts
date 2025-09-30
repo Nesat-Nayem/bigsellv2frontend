@@ -17,7 +17,7 @@ interface TermsResponse {
 export const TermsApi = createApi({
   reducerPath: "termsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.atpuae.com/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["terms"],
   endpoints: (builder) => ({

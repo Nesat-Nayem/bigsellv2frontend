@@ -28,7 +28,7 @@ interface SingleBlogResponse {
 export const blogsApi = createApi({
   reducerPath: "blogsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.atpuae.com/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
     // prepareHeaders: (headers, { getState }) => {...} // optional auth
   }),
   tagTypes: ["blogs"],

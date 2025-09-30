@@ -16,7 +16,7 @@ interface HeaderBannerResponse {
 export const headerBannerApi = createApi({
   reducerPath: "headerBanner",
   baseQuery: fetchBaseQuery({
-    baseUrl: "https://api.atpuae.com/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["headerBanner"],
   endpoints: (builder) => ({

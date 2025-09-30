@@ -6,7 +6,7 @@ import type { RootState as IRootState } from "@/store";
  */
 const baseUrl =
   process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "https://api.atpuae.com/v1/api";
+  "http://localhost:8080/v1/api";
 
 /** Payment refund shape */
 export interface IPaymentRefund {

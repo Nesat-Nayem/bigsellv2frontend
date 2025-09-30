@@ -69,7 +69,7 @@ const buildQuery = (params?: Record<string, any>) => {
 export const productCategoryApi = createApi({
   reducerPath: "productCategoryApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE || "https://api.atpuae.com/v1/api",
+    baseUrl: process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080/v1/api",
   }),
   tagTypes: ["Category"],
   endpoints: (builder) => ({
