@@ -166,23 +166,35 @@ const CheckOutMain: React.FC = () => {
 
   const handlePlaceOrder = async () => {
     if (!isAuthenticated) {
-      toast.error("Please login to place an order");
-      router.push("/login");
+      toast.error("⚠️ Please login to place an order", {
+        position: "top-right",
+        autoClose: 4000,
+      });
+      setTimeout(() => router.push("/login"), 1500);
       return;
     }
 
     if (!validateForm()) {
-      toast.error("Please fill all required fields correctly");
+      toast.error("❌ Please fill all required fields correctly", {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
     if (safeCartItems.length === 0) {
-      toast.error("Your cart is empty");
+      toast.error("❌ Your cart is empty", {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
     if (selectedPaymentMethod !== "cod") {
-      toast.error("Currently only Cash on Delivery is available");
+      toast.error("⚠️ Currently only Cash on Delivery is available", {
+        position: "top-right",
+        autoClose: 4000,
+      });
       return;
     }
 
@@ -234,13 +246,37 @@ const CheckOutMain: React.FC = () => {
       console.log("Order response:", response);
 
       if (response) {
-        toast.success("Order placed successfully!");
+        // Clear cart first
         if (typeof clearCart === "function") clearCart();
 
+        // Get order ID for redirect and display
         const orderId =
-          response._id || response.orderNumber || (response as any).id;
-        if (orderId) toast.info(`Your Order ID: ${orderId}`);
-        else router.push("/my-orders");
+          response._id || response.data?._id || response.orderNumber || (response as any).id;
+        
+        // Show success toast with order ID
+        toast.success(
+          `🎉 Order placed successfully! ${orderId ? `Order ID: ${orderId}` : ''}`,
+          {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+          }
+        );
+
+        // Redirect to order details page after a short delay
+        if (orderId) {
+          setTimeout(() => {
+            router.push(`/orders/${orderId}`);
+          }, 1500);
+        } else {
+          // Fallback to account orders if no order ID
+          setTimeout(() => {
+            router.push("/account?tab=orders");
+          }, 1500);
+        }
       }
     } catch (error: any) {
       console.error("Order creation failed - Full error:", error);
@@ -252,6 +288,7 @@ const CheckOutMain: React.FC = () => {
       });
 
       let errorMessage = "Failed to place order. Please try again.";
+      let shouldRedirectToLogin = false;
 
       // Handle different error formats
       if (error?.data?.message) {
@@ -268,20 +305,39 @@ const CheckOutMain: React.FC = () => {
 
       // Handle specific status codes
       if (error?.status === 401 || error?.response?.status === 401) {
-        errorMessage = "Please login to place an order";
-        router.push("/login");
+        errorMessage = "⚠️ Session expired. Please login to place an order.";
+        shouldRedirectToLogin = true;
       } else if (error?.status === 400 || error?.response?.status === 400) {
         errorMessage =
-          error?.data?.message ||
+          "❌ " + (error?.data?.message ||
           error?.response?.data?.message ||
-          "Invalid order data. Please check your information.";
+          "Invalid order data. Please check your information.");
       } else if (error?.status === 404 || error?.response?.status === 404) {
-        errorMessage = "Product not found. Please refresh your cart.";
+        errorMessage = "❌ Product not found. Please refresh your cart.";
       } else if (error?.status === 500 || error?.response?.status === 500) {
-        errorMessage = "Server error. Please try again later.";
+        errorMessage = "⚠️ Server error. Please try again later.";
+      } else if (error?.status === 409 || error?.response?.status === 409) {
+        errorMessage = "❌ " + (error?.data?.message || "Order conflict. Some items may be out of stock.");
+      } else {
+        errorMessage = "❌ " + errorMessage;
       }
 
-      toast.error(errorMessage);
+      // Show error toast with configuration
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+
+      // Redirect to login if authentication failed
+      if (shouldRedirectToLogin) {
+        setTimeout(() => {
+          router.push("/login");
+        }, 2000);
+      }
     }
   };
 

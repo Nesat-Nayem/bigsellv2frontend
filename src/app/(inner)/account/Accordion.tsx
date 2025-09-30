@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useGetMyOrdersQuery } from "@/store/ordersApi"; // <-- import RTK hook
 import { useDispatch } from "react-redux";
 import { setCredentials, clearCredentials } from "@/store/authSlice";
@@ -27,8 +27,17 @@ const decodeToken = (token: string) => {
 
 const AccountTabs = () => {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const [activeTab, setActiveTab] = useState("dashboard");
+
+  // Check for tab query parameter
+  useEffect(() => {
+    const tabParam = searchParams.get("tab");
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams]);
 
   const [user, setUser] = useState<any>(null);
 
