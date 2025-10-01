@@ -17,7 +17,7 @@ export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: fetchBaseQuery({
     credentials: 'include',
-    baseUrl: "https://api.bigsell.org/v1/api", //ProdApis:- https://api.bigsell.org/
+    baseUrl: "http://localhost:8080/v1/api", //ProdApis:- http://localhost:8080/
   }),
   tagTypes: ["category"],
   endpoints: (builder) => ({
