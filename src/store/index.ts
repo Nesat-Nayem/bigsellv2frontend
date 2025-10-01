@@ -21,6 +21,8 @@ import { ordersApi } from "./ordersApi";
 import { paymentsApi } from "./paymentApi";
 import { productCategoryApi } from "./productCategoryApi";
 import authReducer from "./authSlice";
+import { userApi } from "./userApi";
+import { addressApi } from "./addressApi";
 
 export const store = configureStore({
   reducer: {
@@ -44,6 +46,8 @@ export const store = configureStore({
     [ordersApi.reducerPath]: ordersApi.reducer,
     [paymentsApi.reducerPath]: paymentsApi.reducer,
     [productCategoryApi.reducerPath]: productCategoryApi.reducer,
+    [userApi.reducerPath]: userApi.reducer,
+    [addressApi.reducerPath]: addressApi.reducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(
@@ -65,7 +69,9 @@ export const store = configureStore({
       mainBannerApi.middleware,
       ordersApi.middleware,
       paymentsApi.middleware,
-      productCategoryApi.middleware
+      productCategoryApi.middleware,
+      userApi.middleware,
+      addressApi.middleware
     ),
   // Optional: toggle devTools only in dev
   devTools: process.env.NODE_ENV !== "production",
