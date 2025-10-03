@@ -14,6 +14,7 @@ import FeatureProduct from "@/components/product/FeatureProduct";
 
 //  Import RTK Query hook
 import { useGetProductByIdQuery } from "@/store/productApi";
+import HeaderThree from "@/components/header/HeaderThree";
 
 /* -------------------- ColorSwatch (isolated, accessible) -------------------- */
 const ColorSwatch: React.FC<{
@@ -214,7 +215,7 @@ const CompareElements: React.FC = () => {
   if (isLoading) {
     return (
       <div>
-        <HeaderOne />
+        <HeaderThree />
         {/* Breadcrumb Skeleton */}
         <div className="rts-navigation-area-breadcrumb bg_light-1">
           <div className="container">
@@ -247,9 +248,15 @@ const CompareElements: React.FC = () => {
                               </div>
 
                               {/* Thumbnails Skeleton */}
-                              <div className="product-thumb-filter-group" style={{ marginTop: 12 }}>
+                              <div
+                                className="product-thumb-filter-group"
+                                style={{ marginTop: 12 }}
+                              >
                                 {[...Array(4)].map((_, idx) => (
-                                  <div key={idx} className="skeleton-thumbnail"></div>
+                                  <div
+                                    key={idx}
+                                    className="skeleton-thumbnail"
+                                  ></div>
                                 ))}
                               </div>
                             </div>
@@ -258,28 +265,31 @@ const CompareElements: React.FC = () => {
                             <div className="contents">
                               {/* Category */}
                               <div className="skeleton-category"></div>
-                              
+
                               {/* Title */}
                               <div className="skeleton-title"></div>
                               <div className="skeleton-title short"></div>
-                              
+
                               {/* Description */}
                               <div className="skeleton-description"></div>
                               <div className="skeleton-description short"></div>
-                              
+
                               {/* Price */}
                               <div className="skeleton-price-row">
                                 <div className="skeleton-price-main"></div>
                                 <div className="skeleton-price-old"></div>
                               </div>
-                              
+
                               {/* Color & Size Options */}
                               <div className="skeleton-options">
                                 <div className="skeleton-option-row">
                                   <div className="skeleton-option-label"></div>
                                   <div className="skeleton-color-swatches">
                                     {[...Array(5)].map((_, i) => (
-                                      <div key={i} className="skeleton-color-swatch"></div>
+                                      <div
+                                        key={i}
+                                        className="skeleton-color-swatch"
+                                      ></div>
                                     ))}
                                   </div>
                                 </div>
@@ -287,12 +297,15 @@ const CompareElements: React.FC = () => {
                                   <div className="skeleton-option-label"></div>
                                   <div className="skeleton-size-buttons">
                                     {[...Array(4)].map((_, i) => (
-                                      <div key={i} className="skeleton-size-button"></div>
+                                      <div
+                                        key={i}
+                                        className="skeleton-size-button"
+                                      ></div>
                                     ))}
                                   </div>
                                 </div>
                               </div>
-                              
+
                               {/* Quantity + Add to Cart */}
                               <div className="skeleton-cart-actions">
                                 <div className="skeleton-quantity-controls">
@@ -302,11 +315,14 @@ const CompareElements: React.FC = () => {
                                 </div>
                                 <div className="skeleton-add-cart-btn"></div>
                               </div>
-                              
+
                               {/* Product Meta */}
                               <div className="skeleton-meta">
                                 {[...Array(4)].map((_, i) => (
-                                  <div key={i} className="skeleton-meta-line"></div>
+                                  <div
+                                    key={i}
+                                    className="skeleton-meta-line"
+                                  ></div>
                                 ))}
                               </div>
                             </div>
@@ -351,19 +367,33 @@ const CompareElements: React.FC = () => {
 
         <style jsx>{`
           @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
-          
+
           @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            0%,
+            100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.7;
+            }
           }
 
           .skeleton-breadcrumb-line {
             height: 18px;
             width: 200px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -372,7 +402,12 @@ const CompareElements: React.FC = () => {
           .skeleton-main-image {
             width: 100%;
             height: 360px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 8px;
@@ -384,7 +419,12 @@ const CompareElements: React.FC = () => {
             width: 56px;
             height: 56px;
             margin-right: 8px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -397,7 +437,12 @@ const CompareElements: React.FC = () => {
           .skeleton-category {
             height: 20px;
             width: 100px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -407,7 +452,12 @@ const CompareElements: React.FC = () => {
           .skeleton-title {
             height: 28px;
             width: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -421,7 +471,12 @@ const CompareElements: React.FC = () => {
           .skeleton-description {
             height: 14px;
             width: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -442,7 +497,12 @@ const CompareElements: React.FC = () => {
           .skeleton-price-main {
             height: 32px;
             width: 100px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -451,7 +511,12 @@ const CompareElements: React.FC = () => {
           .skeleton-price-old {
             height: 24px;
             width: 80px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -471,7 +536,12 @@ const CompareElements: React.FC = () => {
           .skeleton-option-label {
             height: 16px;
             width: 50px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -485,7 +555,12 @@ const CompareElements: React.FC = () => {
           .skeleton-color-swatch {
             width: 32px;
             height: 32px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 50%;
@@ -499,7 +574,12 @@ const CompareElements: React.FC = () => {
           .skeleton-size-button {
             width: 50px;
             height: 32px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -520,7 +600,12 @@ const CompareElements: React.FC = () => {
           .skeleton-qty-btn {
             width: 40px;
             height: 40px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -529,7 +614,12 @@ const CompareElements: React.FC = () => {
           .skeleton-qty-input {
             width: 60px;
             height: 40px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -538,7 +628,12 @@ const CompareElements: React.FC = () => {
           .skeleton-add-cart-btn {
             flex: 1;
             height: 48px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -551,7 +646,12 @@ const CompareElements: React.FC = () => {
           .skeleton-meta-line {
             height: 16px;
             width: 200px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -561,7 +661,12 @@ const CompareElements: React.FC = () => {
           .skeleton-sidebar-title {
             height: 20px;
             width: 150px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -571,7 +676,12 @@ const CompareElements: React.FC = () => {
           .skeleton-sidebar-content {
             height: 60px;
             width: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -580,7 +690,12 @@ const CompareElements: React.FC = () => {
           .skeleton-payment-image {
             height: 80px;
             width: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -595,7 +710,12 @@ const CompareElements: React.FC = () => {
           .skeleton-tab {
             height: 40px;
             width: 150px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px 6px 0 0;
@@ -604,7 +724,12 @@ const CompareElements: React.FC = () => {
           .skeleton-tab-content {
             height: 200px;
             width: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 0 6px 6px 6px;
@@ -666,7 +791,7 @@ const CompareElements: React.FC = () => {
 
   return (
     <div>
-      <HeaderOne />
+      <HeaderThree />
       <div className="rts-navigation-area-breadcrumb bg_light-1">
         <div className="container">
           <div className="row">
@@ -689,323 +814,334 @@ const CompareElements: React.FC = () => {
           <div className="shopdetails-style-1-wrapper">
             <div className="row g-5 ">
               <div className="d-flex col-12">
-              <div className="col-xl-8 col-lg-8 col-md-12">
-                <div className="product-details-popup-wrapper in-shopdetails">
-                  <div className="rts-product-details-section rts-product-details-section2 product-details-popup-section">
-                    <div className="product-details-popup">
-                      <div className="details-product-area">
-                        {/* Product Image */}
-                        <div className="product-thumb-area">
-                          <div className="cursor" />
-                          <div className="thumb-wrapper one filterd-items figure">
-                            <div
-                              className="product-thumb"
-                              style={{
-                                cursor: "pointer",
-                                width: "100%",
-                                height: 360,
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                border: "1px solid #eee",
-                                borderRadius: 8,
-                                padding: 12,
-                                background: "#fff",
-                              }}
-                            >
-                              <img
-                                src={activeImage ?? "/assets/placeholder.png"}
-                                alt={product.name ?? "product"}
-                                style={{
-                                  width: "100%",
-                                  height: "100%",
-                                  objectFit: "contain",
-                                  maxWidth: 420,
-                                  maxHeight: 340,
-                                }}
-                                onError={(e) => {
-                                  (e.currentTarget as HTMLImageElement).src =
-                                    "/assets/placeholder.png";
-                                }}
-                              />
-                            </div>
-                          </div>
-
-                          {/* Thumbnails */}
-                          <div
-                            className="product-thumb-filter-group"
-                            style={{ marginTop: 12 }}
-                          >
-                            {thumbnails.map((thumb, idx) => (
+                <div className="col-xl-8 col-lg-8 col-md-12">
+                  <div className="product-details-popup-wrapper in-shopdetails">
+                    <div className="rts-product-details-section rts-product-details-section2 product-details-popup-section">
+                      <div className="product-details-popup">
+                        <div className="details-product-area">
+                          {/* Product Image */}
+                          <div className="product-thumb-area">
+                            <div className="cursor" />
+                            <div className="thumb-wrapper one filterd-items figure">
                               <div
-                                key={idx}
-                                className={`thumb-filter filter-btn ${
-                                  activeImage === thumb ? "active" : ""
-                                }`}
-                                onClick={() => setActiveImage(thumb)}
+                                className="product-thumb"
                                 style={{
                                   cursor: "pointer",
-                                  display: "inline-block",
-                                  marginRight: 8,
-                                  padding: 4,
-                                  borderRadius: 6,
-                                  border:
-                                    activeImage === thumb
-                                      ? "2px solid #111"
-                                      : "1px solid #eee",
+                                  width: "100%",
+                                  height: 360,
+                                  display: "flex",
+                                  alignItems: "center",
+                                  justifyContent: "center",
+                                  border: "1px solid #eee",
+                                  borderRadius: 8,
+                                  padding: 12,
                                   background: "#fff",
                                 }}
                               >
                                 <img
-                                  src={thumb}
-                                  alt={`${product.name || "product"} ${idx}`}
+                                  src={activeImage ?? "/assets/placeholder.png"}
+                                  alt={product.name ?? "product"}
                                   style={{
-                                    width: 56,
-                                    height: 56,
-                                    objectFit: "cover",
-                                    display: "block",
-                                    borderRadius: 4,
+                                    width: "100%",
+                                    height: "100%",
+                                    objectFit: "contain",
+                                    maxWidth: 420,
+                                    maxHeight: 340,
                                   }}
-                                  onError={(e) =>
-                                    ((e.currentTarget as HTMLImageElement).src =
-                                      "/assets/placeholder.png")
-                                  }
+                                  onError={(e) => {
+                                    (e.currentTarget as HTMLImageElement).src =
+                                      "/assets/placeholder.png";
+                                  }}
                                 />
                               </div>
-                            ))}
-                          </div>
-                        </div>
-
-                        {/* Product Content */}
-                        <div className="contents">
-                          <div className="product-status">
-                            <span
-                              className="product-catagory"
-                              style={{ display: "inline-block" }}
-                            >
-                              {typeof product.category === "object" &&
-                              product.category?.title
-                                ? product.category.title
-                                : typeof product.category === "string"
-                                ? product.category
-                                : "General"}
-                            </span>
-                          </div>
-                          <h2 className="product-title">{product.name}</h2>
-                          <p className="mt--20 mb--20">
-                            {product.shortDescription ||
-                              "No description available"}
-                          </p>
-
-                          <span
-                            className="product-price mb--15 d-block"
-                            style={{ color: "#DC2626", fontWeight: 600 }}
-                          >
-                            ₹ {product.price}
-                            {product.originalPrice && (
-                              <span
-                                className="old-price ml--15"
-                                style={{ marginLeft: 12 }}
-                              >
-                                ₹ {product.originalPrice}
-                              </span>
-                            )}
-                          </span>
-
-                          {/* Colors + Sizes inline row */}
-                          <div
-                            className="product-option mb--15"
-                            style={{ marginTop: 8 }}
-                          >
-                            <div className="tw-colorsizes-row"
-                              style={{
-                                display: "flex",
-                                gap: 12,
-                                flexWrap: "wrap",
-                                alignItems:"flex-start",
-                                flexFlow:"column",
-                              }}
-                            >
-                              {/* Colors */}
-                              {colorList.length > 0 && (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: 8,
-                                    alignItems: "center",
-                                    flexWrap: "wrap",
-                                  }}
-                                >
-                                  <strong
-                                    style={{ display: "block", marginRight: 6 }}
-                                  >
-                                    Color:
-                                  </strong>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: 8,
-                                      alignItems: "center",
-                                      flexWrap: "wrap",
-                                    }}
-                                  >
-                                    {colorList.map((c) => (
-                                      <ColorSwatch
-                                        key={c}
-                                        color={c}
-                                        selected={selectedColor === c}
-                                        onSelect={() => setSelectedColor(c)}
-                                        label={c}
-                                      />
-                                    ))}
-                                  </div>
-                                </div>
-                              )}
-                              {/* Sizes (inline with colors) */}
-                              {sizeList.length > 0 && (
-                                <div
-                                  style={{
-                                    display: "flex",
-                                    gap: 8,
-                                    alignItems: "center",
-                                    flexWrap: "wrap"
-                                  }}
-                                >
-                                  <strong
-                                    style={{ display: "block", marginRight: 6 }}
-                                  >
-                                    Size:
-                                  </strong>
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      gap: 8,
-                                      alignItems: "center",
-                                      flexWrap: "wrap",
-                                      flexFlow:"row",
-                                      
-                                    }}
-                                  >
-                                    {sizeList.map((s) => {
-                                      const disabled =
-                                        typeof product.stock === "number" &&
-                                        product.stock <= 0;
-                                      const active = selectedSize === s;
-                                      return (
-                                        <button
-                                          key={s}
-                                          onClick={() =>
-                                            !disabled && setSelectedSize(s)
-                                          }
-                                          className="tw-size-pill"
-                                          style={{
-                                            padding: "6px 10px",
-                                            borderRadius: 8,
-                                            border: active
-                                              ? "1px solid rgba(0,0,0,0.85)"
-                                              : "1px solid rgba(0,0,0,0.08)",
-                                            background: active
-                                              ? "#111"
-                                              : "transparent",
-                                            color: active ? "#fff" : "#111",
-                                            cursor: disabled
-                                              ? "not-allowed"
-                                              : "pointer",
-                                            fontSize: 13,
-                                            whiteSpace: "nowrap",
-                                          }}
-                                          disabled={disabled}
-                                        >
-                                          {s}
-                                        </button>
-                                      );
-                                    })}
-                                  </div>
-                                </div>
-                              )}
                             </div>
-                          </div>
 
-                          {/* Quantity + Add to Cart */}
-                          <div className="product-bottom-action d-flex align-items-center gap-3 mt-3">
+                            {/* Thumbnails */}
                             <div
-                              className="quantity-controls d-flex align-items-center"
-                              style={{ gap: 8 }}
+                              className="product-thumb-filter-group"
+                              style={{ marginTop: 12 }}
                             >
-                              <button
-                                onClick={decrement}
-                                className="rts-btn btn-sm bg-color-black radious-sm"
-                                style={{ padding: "6px 10px" }}
-                              >
-                                -
-                              </button>
-                              <input
-                                value={quantity}
-                                onChange={(e) =>
-                                  setQuantity(
-                                    Math.max(1, Number(e.target.value) || 1)
-                                  )
-                                }
-                                style={{
-                                  width: 60,
-                                  textAlign: "center",
-                                  margin: "0 8px",
-                                }}
-                                type="number"
-                              />
-                              <button
-                                onClick={increment}
-                                className="rts-btn btn-sm bg-color-black radious-sm"
-                                style={{ padding: "6px 10px" }}
-                              >
-                                +
-                              </button>
+                              {thumbnails.map((thumb, idx) => (
+                                <div
+                                  key={idx}
+                                  className={`thumb-filter filter-btn ${
+                                    activeImage === thumb ? "active" : ""
+                                  }`}
+                                  onClick={() => setActiveImage(thumb)}
+                                  style={{
+                                    cursor: "pointer",
+                                    display: "inline-block",
+                                    marginRight: 8,
+                                    padding: 4,
+                                    borderRadius: 6,
+                                    border:
+                                      activeImage === thumb
+                                        ? "2px solid #111"
+                                        : "1px solid #eee",
+                                    background: "#fff",
+                                  }}
+                                >
+                                  <img
+                                    src={thumb}
+                                    alt={`${product.name || "product"} ${idx}`}
+                                    style={{
+                                      width: 56,
+                                      height: 56,
+                                      objectFit: "cover",
+                                      display: "block",
+                                      borderRadius: 4,
+                                    }}
+                                    onError={(e) =>
+                                      ((
+                                        e.currentTarget as HTMLImageElement
+                                      ).src = "/assets/placeholder.png")
+                                    }
+                                  />
+                                </div>
+                              ))}
                             </div>
-
-                            <a
-                              href="#"
-                              className="rts-btn btn-primary radious-sm with-icon"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                handleAdd();
-                              }}
-                              aria-disabled={added}
-                              style={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                              }}
-                            >
-                              <div className="btn-text">Add to Cart</div>
-                              <div className="arrow-icon">
-                                <i className="fa-regular fa-cart-shopping" />
-                              </div>
-                            </a>
                           </div>
 
-                          <div
-                            className="product-uniques mt-3"
-                            style={{ marginTop: 18 }}
-                          >
-                            <div>
-                              <span className="sku product-unipue mb--10">
-                                <strong>SKU:</strong> {product.sku || "N/A"}
+                          {/* Product Content */}
+                          <div className="contents">
+                            <div className="product-status">
+                              <span
+                                className="product-catagory"
+                                style={{ display: "inline-block" }}
+                              >
+                                {typeof product.category === "object" &&
+                                product.category?.title
+                                  ? product.category.title
+                                  : typeof product.category === "string"
+                                  ? product.category
+                                  : "General"}
                               </span>
                             </div>
-                            <div>
-                              <span className="tags product-unipue mb--10">
-                                <strong>Brand:</strong> {product.brand || "N/A"}
-                              </span>
+                            <h2 className="product-title">
+                              {product.name.slice(0, 50)}...
+                            </h2>
+                            <p className="mt--20 mb--20">
+                              {product.shortDescription ||
+                                "No description available"}
+                            </p>
+
+                            <span
+                              className="product-price mb--15 d-block"
+                              style={{ color: "#DC2626", fontWeight: 600 }}
+                            >
+                              ₹ {product.price}
+                              {product.originalPrice && (
+                                <span
+                                  className="old-price ml--15"
+                                  style={{ marginLeft: 12 }}
+                                >
+                                  ₹ {product.originalPrice}
+                                </span>
+                              )}
+                            </span>
+
+                            {/* Colors + Sizes inline row */}
+                            <div
+                              className="product-option mb--15"
+                              style={{ marginTop: 8 }}
+                            >
+                              <div
+                                className="tw-colorsizes-row"
+                                style={{
+                                  display: "flex",
+                                  gap: 12,
+                                  flexWrap: "wrap",
+                                  alignItems: "flex-start",
+                                  flexFlow: "column",
+                                }}
+                              >
+                                {/* Colors */}
+                                {colorList.length > 0 && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: 8,
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <strong
+                                      style={{
+                                        display: "block",
+                                        marginRight: 6,
+                                      }}
+                                    >
+                                      Color:
+                                    </strong>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: 8,
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                      }}
+                                    >
+                                      {colorList.map((c) => (
+                                        <ColorSwatch
+                                          key={c}
+                                          color={c}
+                                          selected={selectedColor === c}
+                                          onSelect={() => setSelectedColor(c)}
+                                          label={c}
+                                        />
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
+                                {/* Sizes (inline with colors) */}
+                                {sizeList.length > 0 && (
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      gap: 8,
+                                      alignItems: "center",
+                                      flexWrap: "wrap",
+                                    }}
+                                  >
+                                    <strong
+                                      style={{
+                                        display: "block",
+                                        marginRight: 6,
+                                      }}
+                                    >
+                                      Size:
+                                    </strong>
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        gap: 8,
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                        flexFlow: "row",
+                                      }}
+                                    >
+                                      {sizeList.map((s) => {
+                                        const disabled =
+                                          typeof product.stock === "number" &&
+                                          product.stock <= 0;
+                                        const active = selectedSize === s;
+                                        return (
+                                          <button
+                                            key={s}
+                                            onClick={() =>
+                                              !disabled && setSelectedSize(s)
+                                            }
+                                            className="tw-size-pill"
+                                            style={{
+                                              padding: "6px 10px",
+                                              borderRadius: 8,
+                                              border: active
+                                                ? "1px solid rgba(0,0,0,0.85)"
+                                                : "1px solid rgba(0,0,0,0.08)",
+                                              background: active
+                                                ? "#111"
+                                                : "transparent",
+                                              color: active ? "#fff" : "#111",
+                                              cursor: disabled
+                                                ? "not-allowed"
+                                                : "pointer",
+                                              fontSize: 13,
+                                              whiteSpace: "nowrap",
+                                            }}
+                                            disabled={disabled}
+                                          >
+                                            {s}
+                                          </button>
+                                        );
+                                      })}
+                                    </div>
+                                  </div>
+                                )}
+                              </div>
                             </div>
-                            <div>
-                              <span className="tags product-unipue mb--10">
-                                <strong>Status:</strong> {product.status}
-                              </span>
+
+                            {/* Quantity + Add to Cart */}
+                            <div className="product-bottom-action d-flex align-items-center gap-3 mt-3">
+                              <div
+                                className="quantity-controls d-flex align-items-center"
+                                style={{ gap: 8 }}
+                              >
+                                <button
+                                  onClick={decrement}
+                                  className="rts-btn btn-sm bg-color-black radious-sm"
+                                  style={{ padding: "6px 10px" }}
+                                >
+                                  -
+                                </button>
+                                <input
+                                  value={quantity}
+                                  onChange={(e) =>
+                                    setQuantity(
+                                      Math.max(1, Number(e.target.value) || 1)
+                                    )
+                                  }
+                                  style={{
+                                    width: 60,
+                                    textAlign: "center",
+                                    margin: "0 8px",
+                                  }}
+                                  type="number"
+                                />
+                                <button
+                                  onClick={increment}
+                                  className="rts-btn btn-sm bg-color-black radious-sm"
+                                  style={{ padding: "6px 10px" }}
+                                >
+                                  +
+                                </button>
+                              </div>
+
+                              <a
+                                href="#"
+                                className="rts-btn btn-primary radious-sm with-icon"
+                                onClick={(e) => {
+                                  e.preventDefault();
+                                  handleAdd();
+                                }}
+                                aria-disabled={added}
+                                style={{
+                                  display: "inline-flex",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <div className="btn-text">Add to Cart</div>
+                                <div className="arrow-icon">
+                                  <i className="fa-regular fa-cart-shopping" />
+                                </div>
+                              </a>
                             </div>
-                            <div>
-                              <strong>Stock:</strong>{" "}
-                              {typeof product.stock === "number"
-                                ? product.stock
-                                : "N/A"}
+
+                            <div
+                              className="product-uniques mt-3"
+                              style={{ marginTop: 18 }}
+                            >
+                              <div>
+                                <span className="sku product-unipue mb--10">
+                                  <strong>SKU:</strong> {product.sku || "N/A"}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="tags product-unipue mb--10">
+                                  <strong>Brand:</strong>{" "}
+                                  {product.brand || "N/A"}
+                                </span>
+                              </div>
+                              <div>
+                                <span className="tags product-unipue mb--10">
+                                  <strong>Status:</strong> {product.status}
+                                </span>
+                              </div>
+                              <div>
+                                <strong>Stock:</strong>{" "}
+                                {typeof product.stock === "number"
+                                  ? product.stock
+                                  : "N/A"}
+                              </div>
                             </div>
                           </div>
                         </div>
@@ -1013,35 +1149,33 @@ const CompareElements: React.FC = () => {
                     </div>
                   </div>
                 </div>
-              </div>
-  {/* Sidebar */}
-  <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  rts-sticky-column-item">
-                <div className="theiaStickySidebar">
-                  <div className="shop-sight-sticky-sidevbar mb--20">
-                    <h6 className="title">Available offers</h6>
-                    <div className="single-offer-area">
-                      <div className="details">
-                        <p>Get 5% instant discount using Big Sell UPI</p>
+                {/* Sidebar */}
+                <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  rts-sticky-column-item">
+                  <div className="theiaStickySidebar">
+                    <div className="shop-sight-sticky-sidevbar mb--20">
+                      <h6 className="title">Available offers</h6>
+                      <div className="single-offer-area">
+                        <div className="details">
+                          <p>Get 5% instant discount using Big Sell UPI</p>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="our-payment-method">
-                    <h5 className="title">Guaranteed Safe Checkout</h5>
-                    <img
-                      src="/assets/images/shop/03.png"
-                      alt=""
-                      onError={(e) =>
-                        ((e.currentTarget as HTMLImageElement).src =
-                          "/assets/placeholder.png")
-                      }
-                    />
+                    <div className="our-payment-method">
+                      <h5 className="title">Guaranteed Safe Checkout</h5>
+                      <img
+                        src="/assets/images/shop/03.png"
+                        alt=""
+                        onError={(e) =>
+                          ((e.currentTarget as HTMLImageElement).src =
+                            "/assets/placeholder.png")
+                        }
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-             
-              </div>
-             {/* Tabs */}
-             <div className="product-discription-tab-shop mt--50">
+              {/* Tabs */}
+              <div className="product-discription-tab-shop mt--50">
                 <ul className="nav nav-tabs" id="myTab" role="tablist">
                   <li className="nav-item" role="presentation">
                     <button

@@ -46,12 +46,12 @@
 /* Default  */
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
-
+@import url("https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,100..900;1,100..900&display=swap");
 :root {
   --color-primary: #1b3f76;
   --color-secondary: #18171c;
-  --color-body: #6e777d;
-  --color-heading-1: #2c3c28;
+  --color-body: #000;
+  --color-heading-1: #000;
   --color-white: #fff;
   --color-success: #3eb75e;
   --color-danger: #dc2626;
@@ -81,8 +81,8 @@
   --s-extra-bold: 800;
   --s-black: 900;
   --transition: 0.3s;
-  --font-primary: "Barlow", sans-serif;
-  --font-secondary: "Barlow", sans-serif;
+  --font-primary: "Archivo", sans-serif;
+  --font-secondary: "Archivo", sans-serif;
   --font-three: "FontAwesome";
   --font-size-b1: 16px;
   --font-size-b2: 16px;
@@ -116,7 +116,7 @@ body {
   line-height: var(--line-height-b1);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  font-family: "Barlow", sans-serif;
+  font-family: "Archivo", sans-serif;
   color: var(--color-body);
   font-weight: var(--p-regular);
   position: relative;
@@ -9546,7 +9546,7 @@ textarea {
   background: transparent;
   -webkit-box-shadow: none;
   box-shadow: none;
-  padding: 0 15px;
+  padding: 0 5px;
   outline: none;
   border: var(--border-width) solid var(--color-border);
   border-radius: var(--radius);
@@ -9832,7 +9832,8 @@ input.rn-hidden-checkbox ~ label::before {
   background-color: #fff !important; /* white background when unchecked */
   border: 1px solid #000; /* black outline */
   border-radius: 3px;
-  transition: background-color .15s ease, border-color .15s ease, box-shadow .15s ease;
+  transition: background-color 0.15s ease, border-color 0.15s ease,
+    box-shadow 0.15s ease;
   box-sizing: border-box;
 }
 
@@ -9848,7 +9849,7 @@ input.rn-hidden-checkbox ~ label::after {
   border: solid #fff; /* white check */
   border-width: 0 2px 2px 0;
   opacity: 0;
-  transition: opacity .12s ease, transform .12s ease;
+  transition: opacity 0.12s ease, transform 0.12s ease;
 }
 
 /* Checked state: green background with white check */
@@ -15742,6 +15743,11 @@ body.sal-disabled [data-sal|="flip"] {
   top: 50%;
   transform: translateY(-50%);
   height: 40px;
+  width: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-primary);
 }
 
 .accont-wishlist-cart-area-header {
@@ -16208,6 +16214,10 @@ a.over_link {
   font-size: 12px;
 }
 
+.single-megamenu-wrapper-with-megalink ul li a {
+  font-size: 10px !important;
+}
+
 .rts-header-nav-area-one .nav-area ul li a:hover {
   color: var(--color-primary) !important;
 }
@@ -16412,7 +16422,7 @@ a.over_link {
 }
 
 .header-style-two.bg-primary-header .search-header-area-main {
-  background: var(--color-heading-1);
+  /* background: var(--color-heading-1); */
   border: none;
 }
 
@@ -16466,7 +16476,7 @@ a.over_link {
     .category-search-wrapper
     .search-header
     input {
-    width: 300px;
+    width: 450px;
   }
 }
 
@@ -16481,7 +16491,9 @@ a.over_link {
   .category-search-wrapper
   .search-header
   input {
-  border-radius: 0 5px 5px 0;
+  border-radius: 50px;
+  font-size: 10px;
+  padding: 15px;
 }
 
 .header-style-two.bg-primary-header
@@ -16670,7 +16682,10 @@ a.over_link {
 }
 
 .header-style-two .rts-header-nav-area-one .nav-area ul li a:hover {
-  color: var(--color-heading-1) !important;
+  background: linear-gradient(90deg, #ba4d09, #e59204);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text; /* for Firefox */
 }
 
 .header-style-two.bg-primary-header.header--fft
@@ -17077,9 +17092,9 @@ li.with-megamenu:hover .rts-megamenu {
 }
 
 .megamenu-item-wrapper p.title {
-  margin-bottom: 25px;
+  margin-bottom: 5px;
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
   color: var(--color-primary);
 }
 
@@ -17100,6 +17115,8 @@ li.with-megamenu:hover .rts-megamenu {
 .megamenu-item-wrapper ul li a {
   padding: 10px 0 !important;
   color: var(--color-heading-1) !important;
+  font-size: 10px !important;
+  font-weight: 400 !important;
 }
 
 .megamenu-item-wrapper .single-megamenu-wrapper {
@@ -17201,7 +17218,7 @@ li.with-megamenu:hover .rts-megamenu {
   padding-left: var(--bs-gutter-x, 0.75rem);
   margin-right: auto;
   margin-left: auto;
-  max-width: 1696px;
+  max-width: 1200px;
   margin: auto;
   padding: 0 15px;
 }
@@ -17530,7 +17547,7 @@ li.with-megamenu:hover .rts-megamenu {
 /* For mobile devices (up to 640px wide) */
 @media screen and (max-width: 640px) {
   .bg_one-banner {
-    height: 20vh;
+    height: 10vh;
   }
 }
 
@@ -18522,7 +18539,7 @@ li.with-megamenu:hover .rts-megamenu {
 }
 
 .rts-btn.radious-sm {
-  border-radius: 6px;
+  border-radius: 50px;
 }
 
 .rts-btn.with-icon {
@@ -18652,7 +18669,7 @@ li.with-megamenu:hover .rts-megamenu {
 .btn-border-only {
   border-radius: 6px;
   border: 1px solid #e2e2e2;
-  height: 50px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -18698,8 +18715,13 @@ li.with-megamenu:hover .rts-megamenu {
 
 .single-shopping-card-one {
   padding: 15px;
-  background: #f5f6f7;
   border-radius: 6px;
+  transition: all 0.3s ease; /* smooth effect */
+}
+
+.single-shopping-card-one:hover {
+  box-shadow: 0 4px 12px rgba(255, 255, 255, 0.6);
+  background-color: #fbf7f7; /* optional: highlight background */
 }
 
 .single-shopping-card-one .image-and-action-area-wrapper {
@@ -18771,7 +18793,7 @@ li.with-megamenu:hover .rts-megamenu {
 
 .single-shopping-card-one .thumbnail-preview .badge {
   position: absolute;
-  left: 30px;
+  left: -5px;
   top: -10px;
   z-index: 5;
 }
@@ -29315,6 +29337,9 @@ header.header-three .sub-dropdown .submenu.third-lvl.base {
 
 .single-tab-content-shop-details p.disc {
   margin-bottom: 25px;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 1px;
 }
 
 .single-tab-content-shop-details .details-row-2 {

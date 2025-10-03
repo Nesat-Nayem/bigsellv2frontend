@@ -2,12 +2,40 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import {
+  IAttribute,
+  useGetCategoryTreeQuery,
+} from "@/store/productCategoryApi";
 
+export interface ICategory {
+  _id: string;
+  title: string;
+  slug?: string;
+  description?: string;
+  icon?: string;
+  parentId?: string | null;
+  level?: number;
+  path?: string;
+  fullPath?: string;
+  isActive?: boolean;
+  displayOrder?: number;
+  attributes?: IAttribute[];
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string[];
+  image?: string;
+  isDeleted?: boolean;
+  createdAt?: string;
+  updatedAt?: string;
+  children?: ICategory[];
+}
 const MobileMenu = () => {
   const [openMenuIndex, setOpenMenuIndex] = useState<number | null>(null);
   const [openThirdLevelKey, setOpenThirdLevelKey] = useState<string | null>(
     null
   );
+
+  const { data: categories, isLoading } = useGetCategoryTreeQuery(undefined);
 
   const toggleMenu = (index: number) => {
     setOpenMenuIndex((prev) => (prev === index ? null : index));
@@ -20,1095 +48,88 @@ const MobileMenu = () => {
   return (
     <nav className="nav-main mainmenu-nav mt--30">
       <ul className="mainmenu metismenu" id="mobile-menu-active">
-        {/* Home */}
+        {/* Static Links */}
         <li className={`${openMenuIndex === 0 ? "mm-active" : ""}`}>
           <Link href="/" className="main" onClick={() => toggleMenu(0)}>
             Home
           </Link>
         </li>
 
-        {/* Men */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            MEN
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
+        {isLoading ? (
+          <li>Loading...</li>
+        ) : (
+          categories?.map((category: ICategory, index: number) => (
+            <li
+              key={category._id}
+              className={`${category.children?.length ? "has-droupdown" : ""} ${
+                openMenuIndex === index + 1 ? "mm-active" : ""
+              }`}
+            >
               <Link
-                href="#"
+                href={`/shop/${category.slug}`}
                 className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
+                onClick={() => toggleMenu(index + 1)}
               >
-                Topwear
+                {category.title}
               </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
 
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
+              {/* 2nd Level */}
+              {category.children && category.children.length > 0 && (
+                <ul
+                  className={`submenu mm-collapse ${
+                    openMenuIndex === index + 1 ? "mm-show" : ""
+                  }`}
+                >
+                  {category.children.map((child) => (
+                    <li
+                      key={child._id}
+                      className={`${
+                        child.children?.length ? "has-droupdown third-lvl" : ""
+                      }`}
+                    >
+                      <Link
+                        href={`/shop/${child.slug}`}
+                        className="main"
+                        onClick={() => toggleThirdMenu(child._id)}
+                      >
+                        {child.title}
+                      </Link>
 
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
+                      {/* 3rd Level */}
+                      {child.children && child.children.length > 0 && (
+                        <ul
+                          className={`submenu-third-lvl mm-collapse ${
+                            openThirdLevelKey === child._id ? "mm-show" : ""
+                          }`}
+                        >
+                          {child.children.map((grand) => (
+                            <li key={grand._id}>
+                              <Link href={`/shop/${grand.slug}`}>
+                                {grand.title}
+                              </Link>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </li>
+          ))
+        )}
 
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* woMen */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            WOMEN
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Topwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* kids */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            KIDS
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Topwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* Home */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            HOME
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Topwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* Beauty */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            ELECTRONICS
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Topwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* Genz */}
-        <li
-          className={`has-droupdown ${openMenuIndex === 2 ? "mm-active" : ""}`}
-        >
-          <Link href="shop" className="main" onClick={() => toggleMenu(2)}>
-            GENZ
-          </Link>
-          <ul
-            className={`submenu mm-collapse ${
-              openMenuIndex === 2 ? "mm-show" : ""
-            }`}
-          >
-            {/* Shop Layout */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Topwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Details */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Bottomwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Product Feature */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Footware
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-
-            {/* Shop Others */}
-            <li className="has-droupdown third-lvl">
-              <Link
-                href="#"
-                className="main"
-                onClick={() => toggleThirdMenu("shopLayout")}
-              >
-                Innearwear
-              </Link>
-              <ul
-                className={`submenu-third-lvl mm-collapse ${
-                  openThirdLevelKey === "shopLayout" ? "mm-show" : ""
-                }`}
-              >
-                <li>
-                  <Link href="/shop">T-Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Casual Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Formal Shirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Sweatshirts</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Jackets</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Blazers & Coats</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Suits</Link>
-                </li>
-                <li>
-                  <Link href="/shop">Rain Jackets</Link>
-                </li>
-              </ul>
-            </li>
-          </ul>
-        </li>
-
-        {/* About */}
+        {/* Static Bottom Links */}
         <li>
           <Link className="main" href="/about">
             ABOUT US
           </Link>
         </li>
-        {/* Blog */}
         <li>
           <Link className="main" href="/blog">
             BLOG
           </Link>
         </li>
-
-        {/* Contact */}
         <li>
           <Link className="main" href="/contact">
             CONTACT US

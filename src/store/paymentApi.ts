@@ -5,8 +5,7 @@ import type { RootState as IRootState } from "@/store";
  * Base API URL (reuse env var)
  */
 const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:8080/v1/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.bigsell.org/v1/api";
 
 /** Payment refund shape */
 export interface IPaymentRefund {
@@ -103,7 +102,7 @@ const normalizeToArray = <T>(payload: T | T[] | undefined): T[] => {
 export const paymentsApi = createApi({
   reducerPath: "paymentsApi",
   baseQuery: fetchBaseQuery({
-    credentials: 'include',
+    credentials: "include",
     baseUrl: `${baseUrl}`,
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;

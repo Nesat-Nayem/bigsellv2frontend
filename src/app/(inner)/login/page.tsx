@@ -13,6 +13,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setCredentials } from "@/store/authSlice";
+import HeaderThree from "@/components/header/HeaderThree";
 
 // helper: decode JWT
 const decodeToken = (token: string) => {
@@ -58,7 +59,7 @@ export default function Home() {
     try {
       console.log("Attempting login with:", formData);
       console.log("API URL:", `${API}/auth/signin`);
-      
+
       const res = await axios.post(`${API}/auth/signin`, formData, {
         headers: { "Content-Type": "application/json" },
       });
@@ -69,11 +70,11 @@ export default function Home() {
         if (res.data.token) {
           localStorage.setItem("authToken", res.data.token);
           console.log("Token saved to localStorage");
-          
+
           // Decode token and sync with Redux store
           const decoded = decodeToken(res.data.token);
           console.log("Decoded token:", decoded);
-          
+
           if (decoded) {
             dispatch(setCredentials({ token: res.data.token, user: decoded }));
             console.log("Token synced to Redux store");
@@ -98,7 +99,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <>
         <div className="rts-navigation-area-breadcrumb bg_light-1">

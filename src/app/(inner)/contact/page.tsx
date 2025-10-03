@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useGetGeneralSettingsQuery } from "@/store/generalSettings";
 import { useCreateContactMutation } from "@/store/contactApi";
 import { useForm } from "react-hook-form";
+import HeaderThree from "@/components/header/HeaderThree";
 
 type ContactFormValues = {
   name: string;
@@ -44,7 +45,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       {/* Banner */}
       <div className="rts-contact-main-wrapper-banner bg_image">

@@ -105,7 +105,18 @@ const ProductDetails: React.FC<ModalProps> = ({
 
                 <div className="contents">
                   <div className="product-status">
-                    <span className="product-catagory">Electronics</span>
+                    {/* <span
+                        className="product-catagory"
+                        style={{ display: "inline-block" }}
+                      >
+                        {typeof product.category === "object" &&
+                        product.category?.title
+                          ? product.category.title
+                          : typeof product.category === "string"
+                          ? product.category
+                          : "General"}
+                      </span> */}
+
                     <div className="rating-stars-group">
                       <div className="rating-star">
                         <i className="fas fa-star" />
@@ -121,12 +132,13 @@ const ProductDetails: React.FC<ModalProps> = ({
                   </div>
 
                   <h2 className="product-title">
-                    {productTitle} <span className="stock">In Stock</span>
+                    {productTitle.slice(0, 50)} ...
+                    <span className="stock">In Stock</span>
                   </h2>
 
                   <span className="product-price">
-                    <span className="old-price">₹ {productOriginalPrice}</span>{" "}
-                    {productPrice}
+                    {/* <span className="old-price">₹ {productOriginalPrice}</span>{" "} */}
+                    ₹ {productPrice}
                   </span>
 
                   <p>

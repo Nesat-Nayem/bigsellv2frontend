@@ -1,11 +1,12 @@
 "use client";
 import HeaderOne from "@/components/header/HeaderOne";
-import { useState, Suspense } from 'react';
+import { useState, Suspense } from "react";
 import ShopMain from "./ShopMain";
 import ShopMainList from "./ShopMainList";
-import Product from '@/data/Product.json';
+import Product from "@/data/Product.json";
 import FooterOne from "@/components/footer/FooterOne";
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams } from "next/navigation";
+import HeaderThree from "@/components/header/HeaderThree";
 
 interface PostType {
   category?: string;
@@ -19,9 +20,9 @@ interface PostType {
 
 // Create a separate component for the content that uses useSearchParams
 function ShopContent() {
-  const [activeTab, setActiveTab] = useState<string>('tab2');
+  const [activeTab, setActiveTab] = useState<string>("tab2");
   const searchParams = useSearchParams();
-  const searchQuery = searchParams.get('search')?.toLowerCase() || '';
+  const searchQuery = searchParams.get("search")?.toLowerCase() || "";
 
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
@@ -32,32 +33,30 @@ function ShopContent() {
   const allBrands = ["Frito Lay", "Nespresso", "Oreo", "Quaker", "Welch's"];
 
   const categoryProductIndices: { [key: string]: number[] } = {
-    "Beverages": [1, 3, 4, 5, 6, 7],
+    Beverages: [1, 3, 4, 5, 6, 7],
     "Biscuits & Snacks": [8, 9, 10, 12, 16],
     "Breads & Bakery": [15, 1, 2, 3],
   };
 
   const brandProductIndices: { [key: string]: number[] } = {
     "Frito Lay": [1, 3, 4],
-    "Nespresso": [3, 1, 4],
-    "Oreo": [8, 9, 10],
-    "Quaker": [3, 4, 10],
+    Nespresso: [3, 1, 4],
+    Oreo: [8, 9, 10],
+    Quaker: [3, 4, 10],
     "Welch's": [8, 9, 1],
   };
 
   const handleCategoryChange = (category: string) => {
-    setSelectedCategories(prev =>
+    setSelectedCategories((prev) =>
       prev.includes(category)
-        ? prev.filter(cat => cat !== category)
+        ? prev.filter((cat) => cat !== category)
         : [...prev, category]
     );
   };
 
   const handleBrandChange = (brand: string) => {
-    setSelectedBrands(prev =>
-      prev.includes(brand)
-        ? prev.filter(b => b !== brand)
-        : [...prev, brand]
+    setSelectedBrands((prev) =>
+      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
     );
   };
 
@@ -75,14 +74,14 @@ function ShopContent() {
     if (selectedCategories.length === 0) {
       const allIndices = Object.values(categoryProductIndices).flat();
       const uniqueIndices = Array.from(new Set(allIndices));
-      return uniqueIndices.map(i => Product[i]).filter(Boolean);
+      return uniqueIndices.map((i) => Product[i]).filter(Boolean);
     }
 
     const selectedIndices = selectedCategories
-      .map(cat => categoryProductIndices[cat] || [])
+      .map((cat) => categoryProductIndices[cat] || [])
       .flat();
     const uniqueSelectedIndices = Array.from(new Set(selectedIndices));
-    return uniqueSelectedIndices.map(i => Product[i]).filter(Boolean);
+    return uniqueSelectedIndices.map((i) => Product[i]).filter(Boolean);
   };
 
   const getFilteredByBrandProducts = (): PostType[] => {
@@ -91,22 +90,24 @@ function ShopContent() {
     }
 
     const selectedIndices = selectedBrands
-      .map(brand => brandProductIndices[brand] || [])
+      .map((brand) => brandProductIndices[brand] || [])
       .flat();
     const uniqueSelectedIndices = Array.from(new Set(selectedIndices));
-    return uniqueSelectedIndices.map(i => Product[i]).filter(Boolean);
+    return uniqueSelectedIndices.map((i) => Product[i]).filter(Boolean);
   };
 
   const productsByCategory = getFilteredByCategoryProducts();
   const productsByBrand = getFilteredByBrandProducts();
 
-  const categorySlugs = new Set(productsByCategory.map(p => p.slug));
-  const brandSlugs = new Set(productsByBrand.map(p => p.slug));
+  const categorySlugs = new Set(productsByCategory.map((p) => p.slug));
+  const brandSlugs = new Set(productsByBrand.map((p) => p.slug));
 
   let combinedFilteredProducts = [];
 
   if (selectedCategories.length > 0 && selectedBrands.length > 0) {
-    combinedFilteredProducts = productsByCategory.filter(p => brandSlugs.has(p.slug));
+    combinedFilteredProducts = productsByCategory.filter((p) =>
+      brandSlugs.has(p.slug)
+    );
   } else if (selectedCategories.length > 0) {
     combinedFilteredProducts = productsByCategory;
   } else if (selectedBrands.length > 0) {
@@ -114,21 +115,24 @@ function ShopContent() {
   } else {
     const allIndices = Object.values(categoryProductIndices).flat();
     const uniqueIndices = Array.from(new Set(allIndices));
-    combinedFilteredProducts = uniqueIndices.map(i => Product[i]).filter(Boolean);
+    combinedFilteredProducts = uniqueIndices
+      .map((i) => Product[i])
+      .filter(Boolean);
   }
 
-  const filteredProducts: PostType[] = combinedFilteredProducts
-    .filter(product => {
+  const filteredProducts: PostType[] = combinedFilteredProducts.filter(
+    (product) => {
       const productPrice = product.price ? parseFloat(product.price) : 0;
       if (productPrice < minPrice || productPrice > maxPrice) {
         return false;
       }
 
       if (!searchQuery) return true;
-      const title = product.title?.toLowerCase() || '';
-      const category = product.category?.toLowerCase() || '';
+      const title = product.title?.toLowerCase() || "";
+      const category = product.category?.toLowerCase() || "";
       return title.includes(searchQuery) || category.includes(searchQuery);
-    });
+    }
+  );
 
   const handlePriceFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -144,7 +148,9 @@ function ShopContent() {
               <div className="navigator-breadcrumb-wrapper">
                 <a href="/">Home</a>
                 <i className="fa-regular fa-chevron-right" />
-                <a className="current" href="#">Shop</a>
+                <a className="current" href="#">
+                  Shop
+                </a>
               </div>
             </div>
           </div>
@@ -200,7 +206,9 @@ function ShopContent() {
                         min={0}
                         max={150}
                         value={maxPrice}
-                        onChange={(e) => setMaxPrice(parseInt(e.target.value, 10))}
+                        onChange={(e) =>
+                          setMaxPrice(parseInt(e.target.value, 10))
+                        }
                       />
                       <div className="filter-value-min-max">
                         <span>
@@ -267,27 +275,95 @@ function ShopContent() {
                       <ul className="nav nav-tabs" id="myTab" role="tablist">
                         <li className="nav-item" role="presentation">
                           <button
-                            onClick={() => setActiveTab('tab1')}
-                            className={`nav-link single-button ${activeTab === 'tab1' ? 'active' : ''}`}
+                            onClick={() => setActiveTab("tab1")}
+                            className={`nav-link single-button ${
+                              activeTab === "tab1" ? "active" : ""
+                            }`}
                           >
-                            <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-                              <rect x="0.5" y="0.5" width={6} height={6} rx="1.5" stroke="#2C3B28" />
-                              <rect x="0.5" y="9.5" width={6} height={6} rx="1.5" stroke="#2C3B28" />
-                              <rect x="9.5" y="0.5" width={6} height={6} rx="1.5" stroke="#2C3B28" />
-                              <rect x="9.5" y="9.5" width={6} height={6} rx="1.5" stroke="#2C3B28" />
+                            <svg
+                              width={16}
+                              height={16}
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <rect
+                                x="0.5"
+                                y="0.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3B28"
+                              />
+                              <rect
+                                x="0.5"
+                                y="9.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3B28"
+                              />
+                              <rect
+                                x="9.5"
+                                y="0.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3B28"
+                              />
+                              <rect
+                                x="9.5"
+                                y="9.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3B28"
+                              />
                             </svg>
                           </button>
                         </li>
                         <li className="nav-item" role="presentation">
                           <button
-                            onClick={() => setActiveTab('tab2')}
-                            className={`nav-link single-button ${activeTab === 'tab2' ? 'active' : ''}`}
+                            onClick={() => setActiveTab("tab2")}
+                            className={`nav-link single-button ${
+                              activeTab === "tab2" ? "active" : ""
+                            }`}
                           >
-                            <svg width={16} height={16} viewBox="0 0 16 16" fill="none">
-                              <rect x="0.5" y="0.5" width={6} height={6} rx="1.5" stroke="#2C3C28" />
-                              <rect x="0.5" y="9.5" width={6} height={6} rx="1.5" stroke="#2C3C28" />
-                              <rect x={9} y={3} width={7} height={1} fill="#2C3C28" />
-                              <rect x={9} y={12} width={7} height={1} fill="#2C3C28" />
+                            <svg
+                              width={16}
+                              height={16}
+                              viewBox="0 0 16 16"
+                              fill="none"
+                            >
+                              <rect
+                                x="0.5"
+                                y="0.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3C28"
+                              />
+                              <rect
+                                x="0.5"
+                                y="9.5"
+                                width={6}
+                                height={6}
+                                rx="1.5"
+                                stroke="#2C3C28"
+                              />
+                              <rect
+                                x={9}
+                                y={3}
+                                width={7}
+                                height={1}
+                                fill="#2C3C28"
+                              />
+                              <rect
+                                x={9}
+                                y={12}
+                                width={7}
+                                height={1}
+                                fill="#2C3C28"
+                              />
                             </svg>
                           </button>
                         </li>
@@ -300,21 +376,26 @@ function ShopContent() {
               {/* Grid or List view */}
               <div className="tab-content" id="myTabContent">
                 <div className="product-area-wrapper-shopgrid-list mt--20 tab-pane fade show active">
-                  {activeTab === 'tab1' && (
+                  {activeTab === "tab1" && (
                     <div className="row g-4">
                       {filteredProducts.length > 0 ? (
-                        filteredProducts.map((post: PostType, index: number) => (
-                          <div key={index} className="col-lg-20 col-lg-4 col-md-6 col-sm-6 col-12">
-                            <div className="single-shopping-card-one">
-                              <ShopMain
-                                Slug={post.slug}
-                                ProductImage={post.image}
-                                ProductTitle={post.title}
-                                Price={post.price}
-                              />
+                        filteredProducts.map(
+                          (post: PostType, index: number) => (
+                            <div
+                              key={index}
+                              className="col-lg-20 col-lg-4 col-md-6 col-sm-6 col-12"
+                            >
+                              <div className="single-shopping-card-one">
+                                <ShopMain
+                                  Slug={post.slug}
+                                  ProductImage={post.image}
+                                  ProductTitle={post.title}
+                                  Price={post.price}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          )
+                        )
                       ) : (
                         <div className="col-12 text-center py-5">
                           <h2>No Product Found</h2>
@@ -325,21 +406,23 @@ function ShopContent() {
                 </div>
 
                 <div className="product-area-wrapper-shopgrid-list with-list mt--20">
-                  {activeTab === 'tab2' && (
+                  {activeTab === "tab2" && (
                     <div className="row">
                       {filteredProducts.length > 0 ? (
-                        filteredProducts.map((post: PostType, index: number) => (
-                          <div key={index} className="col-lg-6">
-                            <div className="single-shopping-card-one discount-offer">
-                              <ShopMainList
-                                Slug={post.slug}
-                                ProductImage={post.image}
-                                ProductTitle={post.title}
-                                Price={post.price}
-                              />
+                        filteredProducts.map(
+                          (post: PostType, index: number) => (
+                            <div key={index} className="col-lg-6">
+                              <div className="single-shopping-card-one discount-offer">
+                                <ShopMainList
+                                  Slug={post.slug}
+                                  ProductImage={post.image}
+                                  ProductTitle={post.title}
+                                  Price={post.price}
+                                />
+                              </div>
                             </div>
-                          </div>
-                        ))
+                          )
+                        )
                       ) : (
                         <div className="col-12 text-center py-5">
                           <h2>No Product Found</h2>
@@ -360,7 +443,7 @@ function ShopContent() {
 export default function Home() {
   return (
     <div>
-      <HeaderOne />
+      <HeaderThree />
       <Suspense fallback={<div>Loading...</div>}>
         <ShopContent />
       </Suspense>

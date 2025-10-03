@@ -6,6 +6,7 @@ import {
   useGetWeeklyDiscountProductsQuery,
   IProducts,
 } from "@/store/productApi";
+import Image from "next/image";
 
 /**
  * FeatureDiscount (dynamic)
@@ -213,6 +214,19 @@ function FeatureDiscount() {
                   </div>
                 </>
               ) : null}
+            </div>
+
+            {/* below banner */}
+            <div className="mt-0 text-center mb-5">
+              <a href="/shop">
+                <Image
+                  src="/assets/hero/footer-banner.webp"
+                  alt="Hero Banner"
+                  width={1200}
+                  height={500}
+                  className="w-full rounded-xl object-cover"
+                />
+              </a>
             </div>
           </div>
         </div>

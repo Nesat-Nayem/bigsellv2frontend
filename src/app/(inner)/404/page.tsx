@@ -2,11 +2,12 @@ import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 
 import FooterOne from "@/components/footer/FooterOne";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <div className="error-area-main-wrapper rts-section-gap2">
         <div className="container">

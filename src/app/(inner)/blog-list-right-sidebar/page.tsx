@@ -6,6 +6,7 @@ import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 import BlogListMain from "./BlogListMain";
 import Posts from "@/data/Posts.json";
+import HeaderThree from "@/components/header/HeaderThree";
 
 interface PostType {
   category?: string;
@@ -27,7 +28,7 @@ export default function BlogGridPage() {
   return (
     <div className="demo-one">
       {/* Header */}
-      <HeaderOne />
+      <HeaderThree />
 
       {/* Breadcrumb Area */}
       <div className="rts-navigation-area-breadcrumb bg_light-1">

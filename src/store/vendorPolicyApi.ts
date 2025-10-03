@@ -17,8 +17,8 @@ interface VendorPolicyResponse {
 export const vendorPolicyApi = createApi({
   reducerPath: "vendorPolicyApi",
   baseQuery: fetchBaseQuery({
-    credentials: 'include',
-    baseUrl: "http://localhost:8080/v1/api",
+    credentials: "include",
+    baseUrl: "https://api.bigsell.org/v1/api",
   }),
   tagTypes: ["vendorPolicy"],
   endpoints: (builder) => ({

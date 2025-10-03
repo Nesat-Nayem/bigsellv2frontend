@@ -3,11 +3,12 @@ import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 import CartMain from "./CartMain";
 import FooterOne from "@/components/footer/FooterOne";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   return (
     <div className="demo-one wishlist-page">
-      <HeaderOne />
+      <HeaderThree />
       <>
         <div className="rts-navigation-area-breadcrumb bg_light-1">
           <div className="container">

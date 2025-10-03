@@ -4,10 +4,15 @@ import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 import { useGetBlogByIdQuery, useGetBlogsQuery } from "@/store/blogsApi";
 import { useParams } from "next/navigation";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   const { slug } = useParams(); // Get the ID from URL parameters
-  const { data: blogPost, isLoading, error } = useGetBlogByIdQuery(slug as string);
+  const {
+    data: blogPost,
+    isLoading,
+    error,
+  } = useGetBlogByIdQuery(slug as string);
   const { data: allBlogs } = useGetBlogsQuery();
 
   if (isLoading) {
@@ -20,7 +25,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <div className="blog-sidebar-area rts-section-gap">
         <div className="container">
@@ -29,16 +34,18 @@ export default function Home() {
             <div className="col-lg-8 order-lg-1 order-md-2 order-sm-2 order-2">
               <div className="blog-details-area-1">
                 <div className="thumbnail">
-                  <img
-                    src={blogPost.image}
-                    alt={blogPost.title}
-                  />
+                  <img src={blogPost.image} alt={blogPost.title} />
                 </div>
                 <div className="body-content-blog-details">
                   <div className="top-tag-time">
                     <div className="single">
                       <i className="fa-solid fa-clock" />
-                      <span>{new Date(blogPost.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                      <span>
+                        {new Date(blogPost.createdAt).toLocaleDateString(
+                          "en-US",
+                          { day: "2-digit", month: "short", year: "numeric" }
+                        )}
+                      </span>
                     </div>
                     <div className="single">
                       <i className="fa-solid fa-folder" />
@@ -46,12 +53,10 @@ export default function Home() {
                     </div>
                   </div>
                   <h1 className="title">{blogPost.title}</h1>
-                  <p className="disc">
-                    {blogPost.shortDesc}
-                  </p>
+                  <p className="disc">{blogPost.shortDesc}</p>
 
-                  <div 
-                    className="disc" 
+                  <div
+                    className="disc"
                     dangerouslySetInnerHTML={{ __html: blogPost.longDesc }}
                   />
                   <p className="quote">
@@ -269,20 +274,24 @@ export default function Home() {
                   {allBlogs?.slice(0, 3).map((blog) => (
                     <div className="single-latest-post-area" key={blog._id}>
                       <a href={`/blog/${blog._id}`} className="thumbnail">
-                        <img
-                          src={blog.image}
-                          alt="thumbnail"
-                        />
+                        <img src={blog.image} alt="thumbnail" />
                       </a>
                       <div className="inner-content-area">
                         <div className="icon-top-area">
                           <i className="fa-light fa-clock" />
-                          <span>{new Date(blog.createdAt).toLocaleDateString('en-US', { day: '2-digit', month: 'short', year: 'numeric' })}</span>
+                          <span>
+                            {new Date(blog.createdAt).toLocaleDateString(
+                              "en-US",
+                              {
+                                day: "2-digit",
+                                month: "short",
+                                year: "numeric",
+                              }
+                            )}
+                          </span>
                         </div>
                         <a href={`/blog/${blog._id}`}>
-                          <h5 className="title-sm-blog">
-                            {blog.title}
-                          </h5>
+                          <h5 className="title-sm-blog">{blog.title}</h5>
                         </a>
                       </div>
                     </div>

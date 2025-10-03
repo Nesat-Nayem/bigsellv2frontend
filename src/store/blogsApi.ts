@@ -28,8 +28,8 @@ interface SingleBlogResponse {
 export const blogsApi = createApi({
   reducerPath: "blogsApi",
   baseQuery: fetchBaseQuery({
-    credentials: 'include',
-    baseUrl: "http://localhost:8080/v1/api",
+    credentials: "include",
+    baseUrl: "https://api.bigsell.org/v1/api",
     // prepareHeaders: (headers, { getState }) => {...} // optional auth
   }),
   tagTypes: ["blogs"],

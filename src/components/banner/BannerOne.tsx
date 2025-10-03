@@ -30,7 +30,7 @@ const BannerOne = () => {
               <Image
                 src={headerBanners[0].image}
                 alt="Hero Banner"
-                width={800}
+                width={1000}
                 height={500}
                 className="w-full rounded-xl object-cover"
                 style={{ objectFit: "contain" }}
@@ -64,7 +64,7 @@ const BannerOne = () => {
                   {mainBanners.map((banner, index) => (
                     <SwiperSlide key={index}>
                       <div
-                        className="bg_one-banner h-[400px] w-full rounded-xl bg-cover bg-center"
+                        className="bg_one-banner h-[500px] w-full rounded-xl bg-cover bg-center"
                         style={{ backgroundImage: `url(${banner.image})` }}
                       ></div>
                     </SwiperSlide>
@@ -83,9 +83,9 @@ const BannerOne = () => {
           </div>
 
           {/* Bottom offer Banner */}
-          <div className="mt-4 text-center">
+          <div className="mt-0 text-center">
             <Image
-              src="/assets/hero/8.webp"
+              src="/assets/hero/new.gif"
               alt="Hero Banner"
               width={1200}
               height={500}

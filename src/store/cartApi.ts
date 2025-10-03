@@ -4,8 +4,7 @@ import type { RootState as IRootState } from "@/store";
 import type { ApiResponse } from "./productApi"; // reuse ApiResponse if exported, else redefine
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL ||
-  "http://localhost:8080/v1/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.bigsell.org/v1/api";
 
 /** Cart item with optional populated product */
 export interface ICartProduct {
@@ -72,7 +71,7 @@ const cartTag = (id = "LIST"): CartTag => ({ type: "Cart", id });
 export const cartApi = createApi({
   reducerPath: "cartApi",
   baseQuery: fetchBaseQuery({
-    credentials: 'include',
+    credentials: "include",
     baseUrl,
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;

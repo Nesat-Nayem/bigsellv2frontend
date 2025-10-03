@@ -5,6 +5,7 @@ import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 import { useGetFaqQuery } from "@/store/faqApi";
 import { Accordion, Spinner } from "react-bootstrap";
+import HeaderThree from "@/components/header/HeaderThree";
 
 interface IFaq {
   id: string | number;
@@ -31,7 +32,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <div className="rts-navigation-area-breadcrumb bg_light-1">
         <div className="container">

@@ -5,6 +5,7 @@ import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 import { Spinner } from "react-bootstrap";
 import { useGetTermsQuery } from "@/store/termsApi";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   const { data, isLoading, isError } = useGetTermsQuery();
@@ -25,7 +26,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <>
         <div className="rts-navigation-area-breadcrumb bg_light-1">

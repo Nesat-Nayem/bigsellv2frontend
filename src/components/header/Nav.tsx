@@ -99,7 +99,7 @@ function NavItem() {
                     renderCategoryColumn(child)
                   )
                 ) : (
-                  <div className="single-megamenu-wrapper">
+                  <div className="single-megamenu-wrapper single-megamenu-wrapper-with-megalink">
                     <p className="title">{mainCategory.title}</p>
                     <ul>
                       <li>
@@ -137,13 +137,22 @@ function NavItem() {
 
         <style jsx>{`
           @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
-          
+
           @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.8; }
+            0%,
+            100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.8;
+            }
           }
 
           .skeleton-nav-wrapper {
@@ -161,8 +170,15 @@ function NavItem() {
 
           .skeleton-nav-link {
             height: 20px;
-            width: ${[120, 100, 140, 90, 110, 130, 95][Math.floor(Math.random() * 7)]}px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            width: ${[120, 100, 140, 90, 110, 130, 95][
+              Math.floor(Math.random() * 7)
+            ]}px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;

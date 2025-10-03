@@ -8,11 +8,12 @@ import TestimonilsOne from "@/components/testimonials/TestimonilsOne";
 import ShortService from "@/components/service/ShortService";
 
 import FooterOne from "@/components/footer/FooterOne";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
       <AboutBanner />
       <CounterOne />
       <AboutOne />

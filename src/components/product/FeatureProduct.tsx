@@ -5,6 +5,7 @@ import { Navigation, Autoplay } from "swiper/modules";
 import FeaturedGlosary from "../product-main/FeaturedGlosary";
 import { useGetFeaturedProductsQuery, IProducts } from "@/store/productApi";
 import DiscountProduct from "./DiscountProduct";
+import Image from "next/image";
 
 function FeatureProduct() {
   const {
@@ -66,15 +67,22 @@ function FeatureProduct() {
           <div className="row">
             <div className="col-lg-12">
               <div className="title-area-between">
-                <div className="skeleton-title" style={{
-                  height: '32px',
-                  width: '200px',
-                  background: 'linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)',
-                  backgroundSize: '200% 100%',
-                  animation: 'shimmer 1.5s infinite',
-                  borderRadius: '4px'
-                }}></div>
-                <div className="next-prev-swiper-wrapper" style={{ opacity: 0.3 }}>
+                <div
+                  className="skeleton-title"
+                  style={{
+                    height: "32px",
+                    width: "200px",
+                    background:
+                      "linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%)",
+                    backgroundSize: "200% 100%",
+                    animation: "shimmer 1.5s infinite",
+                    borderRadius: "4px",
+                  }}
+                ></div>
+                <div
+                  className="next-prev-swiper-wrapper"
+                  style={{ opacity: 0.3 }}
+                >
                   <div className="swiper-button-prev">
                     <i className="fa-regular fa-chevron-left" />
                   </div>
@@ -103,19 +111,19 @@ function FeatureProduct() {
                     480: { slidesPerView: 3, spaceBetween: 30 },
                     640: { slidesPerView: 3, spaceBetween: 30 },
                     840: { slidesPerView: 4, spaceBetween: 30 },
-                    1140: { slidesPerView: 6, spaceBetween: 30 },
+                    1140: { slidesPerView: 5, spaceBetween: 30 },
                   }}
                 >
-                  {[...Array(6)].map((_, index) => (
+                  {[...Array(5)].map((_, index) => (
                     <SwiperSlide key={index}>
                       <div className="single-shopping-card-one skeleton-card">
                         <div className="skeleton-product-card">
                           {/* Image skeleton */}
                           <div className="skeleton-image"></div>
-                          
+
                           {/* Badge skeleton */}
                           <div className="skeleton-badge"></div>
-                          
+
                           {/* Content skeleton */}
                           <div className="skeleton-content">
                             <div className="skeleton-line short"></div>
@@ -141,22 +149,31 @@ function FeatureProduct() {
             </div>
           </div>
         </div>
-        
+
         <style jsx>{`
           @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
-          
+
           @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.6; }
+            0%,
+            100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.6;
+            }
           }
-          
+
           .skeleton-card {
             animation: pulse 2s ease-in-out infinite;
           }
-          
+
           .skeleton-product-card {
             position: relative;
             background: #fff;
@@ -164,99 +181,134 @@ function FeatureProduct() {
             overflow: hidden;
             border: 1px solid #f0f0f0;
           }
-          
+
           .skeleton-image {
             width: 100%;
             padding-bottom: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
-          
+
           .skeleton-badge {
             position: absolute;
             top: 12px;
             right: 12px;
             width: 50px;
             height: 24px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 12px;
           }
-          
+
           .skeleton-content {
             padding: 16px;
           }
-          
+
           .skeleton-line {
             height: 12px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
             margin-bottom: 8px;
           }
-          
+
           .skeleton-line.short {
             width: 40%;
             height: 10px;
           }
-          
+
           .skeleton-line.medium {
             width: 90%;
             height: 14px;
           }
-          
+
           .skeleton-line.long {
             width: 70%;
             height: 14px;
           }
-          
+
           .skeleton-rating {
             display: flex;
             gap: 4px;
             margin: 12px 0;
           }
-          
+
           .skeleton-star {
             width: 14px;
             height: 14px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 2px;
           }
-          
+
           .skeleton-price-wrapper {
             display: flex;
             gap: 8px;
             align-items: center;
             margin: 12px 0;
           }
-          
+
           .skeleton-price {
             width: 60px;
             height: 20px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
           }
-          
+
           .skeleton-price-old {
             width: 50px;
             height: 16px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
           }
-          
+
           .skeleton-button {
             width: 100%;
             height: 40px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -304,12 +356,22 @@ function FeatureProduct() {
   return (
     <div>
       {/* rts grocery feature area start */}
-      <div className="rts-grocery-feature-area rts-section-gapBottom pt--40">
+      <div className="rts-grocery-feature-area rts-section-gapBottom pt--0">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               <div className="title-area-between">
-                <h2 className="title-left">Featured Products</h2>
+                {/* <h2 className="title-left">Featured Products</h2> */}
+                <div className="mt-0 text-center mb-0">
+                  <Image
+                    src="/assets/hero/h1.webp"
+                    alt="Hero Banner"
+                    width={1200}
+                    height={500}
+                    className="w-full rounded-xl object-cover"
+                  />
+                </div>
+                {/*  */}
                 <div className="next-prev-swiper-wrapper">
                   <div className="swiper-button-prev">
                     <i className="fa-regular fa-chevron-left" />

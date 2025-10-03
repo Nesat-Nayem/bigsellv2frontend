@@ -5,6 +5,7 @@ import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 import axios from "axios";
 import FooterOne from "@/components/footer/FooterOne";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   const [formData, setFormData] = useState({
@@ -31,7 +32,7 @@ export default function Home() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/v1/api/auth/signup",
+        "https://api.bigsell.org/v1/api/auth/signup",
         formData,
         {
           headers: { "Content-Type": "application/json" },
@@ -53,7 +54,7 @@ export default function Home() {
   };
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <>
         <div className="rts-navigation-area-breadcrumb bg_light-1">

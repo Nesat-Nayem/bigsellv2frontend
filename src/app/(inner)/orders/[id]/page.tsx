@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/store/authSlice";
 import { RootState } from "@/store";
 import { useGetOrderByIdQuery } from "@/store/ordersApi";
+import HeaderThree from "@/components/header/HeaderThree";
 
 // Decode JWT from localStorage to rehydrate auth on hard-refresh
 const decodeToken = (token: string) => {
@@ -73,11 +74,19 @@ export default function OrderDetailsPage() {
     }
     if (!token) {
       const decoded = decodeToken(localToken);
-      dispatch(setCredentials({ token: localToken, user: decoded || undefined }));
+      dispatch(
+        setCredentials({ token: localToken, user: decoded || undefined })
+      );
     }
   }, [token, dispatch, router]);
 
-  const { data: order, isLoading, isFetching, error, refetch } = useGetOrderByIdQuery(id, {
+  const {
+    data: order,
+    isLoading,
+    isFetching,
+    error,
+    refetch,
+  } = useGetOrderByIdQuery(id, {
     skip: !id || !token,
   });
 
@@ -101,7 +110,7 @@ export default function OrderDetailsPage() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       <div className="rts-section-gap">
         <div className="container-2">
@@ -139,7 +148,10 @@ export default function OrderDetailsPage() {
                     <i className="fa-regular fa-print" />
                   </div>
                 </button>
-                <Link href="/account" className="rts-btn btn-secondary radious-sm">
+                <Link
+                  href="/account"
+                  className="rts-btn btn-secondary radious-sm"
+                >
                   Back to Account
                 </Link>
               </div>
@@ -224,11 +236,18 @@ export default function OrderDetailsPage() {
                       </thead>
                       <tbody>
                         {order.items?.map((it: any, idx: number) => {
-                          const thumb = it?.thumbnail || it?.product?.thumbnail || "/assets/images/placeholder.png";
+                          const thumb =
+                            it?.thumbnail ||
+                            it?.product?.thumbnail ||
+                            "/assets/images/placeholder.png";
                           const name = it?.name || it?.product?.name || "-";
                           const price = it?.price ?? it?.product?.price;
                           const qty = it?.quantity ?? 1;
-                          const sub = it?.subtotal ?? (typeof price === "number" ? price * qty : undefined);
+                          const sub =
+                            it?.subtotal ??
+                            (typeof price === "number"
+                              ? price * qty
+                              : undefined);
                           return (
                             <tr key={idx}>
                               <td>
@@ -236,22 +255,33 @@ export default function OrderDetailsPage() {
                                   <img
                                     src={thumb}
                                     alt={name}
-                                    style={{ width: 56, height: 56, objectFit: "cover", borderRadius: 8 }}
+                                    style={{
+                                      width: 56,
+                                      height: 56,
+                                      objectFit: "cover",
+                                      borderRadius: 8,
+                                    }}
                                   />
                                   <div>
                                     <div className="fw-semibold">{name}</div>
                                     {it?.selectedColor && (
-                                      <div className="text-muted small">Color: {it.selectedColor}</div>
+                                      <div className="text-muted small">
+                                        Color: {it.selectedColor}
+                                      </div>
                                     )}
                                     {it?.selectedSize && (
-                                      <div className="text-muted small">Size: {it.selectedSize}</div>
+                                      <div className="text-muted small">
+                                        Size: {it.selectedSize}
+                                      </div>
                                     )}
                                   </div>
                                 </div>
                               </td>
                               <td>{formatCurrency(price)}</td>
                               <td>{qty}</td>
-                              <td className="text-end">{formatCurrency(sub)}</td>
+                              <td className="text-end">
+                                {formatCurrency(sub)}
+                              </td>
                             </tr>
                           );
                         })}
@@ -279,14 +309,22 @@ export default function OrderDetailsPage() {
               <div className="col-lg-6">
                 <div className="card p-4 h-100">
                   <h5 className="mb-3">Payment</h5>
-                  <div className="mb-2">Method: {order.paymentInfo?.method || "-"}</div>
-                  <div className="mb-2">Status: {order.paymentInfo?.status || order.paymentStatus || "-"}</div>
+                  <div className="mb-2">
+                    Method: {order.paymentInfo?.method || "-"}
+                  </div>
+                  <div className="mb-2">
+                    Status:{" "}
+                    {order.paymentInfo?.status || order.paymentStatus || "-"}
+                  </div>
                   {order.paymentInfo?.transactionId && (
-                    <div className="mb-2">Txn ID: {order.paymentInfo.transactionId}</div>
+                    <div className="mb-2">
+                      Txn ID: {order.paymentInfo.transactionId}
+                    </div>
                   )}
                   {order.paymentInfo?.paymentDate && (
                     <div className="mb-2">
-                      Paid On: {new Date(order.paymentInfo.paymentDate).toLocaleString()}
+                      Paid On:{" "}
+                      {new Date(order.paymentInfo.paymentDate).toLocaleString()}
                     </div>
                   )}
                 </div>
@@ -295,13 +333,16 @@ export default function OrderDetailsPage() {
               <div className="col-lg-6">
                 <div className="card p-4 h-100">
                   <h5 className="mb-3">Shipping</h5>
-                  <div className="mb-2">Method: {order.shippingMethod || "-"}</div>
+                  <div className="mb-2">
+                    Method: {order.shippingMethod || "-"}
+                  </div>
                   {order.trackingNumber && (
                     <div className="mb-2">Tracking: {order.trackingNumber}</div>
                   )}
                   {order.estimatedDelivery && (
                     <div className="mb-2">
-                      ETA: {new Date(order.estimatedDelivery).toLocaleDateString()}
+                      ETA:{" "}
+                      {new Date(order.estimatedDelivery).toLocaleDateString()}
                     </div>
                   )}
                 </div>
@@ -314,12 +355,18 @@ export default function OrderDetailsPage() {
                   {(order as any)?.statusHistory?.length ? (
                     <ul className="list-unstyled m-0">
                       {(order as any).statusHistory.map((h: any, i: number) => (
-                        <li key={i} className="d-flex align-items-start gap-3 mb-2">
+                        <li
+                          key={i}
+                          className="d-flex align-items-start gap-3 mb-2"
+                        >
                           <i className="fa-regular fa-circle-check text-success mt-1" />
                           <div>
-                            <div className="fw-semibold text-capitalize">{h.status}</div>
+                            <div className="fw-semibold text-capitalize">
+                              {h.status}
+                            </div>
                             <div className="text-muted small">
-                              {new Date(h.timestamp).toLocaleString()} {h.note ? `— ${h.note}` : ""}
+                              {new Date(h.timestamp).toLocaleString()}{" "}
+                              {h.note ? `— ${h.note}` : ""}
                             </div>
                           </div>
                         </li>

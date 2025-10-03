@@ -33,6 +33,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
   OriginalPrice,
   Discount = 0,
   productData,
+  Color,
 }) => {
   type ModalType = "one" | "two" | "three" | null;
   const [activeModal, setActiveModal] = useState<ModalType>(null);
@@ -148,7 +149,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
             </span>
             <i className="fa-solid fa-bookmark" />
           </div>
-          <div style={{ width: "100%", height: "150px" }}>
+          <div style={{ width: "100%", height: "250px" }}>
             <img
               src={
                 ProductImage.startsWith("http")
@@ -197,11 +198,11 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
       <div className="body-content">
         <Link href={`/shop/${Id}`}>
           <h4 className="title">
-            {ProductTitle?.slice(0, 20).concat("...") ??
+            {ProductTitle?.slice(0, 50).concat("...") ??
               "How to growing your business"}
           </h4>
         </Link>
-        <span className="availability">Electronics</span>
+        {/* <span className="availability">{Color}</span> */}
         <div className="price-area">
           <span className="current">{`₹  ${Price}`}</span>
           <div className="previous">{`₹ ${OriginalPrice}`}</div>
@@ -219,7 +220,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
             </div>
           </div> */}
 
-          <Link
+          {/* <Link
             href="#"
             className="rts-btn btn-primary radious-sm with-icon add-to-cart"
             onClick={(e) => {
@@ -242,7 +243,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
                 }`}
               />
             </div>
-          </Link>
+          </Link> */}
         </div>
       </div>
 

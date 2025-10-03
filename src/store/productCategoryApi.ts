@@ -69,8 +69,9 @@ const buildQuery = (params?: Record<string, any>) => {
 export const productCategoryApi = createApi({
   reducerPath: "productCategoryApi",
   baseQuery: fetchBaseQuery({
-    credentials: 'include',
-    baseUrl: process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080/v1/api",
+    credentials: "include",
+    baseUrl:
+      process.env.NEXT_PUBLIC_API_BASE || "https://api.bigsell.org/v1/api",
   }),
   tagTypes: ["Category"],
   endpoints: (builder) => ({

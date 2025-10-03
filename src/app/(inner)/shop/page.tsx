@@ -15,6 +15,7 @@ import {
   useSearchProductsQuery,
   useGetProductFiltersQuery,
 } from "@/store/productApi";
+import HeaderThree from "@/components/header/HeaderThree";
 
 interface PostType {
   id: string;
@@ -106,7 +107,11 @@ const transformProductToPost = (product: any): PostType => {
 
   const discountValue =
     product?.discount && typeof product.discount === "object"
-      ? Number((product.discount as any)?.amount ?? (product.discount as any)?.value ?? 0)
+      ? Number(
+          (product.discount as any)?.amount ??
+            (product.discount as any)?.value ??
+            0
+        )
       : Number(product?.discount ?? 0);
 
   const thumbnail = resolveThumbnail(product);
@@ -464,24 +469,24 @@ function ShopContent() {
                         <div className="skeleton-product-content">
                           {/* Category */}
                           <div className="skeleton-line short"></div>
-                          
+
                           {/* Title */}
                           <div className="skeleton-line long"></div>
                           <div className="skeleton-line medium"></div>
-                          
+
                           {/* Rating */}
                           <div className="skeleton-rating">
                             {[...Array(5)].map((_, i) => (
                               <div key={i} className="skeleton-star"></div>
                             ))}
                           </div>
-                          
+
                           {/* Price */}
                           <div className="skeleton-price-wrapper">
                             <div className="skeleton-price"></div>
                             <div className="skeleton-price-old"></div>
                           </div>
-                          
+
                           {/* Actions */}
                           <div className="skeleton-actions">
                             <div className="skeleton-icon-btn"></div>
@@ -500,19 +505,33 @@ function ShopContent() {
 
         <style jsx>{`
           @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
           }
-          
+
           @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
+            0%,
+            100% {
+              opacity: 1;
+            }
+            50% {
+              opacity: 0.7;
+            }
           }
 
           .skeleton-breadcrumb {
             height: 20px;
             width: 150px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -521,7 +540,12 @@ function ShopContent() {
           .skeleton-filter-title {
             height: 24px;
             width: 60%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -534,7 +558,12 @@ function ShopContent() {
 
           .skeleton-price-inputs {
             height: 60px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -543,7 +572,12 @@ function ShopContent() {
 
           .skeleton-range {
             height: 8px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -551,7 +585,12 @@ function ShopContent() {
 
           .skeleton-checkbox-item {
             height: 20px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -561,7 +600,12 @@ function ShopContent() {
           .skeleton-results-count {
             height: 20px;
             width: 150px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -570,7 +614,12 @@ function ShopContent() {
           .skeleton-sort-button {
             height: 36px;
             width: 120px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -588,7 +637,12 @@ function ShopContent() {
           .skeleton-product-image {
             width: 100%;
             padding-bottom: 100%;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
           }
@@ -599,7 +653,12 @@ function ShopContent() {
             right: 12px;
             width: 50px;
             height: 24px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 12px;
@@ -611,7 +670,12 @@ function ShopContent() {
 
           .skeleton-line {
             height: 12px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -642,7 +706,12 @@ function ShopContent() {
           .skeleton-star {
             width: 14px;
             height: 14px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 2px;
@@ -658,7 +727,12 @@ function ShopContent() {
           .skeleton-price {
             width: 60px;
             height: 20px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -667,7 +741,12 @@ function ShopContent() {
           .skeleton-price-old {
             width: 50px;
             height: 16px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 4px;
@@ -682,7 +761,12 @@ function ShopContent() {
           .skeleton-icon-btn {
             width: 40px;
             height: 40px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -691,7 +775,12 @@ function ShopContent() {
           .skeleton-add-btn {
             flex: 1;
             height: 40px;
-            background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
             background-size: 200% 100%;
             animation: shimmer 1.5s infinite;
             border-radius: 6px;
@@ -910,7 +999,7 @@ function ShopContent() {
               <div className="filter-select-area">
                 <div className="top-filter">
                   <span>Showing {filteredProducts.length} results</span>
-                  <div className="right-end">
+                  {/* <div className="right-end">
                     <span>Sort: Short By Latest</span>
                     <div className="button-tab-area">
                       <ul className="nav nav-tabs" id="myTab" role="tablist">
@@ -964,7 +1053,7 @@ function ShopContent() {
                         </li>
                       </ul>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
 
@@ -979,7 +1068,7 @@ function ShopContent() {
                             return (
                               <div
                                 key={index}
-                                className="col-lg-20 col-lg-4 col-md-6 col-sm-6 col-12"
+                                className="col-lg-4 col-lg-4 col-md-6 col-sm-6 col-12"
                               >
                                 <div className="single-shopping-card-one">
                                   <ShopMain
@@ -1047,7 +1136,7 @@ function ShopContent() {
 export default function Home() {
   return (
     <>
-      <HeaderOne />
+      <HeaderThree />
       <Suspense
         fallback={
           <div className="text-center py-20">

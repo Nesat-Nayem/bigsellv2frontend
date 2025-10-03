@@ -7,6 +7,7 @@ import FooterOne from "@/components/footer/FooterOne";
 import BlogGridMain from "./BlogGridMain";
 import { IBlogs, useGetBlogsQuery } from "@/store/blogsApi";
 import { useRouter } from "next/navigation";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function BlogGridPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,7 +30,7 @@ export default function BlogGridPage() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       {/* Breadcrumb */}
       <div className="rts-navigation-area-breadcrumb bg_light-1">

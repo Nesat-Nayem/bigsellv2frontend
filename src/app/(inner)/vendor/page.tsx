@@ -4,6 +4,7 @@ import HeaderOne from "@/components/header/HeaderOne";
 import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 import { Card } from "react-bootstrap";
+import HeaderThree from "@/components/header/HeaderThree";
 
 export default function Home() {
   const [step, setStep] = useState(1);
@@ -53,7 +54,9 @@ export default function Home() {
   useEffect(() => {
     const loadPlans = async () => {
       try {
-        const res = await fetch("http://localhost:8080/v1/api/subscriptions?active=true&limit=3");
+        const res = await fetch(
+          "https://api.bigsell.org/v1/api/subscriptions?active=true&limit=3"
+        );
         const json = await res.json();
         const data = Array.isArray(json?.data) ? json.data : [];
         setPlans(data);
@@ -70,7 +73,10 @@ export default function Home() {
     try {
       const fd = new FormData();
       fd.append("document", file);
-      const res = await fetch("http://localhost:8080/v1/api/upload/kyc-document", { method: "POST", body: fd });
+      const res = await fetch(
+        "https://api.bigsell.org/v1/api/upload/kyc-document",
+        { method: "POST", body: fd }
+      );
       const json = await res.json();
       if (json?.success && json?.data?.url) return json.data.url as string;
       return null;
@@ -86,7 +92,9 @@ export default function Home() {
       return;
     }
     if (!agreeToTerms) {
-      alert("Please agree to the vendor terms and conditions before submitting.");
+      alert(
+        "Please agree to the vendor terms and conditions before submitting."
+      );
       return;
     }
     try {
@@ -106,7 +114,7 @@ export default function Home() {
         panUrl: formData.pan,
       };
 
-      const res = await fetch("http://localhost:8080/v1/api/vendors/apply", {
+      const res = await fetch("https://api.bigsell.org/v1/api/vendors/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
@@ -128,7 +136,7 @@ export default function Home() {
 
   return (
     <div className="demo-one">
-      <HeaderOne />
+      <HeaderThree />
 
       {/* Breadcrumb */}
       <div className="rts-navigation-area-breadcrumb bg_light-1 py-3 mb-4">
@@ -223,7 +231,6 @@ export default function Home() {
                           onChange={handleChange}
                           required
                           style={{
-                           
                             borderRadius: "10px",
                             border: "1px solid #7777",
                             padding: "6px",
@@ -279,7 +286,6 @@ export default function Home() {
                           required
                           rows={3}
                           style={{
-                         
                             borderRadius: "10px",
                             border: "1px solid #7777",
                             padding: "6px",
@@ -329,17 +335,26 @@ export default function Home() {
                             },
                           ]
                       ).map((plan) => (
-                        <div className="col-md-4" key={(plan as any)._id || plan.name}>
+                        <div
+                          className="col-md-4"
+                          key={(plan as any)._id || plan.name}
+                        >
                           <div
                             className={`pricing-card ${
                               formData.plan === plan.name ? "active" : ""
                             }`}
                             onClick={() => selectPlan(plan.name)}
                           >
-                            <h5 className={`fw-bold text-${plan.color || "secondary"}`}>
+                            <h5
+                              className={`fw-bold text-${
+                                plan.color || "secondary"
+                              }`}
+                            >
                               {plan.name}
                             </h5>
-                            <h2 className="fw-bold">{`₹${plan.price} /${plan.billingCycle === "yearly" ? "year" : "month"}`}</h2>
+                            <h2 className="fw-bold">{`₹${plan.price} /${
+                              plan.billingCycle === "yearly" ? "year" : "month"
+                            }`}</h2>
                             <ul>
                               {plan.features.map((f, i) => (
                                 <li key={i}>{f}</li>
@@ -381,7 +396,9 @@ export default function Home() {
                             if (url) {
                               setFormData((prev) => ({ ...prev, aadhar: url }));
                             } else {
-                              alert('Failed to upload Aadhar. Please try again.');
+                              alert(
+                                "Failed to upload Aadhar. Please try again."
+                              );
                             }
                             setIsUploadingAadhar(false);
                           }
@@ -389,7 +406,9 @@ export default function Home() {
                         required
                       />
                       {isUploadingAadhar && (
-                        <small className="text-muted d-block mt-2">Uploading Aadhar...</small>
+                        <small className="text-muted d-block mt-2">
+                          Uploading Aadhar...
+                        </small>
                       )}
                       {formData.aadhar && (
                         <div className="mt-3">
@@ -417,7 +436,7 @@ export default function Home() {
                             if (url) {
                               setFormData((prev) => ({ ...prev, pan: url }));
                             } else {
-                              alert('Failed to upload PAN. Please try again.');
+                              alert("Failed to upload PAN. Please try again.");
                             }
                             setIsUploadingPan(false);
                           }
@@ -425,7 +444,9 @@ export default function Home() {
                         required
                       />
                       {isUploadingPan && (
-                        <small className="text-muted d-block mt-2">Uploading PAN...</small>
+                        <small className="text-muted d-block mt-2">
+                          Uploading PAN...
+                        </small>
                       )}
                       {formData.pan && (
                         <div className="mt-3">
@@ -503,7 +524,7 @@ export default function Home() {
 
                       {/* Terms and Conditions Checkbox */}
                       <div className="mt-4 pt-3 border-top">
-                        <div >
+                        <div>
                           <input
                             className="rn-hidden-checkbox"
                             type="checkbox"
@@ -512,7 +533,10 @@ export default function Home() {
                             onChange={(e) => setAgreeToTerms(e.target.checked)}
                             required
                           />
-                          <label className="form-check-label text-dark" htmlFor="agreeToTerms">
+                          <label
+                            className="form-check-label text-dark"
+                            htmlFor="agreeToTerms"
+                          >
                             I agree to the{" "}
                             <a
                               href="http://localhost:3000/vendor-policy"
@@ -547,15 +571,19 @@ export default function Home() {
                       className="btn btn-dark px-4 py-3"
                       disabled={
                         (step === 2 && !formData.plan) ||
-                        (step === 3 && (isUploadingAadhar || isUploadingPan || !formData.aadhar || !formData.pan))
+                        (step === 3 &&
+                          (isUploadingAadhar ||
+                            isUploadingPan ||
+                            !formData.aadhar ||
+                            !formData.pan))
                       }
                     >
                       Next →
                     </button>
                   )}
                   {step === 4 && (
-                    <button 
-                      type="submit" 
+                    <button
+                      type="submit"
                       className="btn btn-success px-4"
                       disabled={!agreeToTerms}
                     >

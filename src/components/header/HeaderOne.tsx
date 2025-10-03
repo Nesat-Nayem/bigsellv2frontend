@@ -223,17 +223,13 @@ function HeaderOne() {
     <>
       <div className="rts-header-one-area-one">
         {/* top bar */}
-        <div className="header-top-area">
+        {/* <div className="header-top-area">
           <div className="container">
             <div className="row">
               <div className="col-lg-12">
                 <div className="bwtween-area-header-top">
                   <div className="discount-area">
                     <p className="disc">{gs.headerTab}</p>
-                    {/* optional countdown */}
-                    {/* <div className="countdown">
-                      <div className="countDown">10/05/2025 10:20:00</div>
-                    </div> */}
                   </div>
                   <div className="contact-number-area">
                     <p>
@@ -249,9 +245,7 @@ function HeaderOne() {
               </div>
             </div>
           </div>
-        </div>
-
-        
+        </div> */}
 
         {/* logo + search */}
         <div className="search-header-area-main">
