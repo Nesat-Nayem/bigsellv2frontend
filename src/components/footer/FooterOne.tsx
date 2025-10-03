@@ -188,8 +188,8 @@ function FooterOne() {
               <div className="col-lg-12">
                 <div className="copyright-between-1">
                   <p className="disc">
-                    Copyright 2025 <Link href="#">Big Sell</Link>. All rights
-                    reserved.
+                    Copyright 2025 <Link href="#">NKFC PVT LTD. </Link>All
+                    Rights Reserved.
                   </p>
                   <Link href="#" className="playstore-app-area">
                     <span>Download App</span>
