@@ -17,7 +17,7 @@ export const mainBannerApi = createApi({
   reducerPath: "mainBannerApi",
   baseQuery: fetchBaseQuery({
     credentials: "include",
-    baseUrl: "https://api.bigsell.org/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["mainBanner"],
   endpoints: (builder) => ({

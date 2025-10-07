@@ -535,12 +535,12 @@ function HeaderThree() {
                       <Nav />
                     </div>
                     {/* button-area */}
-                    <div className="right-location-area">
-                      <i className="fa-solid fa-location-dot" />
-                      <p>
-                        Delivery: <a href="#">258 FKD Street, Berlin</a>
-                      </p>
+                    <div className="right-location-area overflow-hidden">
+                      <div className="marquee-text font-weight-bold text-gradient">
+                        Welcome To Big Sell Online Shop
+                      </div>
                     </div>
+
                     {/* button-area end */}
                   </div>
 

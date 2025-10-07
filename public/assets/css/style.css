@@ -30422,3 +30422,27 @@ li.has-dropdown .submenu li > a .badge {
     padding: 23px 5px;
   }
 }
+
+.right-location-area {
+  height: 40px; /* adjust height if needed */
+  position: relative;
+}
+
+.marquee-text {
+  display: inline-block;
+  white-space: nowrap;
+  animation: marquee 10s linear infinite;
+  background: linear-gradient(90deg, #ba4d09, #e59204);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: bold;
+}
+
+@keyframes marquee {
+  0% {
+    transform: translateX(100%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
