@@ -19,7 +19,6 @@ export default function Home() {
     phone: "",
     address: "",
     gstNo: "",
-    plan: "",
     aadhar: "",
     pan: "",
   });
@@ -35,38 +34,11 @@ export default function Home() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const selectPlan = (plan: string) => {
-    setFormData({ ...formData, plan });
-  };
+  // Stepper configuration (3 steps: Basic, KYC, Verify)
+  const labels = ["Basic Details", "KYC", "Verify"];
+  const progress = ((step - 1) / (labels.length - 1)) * 100;
 
-  // dynamic subscription plans (max 3)
-  const [plans, setPlans] = useState<
-    Array<{
-      _id?: string;
-      name: string;
-      price: number;
-      billingCycle?: "monthly" | "yearly";
-      features: string[];
-      color?: string;
-    }>
-  >([]);
-
-  useEffect(() => {
-    const loadPlans = async () => {
-      try {
-        const res = await fetch(
-          "http://localhost:8080/v1/api/subscriptions?active=true&limit=3"
-        );
-        const json = await res.json();
-        const data = Array.isArray(json?.data) ? json.data : [];
-        setPlans(data);
-      } catch (e) {
-        // fallback silently if fetch fails, UI will still render
-        setPlans([]);
-      }
-    };
-    loadPlans();
-  }, []);
+  // NOTE: Plans removed — no plan selection needed
 
   // Upload KYC document to backend and return URL
   const uploadKyc = async (file: File): Promise<string | null> => {
@@ -98,18 +70,12 @@ export default function Home() {
       return;
     }
     try {
-      const selected = plans.find((p) => p.name === formData.plan);
       const payload: any = {
         vendorName: formData.vendorName,
         email: formData.email,
         phone: formData.phone,
         address: formData.address,
         gstNo: formData.gstNo || undefined,
-        subscriptionId: selected?._id,
-        planName: selected?.name || formData.plan,
-        planPrice: selected?.price,
-        planBillingCycle: selected?.billingCycle,
-        planColor: selected?.color,
         aadharUrl: formData.aadhar,
         panUrl: formData.pan,
       };
@@ -122,7 +88,7 @@ export default function Home() {
       const json = await res.json();
       if (json?.success) {
         alert("Vendor Registration Submitted");
-        setStep(4);
+        setStep(3); // stay on Verify step
       } else {
         const backendMsg = Array.isArray(json?.errorMessages)
           ? json.errorMessages.map((e: any) => e.message).join("\n")
@@ -151,7 +117,6 @@ export default function Home() {
         </div>
       </div>
 
-      {/* Stepper */}
       <div className="track-order-area rts-section-gap">
         <div className="container-2">
           <div className="row justify-content-center">
@@ -161,39 +126,29 @@ export default function Home() {
                 <div
                   className="progress-bar bg-dark"
                   role="progressbar"
-                  style={{ width: `${(step - 1) * 33.3}%` }}
+                  style={{ width: `${progress}%` }}
                 />
               </div>
               <div className="d-flex justify-content-between text-center mb-4">
-                {["Basic Details", "Plan", "KYC", "Verify"].map(
-                  (label, idx) => (
-                    <div key={idx} className="flex-fill">
-                      <div
-                        className={`rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center 
-                          ${
-                            step === idx + 1
-                              ? "bg-dark text-white"
-                              : "bg-light border"
-                          } `}
-                        style={{ width: 40, height: 40 }}
-                      >
-                        {idx + 1}
-                      </div>
-                      <small
-                        className={
-                          step === idx + 1 ? "fw-bold text-dark" : "text-muted"
-                        }
-                      >
-                        {label}
-                      </small>
+                {labels.map((label, idx) => (
+                  <div key={idx} className="flex-fill">
+                    <div
+                      className={`rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center ${
+                        step === idx + 1 ? "bg-dark text-white" : "bg-light border"
+                      }`}
+                      style={{ width: 40, height: 40 }}
+                    >
+                      {idx + 1}
                     </div>
-                  )
-                )}
+                    <small className={step === idx + 1 ? "fw-bold text-dark" : "text-muted"}>
+                      {label}
+                    </small>
+                  </div>
+                ))}
               </div>
 
               {/* Step Forms */}
-              <form
-                onSubmit={handleSubmit}
+              <form onSubmit={handleSubmit}
                 className="card p-5 shadow-lg border-0 rounded-4"
               >
                 {/* Step 1: Basic Details */}
@@ -297,88 +252,8 @@ export default function Home() {
                   </>
                 )}
 
-                {/* Step 2: Plan */}
+                {/* Step 2: KYC */}
                 {step === 2 && (
-                  <>
-                    <div className="row g-4">
-                      {(plans.length > 0
-                        ? plans
-                        : [
-                            {
-                              name: "Silver",
-                              price: 499,
-                              billingCycle: "monthly" as const,
-                              features: ["Basic Listing", "Email Support"],
-                              color: "secondary",
-                            },
-                            {
-                              name: "Gold",
-                              price: 999,
-                              billingCycle: "monthly" as const,
-                              features: [
-                                "Premium Listing",
-                                "Priority Support",
-                                "Discounts",
-                              ],
-                              color: "warning",
-                            },
-                            {
-                              name: "Platinum",
-                              price: 1999,
-                              billingCycle: "monthly" as const,
-                              features: [
-                                "Top Listing",
-                                "24/7 Support",
-                                "Full Access",
-                              ],
-                              color: "info",
-                            },
-                          ]
-                      ).map((plan) => (
-                        <div
-                          className="col-md-4"
-                          key={(plan as any)._id || plan.name}
-                        >
-                          <div
-                            className={`pricing-card ${
-                              formData.plan === plan.name ? "active" : ""
-                            }`}
-                            onClick={() => selectPlan(plan.name)}
-                          >
-                            <h5
-                              className={`fw-bold text-${
-                                plan.color || "secondary"
-                              }`}
-                            >
-                              {plan.name}
-                            </h5>
-                            <h2 className="fw-bold">{`₹${plan.price} /${
-                              plan.billingCycle === "yearly" ? "year" : "month"
-                            }`}</h2>
-                            <ul>
-                              {plan.features.map((f, i) => (
-                                <li key={i}>{f}</li>
-                              ))}
-                            </ul>
-                            <button
-                              className={`btn ${
-                                formData.plan === plan.name
-                                  ? "btn-dark"
-                                  : "btn-outline-primary"
-                              }`}
-                            >
-                              Select
-                            </button>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {/* Step 3: KYC */}
-                {/* Step 3: KYC */}
-                {step === 3 && (
                   <>
                     <div className="mb-4">
                       <label className="form-label text-dark">
@@ -462,8 +337,8 @@ export default function Home() {
                   </>
                 )}
 
-                {/* Step 4: Verify */}
-                {step === 4 && (
+                {/* Step 3: Verify */}
+                {step === 3 && (
                   <>
                     <h4 className="mb-3 text-primary fw-bold">
                       Verify & Submit
@@ -484,9 +359,7 @@ export default function Home() {
                       <p>
                         <strong>GST No:</strong> {formData.gstNo}
                       </p>
-                      <p>
-                        <strong>Plan:</strong> {formData.plan}
-                      </p>
+                      {/* Plan removed */}
 
                       {/* Aadhar Preview */}
                       <div className="mt-3">
@@ -564,14 +437,13 @@ export default function Home() {
                       ← Previous
                     </button>
                   )}
-                  {step < 4 && (
+                  {step < 3 && (
                     <button
                       type="button"
                       onClick={nextStep}
                       className="btn btn-dark px-4 py-3"
                       disabled={
-                        (step === 2 && !formData.plan) ||
-                        (step === 3 &&
+                        (step === 2 &&
                           (isUploadingAadhar ||
                             isUploadingPan ||
                             !formData.aadhar ||
@@ -581,7 +453,7 @@ export default function Home() {
                       Next →
                     </button>
                   )}
-                  {step === 4 && (
+                  {step === 3 && (
                     <button
                       type="submit"
                       className="btn btn-success px-4"
