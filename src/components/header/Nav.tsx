@@ -39,6 +39,16 @@ function NavItem() {
 
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null);
 
+  // Build shop URL with product-category deep link params
+  const buildShopHref = (ids: { pc?: string; psc?: string; pssc?: string }) => {
+    const params = new URLSearchParams();
+    if (ids.pc) params.set('pc', String(ids.pc));
+    if (ids.psc) params.set('psc', String(ids.psc));
+    if (ids.pssc) params.set('pssc', String(ids.pssc));
+    const qs = params.toString();
+    return `/shop${qs ? `?${qs}` : ''}`;
+  };
+
   // Recursive renderer for category columns (one column per node)
   const renderCategoryColumn = (category: ICategory) => {
     return (
@@ -48,16 +58,14 @@ function NavItem() {
           {category.children && category.children.length > 0 ? (
             category.children.map((child) => (
               <li key={child._id}>
-                <Link href={`/shop?category=${encodeURIComponent(child.slug)}`}>
+                <Link href={buildShopHref({ pc: category.parentId || undefined, psc: category._id, pssc: child._id })}>
                   {child.title}
                 </Link>
               </li>
             ))
           ) : (
             <li>
-              <Link
-                href={`/shop?category=${encodeURIComponent(category.slug)}`}
-              >
+              <Link href={buildShopHref({ pc: category.parentId || undefined, psc: category._id })}>
                 View {category.title}
               </Link>
             </li>
@@ -103,11 +111,7 @@ function NavItem() {
                     <p className="title">{mainCategory.title}</p>
                     <ul>
                       <li>
-                        <Link
-                          href={`/shop?category=${encodeURIComponent(
-                            mainCategory.slug
-                          )}`}
-                        >
+                        <Link href={buildShopHref({ pc: mainCategory._id })}>
                           View {mainCategory.title}
                         </Link>
                       </li>
@@ -238,10 +242,7 @@ function NavItem() {
               renderCategoryMenu(category)
             ) : (
               <li key={category._id} className="parent">
-                <Link
-                  href={`/shop?category=${encodeURIComponent(category.slug)}`}
-                  className="fs-16"
-                >
+                <Link href={buildShopHref({ pc: category._id })} className="fs-16">
                   {category.title.toUpperCase()}
                 </Link>
               </li>
