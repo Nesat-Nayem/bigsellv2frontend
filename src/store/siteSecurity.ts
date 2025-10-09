@@ -17,7 +17,7 @@ interface SiteSecurityResponse {
 export const SiteSecurityApi = createApi({
   reducerPath: "SiteSecurity",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://api.bigsell.org/v1/api",
   }),
   tagTypes: ["SiteSecurity"],
   endpoints: (builder) => ({
