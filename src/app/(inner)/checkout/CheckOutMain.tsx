@@ -7,6 +7,11 @@ import { useCreateOrderMutation } from "@/store/ordersApi";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setCredentials, setUser } from "@/store/authSlice";
+import {
+  useGetMyAddressesQuery,
+  useCreateAddressMutation,
+  type IAddress,
+} from "@/store/addressApi";
 
 const DEFAULT_SHIPPING_COST = 50;
 
@@ -43,6 +48,26 @@ const CheckOutMain: React.FC = () => {
   const [discount, setDiscount] = useState(0);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState("");
   const [agreedToTerms, setAgreedToTerms] = useState(false);
+
+  // Saved addresses for the logged-in user
+  const { data: addresses = [], isLoading: addressesLoading, refetch: refetchAddresses } =
+    useGetMyAddressesQuery();
+  const [createAddress, { isLoading: isCreatingAddress }] = useCreateAddressMutation();
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const [showAddressForm, setShowAddressForm] = useState(false);
+  const [addressForm, setAddressForm] = useState<Partial<IAddress>>({
+    fullName: "",
+    phone: "",
+    email: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    postalCode: "",
+    country: "India",
+    addressType: "home",
+    isDefault: false,
+  });
 
   const [billingInfo, setBillingInfo] = useState<any>({
     email: user?.email || "",
@@ -162,6 +187,50 @@ const CheckOutMain: React.FC = () => {
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
+  };
+
+  // Map a saved address to the billing form
+  const applyAddressToBilling = (addr: IAddress) => {
+    const [firstName, ...rest] = (addr.fullName || "").trim().split(" ");
+    setBillingInfo((prev: any) => ({
+      ...prev,
+      email: addr.email || prev.email,
+      firstName: firstName || prev.firstName,
+      lastName: rest.join(" ") || prev.lastName,
+      company: addr.addressLine2 || "",
+      country: addr.country || "India",
+      street: addr.addressLine1 || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      zip: addr.postalCode || "",
+      phone: addr.phone || prev.phone,
+    }));
+  };
+
+  // Preselect default address (or first) and apply to billing when addresses load
+  useEffect(() => {
+    if (addresses && addresses.length > 0) {
+      const def = addresses.find((a) => a.isDefault) || addresses[0];
+      if (def?._id && def._id !== selectedAddressId) {
+        setSelectedAddressId(def._id);
+        applyAddressToBilling(def as IAddress);
+        setShowAddressForm(false);
+      }
+    }
+  }, [addresses]);
+
+  const handleSaveNewAddress = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const created = (await createAddress(addressForm as IAddress).unwrap()) as IAddress;
+      toast.success("Address added");
+      await refetchAddresses();
+      setSelectedAddressId(created._id || null);
+      applyAddressToBilling(created);
+      setShowAddressForm(false);
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to add address");
+    }
   };
 
   const handlePlaceOrder = async () => {
@@ -401,6 +470,171 @@ const CheckOutMain: React.FC = () => {
             {/* Billing Form */}
             <div className="rts-billing-details-area">
               <h3 className="title">Billing Details</h3>
+              {/* Saved Addresses Selector */}
+              <div className="mb-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <h5 className="mb-3">Saved Addresses</h5>
+                  {addresses && addresses.length > 0 && (
+                    <button
+                      type="button"
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => setShowAddressForm((s) => !s)}
+                    >
+                      {showAddressForm ? "Close" : "Add New Address"}
+                    </button>
+                  )}
+                </div>
+                {addressesLoading ? (
+                  <div>Loading addresses...</div>
+                ) : addresses && addresses.length > 0 ? (
+                  <div className="list-group mb-3">
+                    {addresses.map((a) => (
+                      <label key={a._id} className="list-group-item d-flex align-items-start gap-2">
+                        <input
+                          type="radio"
+                          name="selectedAddress"
+                          className="form-check-input mt-1"
+                          checked={selectedAddressId === a._id}
+                          onChange={() => {
+                            setSelectedAddressId(a._id || null);
+                            applyAddressToBilling(a as IAddress);
+                          }}
+                        />
+                        <div>
+                          <div className="fw-semibold">
+                            {a.fullName}
+                            {a.isDefault && <span className="badge bg-primary ms-2">Default</span>}
+                            <span className="badge bg-secondary ms-2">{a.addressType}</span>
+                          </div>
+                          <div className="small text-muted">
+                            {a.addressLine1}
+                            {a.addressLine2 ? `, ${a.addressLine2}` : ""}, {a.city}, {a.state} {a.postalCode}, {a.country}
+                          </div>
+                          <div className="small text-muted">Phone: {a.phone} {a.email ? `· ${a.email}` : ""}</div>
+                        </div>
+                      </label>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="alert alert-info">You don't have any saved addresses. Please add one below.</div>
+                )}
+
+                {(showAddressForm || (addresses && addresses.length === 0)) && (
+                  <form onSubmit={handleSaveNewAddress} className="border rounded p-3">
+                    <div className="row">
+                      <div className="col-md-6 mb-3">
+                        <label>Full Name *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.fullName || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <label>Phone *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.phone || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <label>Email</label>
+                        <input
+                          type="email"
+                          className="form-control"
+                          value={addressForm.email || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, email: e.target.value })}
+                        />
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <label>Address Type</label>
+                        <select
+                          className="form-control"
+                          value={addressForm.addressType || "home"}
+                          onChange={(e) => setAddressForm({ ...addressForm, addressType: e.target.value as any })}
+                        >
+                          <option value="home">Home</option>
+                          <option value="work">Work</option>
+                          <option value="other">Other</option>
+                        </select>
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label>Address Line 1 *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.addressLine1 || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-12 mb-3">
+                        <label>Address Line 2</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.addressLine2 || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })}
+                        />
+                      </div>
+                      <div className="col-md-4 mb-3">
+                        <label>City *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.city || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-4 mb-3">
+                        <label>State *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.state || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-4 mb-3">
+                        <label>Postal Code *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.postalCode || ""}
+                          onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <label>Country *</label>
+                        <input
+                          className="form-control"
+                          value={addressForm.country || "India"}
+                          onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-6 mb-3">
+                        <div className="form-check mt-4">
+                          <input
+                            type="checkbox"
+                            className="form-check-input"
+                            id="addrIsDefault"
+                            checked={addressForm.isDefault || false}
+                            onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
+                          />
+                          <label className="form-check-label" htmlFor="addrIsDefault">
+                            Set as default address
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                    <button type="submit" className="rts-btn btn-primary" disabled={isCreatingAddress}>
+                      {isCreatingAddress ? "Saving..." : "Save Address"}
+                    </button>
+                  </form>
+                )}
+              </div>
               <form onSubmit={(e) => e.preventDefault()}>
                 <div className="single-input">
                   <label htmlFor="email">Email Address*</label>
