@@ -137,6 +137,10 @@ const transformProductToPost = (product: any): PostType => {
 function ShopContent() {
   const searchParams = useSearchParams();
   const searchQuery = searchParams.get("search")?.toLowerCase() || "";
+  // Product-category linkage params from HomeCategories clicks
+  const pc = (searchParams.get('pc') || '').trim();
+  const psc = (searchParams.get('psc') || '').trim();
+  const pssc = (searchParams.get('pssc') || '').trim();
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
@@ -282,6 +286,16 @@ function ShopContent() {
       products = newArrivals;
     }
 
+    // Apply product-category deep link filters (prefer deepest specified)
+    const idOf = (v: any) => (v && typeof v === 'object' ? v?._id : v);
+    if (pssc) {
+      products = (products || []).filter((p: any) => String(idOf(p?.subSubcategory) || '') === String(pssc));
+    } else if (psc) {
+      products = (products || []).filter((p: any) => String(idOf(p?.subcategory) || '') === String(psc));
+    } else if (pc) {
+      products = (products || []).filter((p: any) => String(idOf(p?.category) || '') === String(pc));
+    }
+
     return (products || []).map(transformProductToPost);
   }, [
     allProducts,
@@ -293,6 +307,9 @@ function ShopContent() {
     showFeatured,
     showTrending,
     showNewArrivals,
+    pc,
+    psc,
+    pssc,
   ]);
 
   const handleCategoryChange = (category: string) => {

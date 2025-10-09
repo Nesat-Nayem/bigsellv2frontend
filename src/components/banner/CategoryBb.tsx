@@ -63,9 +63,21 @@ function CategoryBannerBottom() {
     },
   };
 
+  const buildShopHref = (cat: any) => {
+    const pc = cat?.productCategory
+    const psc = cat?.productSubcategory
+    const pssc = cat?.productSubSubcategory
+    const params = new URLSearchParams()
+    if (pc) params.set('pc', String(pc))
+    if (psc) params.set('psc', String(psc))
+    if (pssc) params.set('pssc', String(pssc))
+    const qs = params.toString()
+    return `/shop${qs ? `?${qs}` : ''}`
+  }
+
   const renderSlide = (cat: any, idx: number) => (
     <SwiperSlide key={cat._id || idx}>
-      <Link href={`/shop?category=${encodeURIComponent(cat._id)}`}>
+      <Link href={buildShopHref(cat)}>
         <div className="flex flex-col items-center text-center">
           <div
             style={{
@@ -104,15 +116,15 @@ function CategoryBannerBottom() {
         </div>
 
         {/* Section 1: First 10 categories */}
-        {firstTen.length > 0 && (
-          <div className="row  mb-0 mb-sm-5">
-            <div className="col-lg-12">
-              <Swiper {...swiperSettings}>
-                {firstTen.map((cat, idx) => renderSlide(cat, idx))}
-              </Swiper>
-            </div>
-          </div>
-        )}
+            {firstTen.length > 0 && (
+              <div className="row  mb-0 mb-sm-5">
+                <div className="col-lg-12">
+                  <Swiper {...swiperSettings}>
+                    {firstTen.map((cat, idx) => renderSlide(cat, idx))}
+                  </Swiper>
+                </div>
+              </div>
+            )}
 
         {/* Banner Between Sections */}
         <div className="text-center  mb-0 mb-sm-5">
@@ -152,9 +164,7 @@ function CategoryBannerBottom() {
               <div className="row g-4 d-flex justify-content-center">
                 {remaining.map((cat, idx) => (
                   <div key={cat._id || idx} className="col-6 col-md-3 col-lg-2">
-                    <Link
-                      href={`/shop?category=${encodeURIComponent(cat._id)}`}
-                    >
+                    <Link href={buildShopHref(cat)}>
                       <div className="d-flex flex-column align-items-center text-center">
                         <div
                           className="ratio ratio-1x1 w-100 bg-light rounded overflow-hidden"
