@@ -157,6 +157,11 @@ export default function Home() {
                         required
                       />
                     </div>
+                    <div className="d-flex justify-content-end mb-3">
+                      <a href="/forgot-password" className="text-primary text-decoration-underline">
+                        Forgot password?
+                      </a>
+                    </div>
                     <button
                       type="submit"
                       className="rts-btn btn-primary"
@@ -176,23 +181,7 @@ export default function Home() {
                     )}
 
                     <div className="another-way-to-registration">
-                      <div className="registradion-top-text">
-                        <span>Or Register With</span>
-                      </div>
-                      <div className="login-with-brand">
-                        <a href="#" className="single">
-                          <img
-                            src="assets/images/form/google.svg"
-                            alt="login"
-                          />
-                        </a>
-                        <a href="#" className="single">
-                          <img
-                            src="assets/images/form/facebook.svg"
-                            alt="login"
-                          />
-                        </a>
-                      </div>
+     
                       <p>
                         Don't have Acocut? <a href="/register">Registration</a>
                       </p>
