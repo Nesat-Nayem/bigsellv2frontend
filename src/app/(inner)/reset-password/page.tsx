@@ -1,11 +1,11 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import HeaderThree from "@/components/header/HeaderThree";
 import ShortService from "@/components/service/ShortService";
 import FooterOne from "@/components/footer/FooterOne";
 
-export default function ResetPasswordPage() {
+function ResetPasswordForm() {
   const params = useSearchParams();
   const initialEmail = params.get("email") || "";
   const [email, setEmail] = useState(initialEmail);
@@ -110,5 +110,13 @@ export default function ResetPasswordPage() {
       <ShortService />
       <FooterOne />
     </div>
+  );
+}
+
+export default function ResetPasswordPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ResetPasswordForm />
+    </Suspense>
   );
 }
