@@ -49,22 +49,21 @@ const CartMain = () => {
 
   const finalTotal = subtotal - subtotal * discount;
 
-
-
-
   // add to cart to page
   const { addToCart } = useCart();
   const handleAdd = (item: any) => {
     addToCart({
       id: Date.now(),
       image: item.image,
-      title: item.name ?? 'Default Product Title',
-      price: parseFloat(item.price ?? '0'),
+      title: item.title ?? item.name ?? 'Default Product Title',
+      price: Number(item.price ?? 0),
       quantity: 1,
       active: true,
     });
+    // remove from wishlist after adding to cart
+    removeFromWishlist(item.id);
   };
-  const addcart = () => toast('Successfully Add To Cart!');
+  const addcart = () => toast('Moved to cart');
 
 
   return (
