@@ -86,10 +86,19 @@ const sanitizeNumber = (v: any): number => {
 };
 
 const normalizeRawItem = (raw: CartItemRaw): CartItem => {
-  const productIdRaw =
-    typeof raw.productId !== "undefined" ? raw.productId : undefined;
-  const productId =
+  const fallbackObjId =
+    (raw as any)?._id ?? (raw as any)?.product?._id;
+  let productIdRaw =
+    typeof raw.productId !== "undefined" ? raw.productId : fallbackObjId;
+  let productId =
     typeof productIdRaw !== "undefined" ? String(productIdRaw) : undefined;
+  // If id looks like a Mongo ObjectId, treat it as productId
+  if (!productId && typeof raw.id !== "undefined") {
+    const idStr = String(raw.id);
+    if (/^[0-9a-fA-F]{24}$/.test(idStr)) {
+      productId = idStr;
+    }
+  }
 
   const idSource =
     typeof raw.id !== "undefined"

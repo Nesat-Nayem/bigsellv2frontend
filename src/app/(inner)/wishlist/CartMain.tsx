@@ -37,7 +37,8 @@ const CartMain = () => {
 
   const clearCart = () => {
     if (typeof window !== 'undefined') {
-      localStorage.removeItem('wishlistItems');
+      localStorage.removeItem('wishlist');
+      localStorage.removeItem('wishlistItems'); // legacy key, if any
       localStorage.removeItem('coupon');
       localStorage.removeItem('discount');
     }
@@ -51,13 +52,46 @@ const CartMain = () => {
 
   // add to cart to page
   const { addToCart } = useCart();
-  const handleAdd = (item: any) => {
+  const isValidObjectId = (v: any) => /^[0-9a-fA-F]{24}$/.test(String(v ?? ''));
+  const handleAdd = async (item: any) => {
+    const title = item.title ?? item.name ?? '';
+    let productId: string | undefined =
+      item?.productId || item?._id || (isValidObjectId(item?.id) ? String(item.id) : undefined);
+
+    // If we still don't have a valid productId, attempt to resolve via search API using the title
+    if (!isValidObjectId(productId) && title) {
+      try {
+        const resp = await fetch(`/api/products/search?q=${encodeURIComponent(title)}`, {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+        });
+        if (resp.ok) {
+          const json = await resp.json();
+          const list = Array.isArray(json?.data) ? json.data : (json?.data ? [json.data] : []);
+          const exact = list.find((p: any) => (p?.name ?? '').trim() === title.trim());
+          const pick = exact || list[0];
+          if (pick?._id && isValidObjectId(pick._id)) {
+            productId = String(pick._id);
+          }
+        }
+      } catch (e) {
+        // ignore, fallback to toast below
+      }
+    }
+
+    if (!isValidObjectId(productId)) {
+      toast.error('❌ Unable to add this wishlist item. Please open the product page and add to cart from there.');
+      return;
+    }
+
     addToCart({
-      id: Date.now(),
+      id: productId ?? item?.id ?? Date.now(),
+      productId,
       image: item.image,
-      title: item.title ?? item.name ?? 'Default Product Title',
+      title: title || 'Default Product Title',
       price: Number(item.price ?? 0),
-      quantity: 1,
+      quantity: Number(item.quantity ?? 1) || 1,
       active: true,
     });
     // remove from wishlist after adding to cart

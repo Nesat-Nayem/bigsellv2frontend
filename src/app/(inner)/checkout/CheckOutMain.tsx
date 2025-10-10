@@ -228,6 +228,13 @@ const CheckOutMain: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
+  // Simple Mongo ObjectId validator (client-side)
+  const isValidObjectId = (v: any): boolean => {
+    if (!v) return false;
+    const s = String(v);
+    return /^[0-9a-fA-F]{24}$/.test(s);
+  };
+
   
 
   const handleSaveNewAddress = async (e: React.FormEvent) => {
@@ -245,6 +252,9 @@ const CheckOutMain: React.FC = () => {
   };
 
   const handlePlaceOrder = async () => {
+    // Clear any existing toasts for a cleaner UX
+    try { toast.dismiss(); } catch { /* noop */ }
+
     if (!isAuthenticated) {
       toast.error("⚠️ Please login to place an order", {
         position: "top-right",
@@ -279,17 +289,34 @@ const CheckOutMain: React.FC = () => {
     }
 
     try {
-      const orderData = {
-        items: safeCartItems.map((item: any) => ({
-          productId: item.productId || item.id,
+      // Build request items with strict productId validation and fallback
+      const itemsForRequest = safeCartItems.map((item: any) => {
+        const candidate =
+          item.productId || item?.raw?._id || (isValidObjectId(item.id) ? String(item.id) : undefined);
+        return {
+          productId: candidate,
           quantity: item.quantity || 1,
           price:
-            typeof item.price === "string"
-              ? parseFloat(item.price)
-              : item.price,
+            typeof item.price === "string" ? parseFloat(item.price) : item.price,
           selectedColor: item.selectedColor,
           selectedSize: item.selectedSize,
-        })),
+        };
+      });
+
+      const invalidItems = itemsForRequest.filter((it: any) => !isValidObjectId(it.productId));
+      if (invalidItems.length > 0) {
+        toast.error(
+          "❌ Some items in your cart are not available to purchase. Please remove them and try again.",
+          {
+            position: "top-right",
+            autoClose: 5000,
+          }
+        );
+        return;
+      }
+
+      const orderData = {
+        items: itemsForRequest,
         shippingAddress: {
           fullName: `${billingInfo.firstName} ${billingInfo.lastName}`.trim(),
           phone: billingInfo.phone,
@@ -326,6 +353,7 @@ const CheckOutMain: React.FC = () => {
       console.log("Order response:", response);
 
       if (response) {
+        try { toast.dismiss(); } catch { /* noop */ }
         // Clear cart first
         if (typeof clearCart === "function") clearCart();
 
@@ -402,7 +430,16 @@ const CheckOutMain: React.FC = () => {
         errorMessage = "❌ " + errorMessage;
       }
 
+      // Normalize common backend validation messages to be more user-friendly
+      if (/Invalid product ID/i.test(errorMessage)) {
+        errorMessage = "❌ Some items in your cart are invalid. Please remove them and try again.";
+      }
+      if (/Product not found/i.test(errorMessage)) {
+        errorMessage = "❌ One or more products are no longer available. Please refresh your cart.";
+      }
+
       // Show error toast with configuration
+      try { toast.dismiss(); } catch { /* noop */ }
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
@@ -898,27 +935,17 @@ const CheckOutMain: React.FC = () => {
                   <li>
                     <input
                       type="radio"
-                      id="bank"
+                      id="cashfree"
                       name="payment"
-                      disabled
                       onChange={() => setSelectedPaymentMethod("bank")}
+                    checked={selectedPaymentMethod === "cashfree"}
+
                     />
-                    <label htmlFor="bank" style={{ opacity: 0.5 }}>
-                      Direct Bank Transfer (Coming Soon)
+                    <label htmlFor="cashfree" style={{ opacity: 0.5 }}>
+                   pay with CashFree
                     </label>
                   </li>
-                  <li>
-                    <input
-                      type="radio"
-                      id="check"
-                      name="payment"
-                      disabled
-                      onChange={() => setSelectedPaymentMethod("check")}
-                    />
-                    <label htmlFor="check" style={{ opacity: 0.5 }}>
-                      Check Payments (Coming Soon)
-                    </label>
-                  </li>
+        
                   <li>
                     <input
                       type="radio"
@@ -929,18 +956,7 @@ const CheckOutMain: React.FC = () => {
                     />
                     <label htmlFor="cod">Cash On Delivery</label>
                   </li>
-                  <li>
-                    <input
-                      type="radio"
-                      id="paypal"
-                      name="payment"
-                      disabled
-                      onChange={() => setSelectedPaymentMethod("paypal")}
-                    />
-                    <label htmlFor="paypal" style={{ opacity: 0.5 }}>
-                      Paypal (Coming Soon)
-                    </label>
-                  </li>
+        
                 </ul>
                 {validationErrors.payment && (
                   <span

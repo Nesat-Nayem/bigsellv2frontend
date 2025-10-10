@@ -3,7 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 
 interface WishlistItem {
-  id: number;
+  id: number | string;
+  productId?: string;
+  _id?: string; // sometimes product documents are stored
   image: string;
   title: string;
   price: number;
@@ -13,8 +15,8 @@ interface WishlistItem {
 interface WishlistContextProps {
   wishlistItems: WishlistItem[];
   addToWishlist: (item: WishlistItem) => void;
-  removeFromWishlist: (id: number) => void;
-  updateItemQuantity: (id: number, quantity: number) => void;
+  removeFromWishlist: (id: number | string) => void;
+  updateItemQuantity: (id: number | string, quantity: number) => void;
   isWishlistLoaded: boolean;
 }
 
@@ -63,15 +65,15 @@ export const WishlistProvider = ({ children }: { children: React.ReactNode }) =>
   };
 
   // Remove from wishlist
-  const removeFromWishlist = (id: number) => {
-    setWishlistItems((prev) => prev.filter((item) => item.id !== id));
+  const removeFromWishlist = (id: number | string) => {
+    setWishlistItems((prev) => prev.filter((item) => String(item.id) !== String(id)));
   };
 
   // Update quantity
-  const updateItemQuantity = (id: number, quantity: number) => {
+  const updateItemQuantity = (id: number | string, quantity: number) => {
     setWishlistItems((prev) =>
       prev.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, quantity) } : item
+        String(item.id) === String(id) ? { ...item, quantity: Math.max(1, quantity) } : item
       )
     );
   };

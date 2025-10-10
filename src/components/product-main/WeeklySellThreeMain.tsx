@@ -80,7 +80,8 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
     const finalPrice = productData?.price ?? parseFloat(Price ?? "0");
 
     addToCart({
-      id: Date.now(), // unique ID
+      id: productData?._id ?? Date.now(), // prefer stable product id
+      productId: productData?._id,
       image:
         productData?.thumbnail ||
         productData?.images?.[0] ||
@@ -100,7 +101,8 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
     const finalPrice = productData?.price ?? parseFloat(Price ?? "0");
 
     addToWishlist({
-      id: Date.now(),
+      id: productData?._id ?? Date.now(),
+      productId: productData?._id,
       image:
         productData?.thumbnail ||
         productData?.images?.[0] ||
