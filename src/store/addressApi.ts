@@ -40,7 +40,10 @@ export const addressApi = createApi({
     baseUrl: `${baseUrl}`,
     prepareHeaders: (headers, { getState }) => {
       const state = getState() as IRootState;
-      const token = (state as any)?.auth?.token;
+      // Prefer Redux token, but fall back to localStorage so first request after refresh is authenticated
+      const stateToken = (state as any)?.auth?.token as string | undefined;
+      const lsToken = typeof window !== 'undefined' ? (localStorage.getItem('authToken') || undefined) : undefined;
+      const token = stateToken || lsToken;
       if (token) headers.set("Authorization", `Bearer ${token}`);
       headers.set("Content-Type", "application/json");
       return headers;

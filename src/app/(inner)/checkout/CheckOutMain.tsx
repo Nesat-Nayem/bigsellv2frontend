@@ -51,7 +51,7 @@ const CheckOutMain: React.FC = () => {
 
   // Saved addresses for the logged-in user
   const { data: addresses = [], isLoading: addressesLoading, refetch: refetchAddresses } =
-    useGetMyAddressesQuery();
+    useGetMyAddressesQuery(undefined, { refetchOnMountOrArgChange: true, refetchOnFocus: true, refetchOnReconnect: true });
   const [createAddress, { isLoading: isCreatingAddress }] = useCreateAddressMutation();
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
   const [showAddressForm, setShowAddressForm] = useState(false);
@@ -87,6 +87,45 @@ const CheckOutMain: React.FC = () => {
   const [validationErrors, setValidationErrors] = useState<
     Record<string, string>
   >({});
+
+  // Map a saved address to the billing form (keep at top-level for reuse)
+  const applyAddressToBilling = (addr: IAddress) => {
+    const [firstName, ...rest] = (addr.fullName || "").trim().split(" ");
+    setBillingInfo((prev: any) => ({
+      ...prev,
+      email: addr.email || prev.email,
+      firstName: firstName || prev.firstName,
+      lastName: rest.join(" ") || prev.lastName,
+      company: addr.addressLine2 || "",
+      country: addr.country || "India",
+      street: addr.addressLine1 || "",
+      city: addr.city || "",
+      state: addr.state || "",
+      zip: addr.postalCode || "",
+      phone: addr.phone || prev.phone,
+    }));
+  };
+
+  // Preselect default address (or first) once after data loads; do not override user's choice
+  // Important: keep this before any early returns to preserve Hooks order
+  useEffect(() => {
+    if (selectedAddressId) return; // user already selected or preselected
+    if (!addressesLoading && addresses && addresses.length > 0) {
+      const def = addresses.find((a) => a.isDefault) || addresses[0];
+      if (def?._id) {
+        setSelectedAddressId(def._id);
+        applyAddressToBilling(def as IAddress);
+        setShowAddressForm(false);
+      }
+    }
+  }, [addressesLoading, addresses, selectedAddressId]);
+
+  // When user clicks a different saved address, sync it to billing form
+  useEffect(() => {
+    if (!selectedAddressId) return;
+    const picked = (addresses || []).find((a) => a._id === selectedAddressId);
+    if (picked) applyAddressToBilling(picked as IAddress);
+  }, [selectedAddressId, addresses]);
 
   // Check and sync auth token from localStorage
   useEffect(() => {
@@ -189,35 +228,7 @@ const CheckOutMain: React.FC = () => {
     return Object.keys(errors).length === 0;
   };
 
-  // Map a saved address to the billing form
-  const applyAddressToBilling = (addr: IAddress) => {
-    const [firstName, ...rest] = (addr.fullName || "").trim().split(" ");
-    setBillingInfo((prev: any) => ({
-      ...prev,
-      email: addr.email || prev.email,
-      firstName: firstName || prev.firstName,
-      lastName: rest.join(" ") || prev.lastName,
-      company: addr.addressLine2 || "",
-      country: addr.country || "India",
-      street: addr.addressLine1 || "",
-      city: addr.city || "",
-      state: addr.state || "",
-      zip: addr.postalCode || "",
-      phone: addr.phone || prev.phone,
-    }));
-  };
-
-  // Preselect default address (or first) and apply to billing when addresses load
-  useEffect(() => {
-    if (addresses && addresses.length > 0) {
-      const def = addresses.find((a) => a.isDefault) || addresses[0];
-      if (def?._id && def._id !== selectedAddressId) {
-        setSelectedAddressId(def._id);
-        applyAddressToBilling(def as IAddress);
-        setShowAddressForm(false);
-      }
-    }
-  }, [addresses]);
+  
 
   const handleSaveNewAddress = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -485,7 +496,17 @@ const CheckOutMain: React.FC = () => {
                   )}
                 </div>
                 {addressesLoading ? (
-                  <div>Loading addresses...</div>
+                  <div className="list-group mb-3">
+                    {[1, 2, 3].map((k) => (
+                      <div key={k} className="list-group-item">
+                        <div className="placeholder-glow">
+                          <span className="placeholder col-8" style={{ display: 'block', height: 14 }}></span>
+                          <span className="placeholder col-6 mt-2" style={{ display: 'block', height: 12 }}></span>
+                          <span className="placeholder col-4 mt-2" style={{ display: 'block', height: 12 }}></span>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
                 ) : addresses && addresses.length > 0 ? (
                   <div className="list-group mb-3">
                     {addresses.map((a) => (
@@ -494,11 +515,9 @@ const CheckOutMain: React.FC = () => {
                           type="radio"
                           name="selectedAddress"
                           className="form-check-input mt-1"
+                          value={a._id}
                           checked={selectedAddressId === a._id}
-                          onChange={() => {
-                            setSelectedAddressId(a._id || null);
-                            applyAddressToBilling(a as IAddress);
-                          }}
+                          onChange={(e) => setSelectedAddressId(e.currentTarget.value || null)}
                         />
                         <div>
                           <div className="fw-semibold">
