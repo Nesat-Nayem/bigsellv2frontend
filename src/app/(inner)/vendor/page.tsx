@@ -46,7 +46,7 @@ export default function Home() {
       const fd = new FormData();
       fd.append("document", file);
       const res = await fetch(
-        "https://api.bigsell.org/v1/api/upload/kyc-document",
+        "http://localhost:8080/v1/api/upload/kyc-document",
         { method: "POST", body: fd }
       );
       const json = await res.json();
@@ -80,7 +80,7 @@ export default function Home() {
         panUrl: formData.pan,
       };
 
-      const res = await fetch("https://api.bigsell.org/v1/api/vendors/apply", {
+      const res = await fetch("http://localhost:8080/v1/api/vendors/apply", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(payload),
