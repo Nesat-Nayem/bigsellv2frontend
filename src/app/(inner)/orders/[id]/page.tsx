@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import HeaderOne from "@/components/header/HeaderOne";
 import FooterOne from "@/components/footer/FooterOne";
 import { useDispatch, useSelector } from "react-redux";
@@ -10,6 +10,7 @@ import { setCredentials } from "@/store/authSlice";
 import { RootState } from "@/store";
 import { useGetOrderByIdQuery } from "@/store/ordersApi";
 import HeaderThree from "@/components/header/HeaderThree";
+import { useCart } from "@/components/header/CartContext";
 
 // Decode JWT from localStorage to rehydrate auth on hard-refresh
 const decodeToken = (token: string) => {
@@ -60,9 +61,11 @@ function StatusBadge({ value }: { value?: string }) {
 export default function OrderDetailsPage() {
   const params = useParams<{ id: string }>();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useDispatch();
   const token = useSelector((s: RootState) => s.auth.token);
   const id = params?.id;
+  const { clearCart, isCartLoaded } = useCart();
 
   // Ensure auth token exists in Redux on direct page load
   useEffect(() => {
@@ -107,6 +110,47 @@ export default function OrderDetailsPage() {
       refetch();
     }
   }, [id, token, refetch]);
+
+  // Clear cart when arriving from Cashfree with payment=success (run once per order id)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!id) return;
+    if (!isCartLoaded) return;
+    const payment = searchParams?.get("payment");
+    if (payment === "success") {
+      const key = `cartClearedForOrder:${id}`;
+      try {
+        if (!sessionStorage.getItem(key)) {
+          clearCart();
+          sessionStorage.setItem(key, "1");
+          // notify any listeners to refresh cart UI
+          window.dispatchEvent(new Event("refreshCart"));
+        }
+      } catch {
+        // no-op
+      }
+    }
+  }, [id, searchParams, clearCart, isCartLoaded]);
+
+  // Clear cart if the fetched order is already paid (safety net)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!id) return;
+    if (!isCartLoaded) return;
+    const paid = (order as any)?.paymentStatus === "paid" || (order as any)?.paymentInfo?.status === "completed";
+    if (paid) {
+      const key = `cartClearedForOrder:${id}`;
+      try {
+        if (!sessionStorage.getItem(key)) {
+          clearCart();
+          sessionStorage.setItem(key, "1");
+          window.dispatchEvent(new Event("refreshCart"));
+        }
+      } catch {
+        // no-op
+      }
+    }
+  }, [id, order, clearCart, isCartLoaded]);
 
   return (
     <div className="demo-one">

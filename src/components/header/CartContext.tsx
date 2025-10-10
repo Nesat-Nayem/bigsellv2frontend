@@ -321,7 +321,16 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   };
 
   const clearCart = () => {
-    setCartItems((prev) => prev.filter((i) => !i.active));
+    setCartItems((prev) => {
+      const next = prev.filter((i) => !i.active);
+      // Persist immediately so any listeners that reload from storage see cleared state
+      try {
+        persist(next);
+      } catch (e) {
+        // ignore persistence errors
+      }
+      return next;
+    });
   };
 
   /* coupon rules (client-side only; validate on server before charging) */

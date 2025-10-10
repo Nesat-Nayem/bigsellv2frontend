@@ -180,8 +180,10 @@ const CheckOutMain: React.FC = () => {
     return sum + (isNaN(price) ? 0 : price * (item.quantity || 1));
   }, 0);
   const discountAmount = subtotal * discount;
-  const shippingCost = discount > 0 ? 0 : DEFAULT_SHIPPING_COST;
-  const total = subtotal - discountAmount + shippingCost;
+  // Match backend: standard shipping = 50, tax = 5% of subtotal
+  const taxAmount = subtotal * 0.05;
+  const shippingCost = DEFAULT_SHIPPING_COST; // always standard in payload
+  const total = subtotal - discountAmount + shippingCost + taxAmount;
 
   if (!isCartLoaded) {
     return <div>Loading checkout...</div>;
@@ -916,7 +918,7 @@ const CheckOutMain: React.FC = () => {
               {discount > 0 && (
                 <div className="single-shop-list">
                   <div className="left-area">
-                    <span>Discount (25%)</span>
+                    <span>Discount</span>
                   </div>
                   <span className="price">-₹ {discountAmount.toFixed(2)}</span>
                 </div>
@@ -927,6 +929,13 @@ const CheckOutMain: React.FC = () => {
                   <span>Shipping</span>
                 </div>
                 <span className="price">₹ {shippingCost.toFixed(2)}</span>
+              </div>
+
+              <div className="single-shop-list">
+                <div className="left-area">
+                  <span>Tax (5%)</span>
+                </div>
+                <span className="price">₹ {taxAmount.toFixed(2)}</span>
               </div>
 
               <div className="single-shop-list">
