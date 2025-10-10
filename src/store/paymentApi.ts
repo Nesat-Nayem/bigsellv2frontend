@@ -224,6 +224,26 @@ export const paymentsApi = createApi({
       invalidatesTags: [{ type: "Payments", id: "LIST" }],
     }),
 
+    // Cashfree: initiate payment for an existing order
+    initiateCashfreePayment: builder.mutation<
+      {
+        paymentId?: string;
+        orderId?: string;
+        gateway?: string;
+        status?: string;
+        cashfreeOrderId?: string;
+        paymentSessionId?: string;
+      },
+      { orderId: string }
+    >({
+      query: (body) => ({
+        url: "/payments/cashfree/initiate",
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponse<any>) => response?.data,
+    }),
+
     // Refund payment (Admin only)
     refundPayment: builder.mutation<
       IPayment,
@@ -296,6 +316,7 @@ export const {
   useGetMyPaymentsQuery,
   useGetPaymentByIdQuery,
   useVerifyPaymentMutation,
+  useInitiateCashfreePaymentMutation,
   useRefundPaymentMutation,
   useProcessWebhookMutation,
   useGetPaymentSummaryQuery,

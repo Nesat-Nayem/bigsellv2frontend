@@ -4,6 +4,8 @@ import { useCart } from "@/components/header/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCreateOrderMutation } from "@/store/ordersApi";
+import { useInitiateCashfreePaymentMutation } from "@/store/paymentApi";
+import Script from "next/script";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
 import { setCredentials, setUser } from "@/store/authSlice";
@@ -39,6 +41,7 @@ const CheckOutMain: React.FC = () => {
   const { cartItems, isCartLoaded, clearCart } = useCart();
   const [createOrder, { isLoading: isCreatingOrder }] =
     useCreateOrderMutation();
+  const [initiateCashfreePayment] = useInitiateCashfreePaymentMutation();
 
   const isAuthenticated = useSelector((state: any) => !!state?.auth?.token);
   const user = useSelector((state: any) => state?.auth?.user);
@@ -280,14 +283,6 @@ const CheckOutMain: React.FC = () => {
       return;
     }
 
-    if (selectedPaymentMethod !== "cod") {
-      toast.error("⚠️ Currently only Cash on Delivery is available", {
-        position: "top-right",
-        autoClose: 4000,
-      });
-      return;
-    }
-
     try {
       // Build request items with strict productId validation and fallback
       const itemsForRequest = safeCartItems.map((item: any) => {
@@ -341,7 +336,7 @@ const CheckOutMain: React.FC = () => {
           country: billingInfo.country,
           isDefault: true,
         },
-        paymentMethod: "cash_on_delivery", // backend expects this value
+        paymentMethod: selectedPaymentMethod === "cod" ? "cash_on_delivery" : "card",
         shippingMethod: "standard", // Required field
         notes: billingInfo.orderNotes || undefined,
         couponCode: discount > 0 ? coupon : undefined,
@@ -354,36 +349,52 @@ const CheckOutMain: React.FC = () => {
 
       if (response) {
         try { toast.dismiss(); } catch { /* noop */ }
-        // Clear cart first
-        if (typeof clearCart === "function") clearCart();
-
         // Get order ID for redirect and display
         const orderId =
           response._id || response.orderNumber || (response as any).id;
         
-        // Show success toast with order ID
-        toast.success(
-          `🎉 Order placed successfully! ${orderId ? `Order ID: ${orderId}` : ''}`,
-          {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-          }
-        );
+        if (selectedPaymentMethod === "cod") {
+          // Clear cart first
+          if (typeof clearCart === "function") clearCart();
 
-        // Redirect to order details page after a short delay
-        if (orderId) {
-          setTimeout(() => {
-            router.push(`/orders/${orderId}`);
-          }, 1500);
-        } else {
-          // Fallback to account orders if no order ID
-          setTimeout(() => {
-            router.push("/account?tab=orders");
-          }, 1500);
+          // Show success toast with order ID and redirect
+          toast.success(
+            `🎉 Order placed successfully! ${orderId ? `Order ID: ${orderId}` : ''}`,
+            {
+              position: "top-right",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+            }
+          );
+
+          if (orderId) {
+            setTimeout(() => router.push(`/orders/${orderId}`), 1500);
+          } else {
+            setTimeout(() => router.push("/account?tab=orders"), 1500);
+          }
+        } else if (selectedPaymentMethod === "cashfree") {
+          if (!orderId) {
+            throw new Error("Failed to resolve order ID for Cashfree payment");
+          }
+
+          // Initiate Cashfree payment to get paymentSessionId
+          const pay = await initiateCashfreePayment({ orderId }).unwrap();
+          const paymentSessionId = (pay as any)?.paymentSessionId;
+          if (!paymentSessionId) {
+            throw new Error("Failed to get Cashfree payment session");
+          }
+
+          // Ensure SDK is available and open checkout
+          const mode = process.env.NEXT_PUBLIC_CASHFREE_MODE === 'production' ? 'production' : 'sandbox';
+          const cf = (window as any).Cashfree ? (window as any).Cashfree({ mode }) : null;
+          if (!cf) {
+            throw new Error("Cashfree SDK not loaded");
+          }
+          await cf.checkout({ paymentSessionId, redirectTarget: "_self" });
+          // Redirect occurs; on return, backend redirects to /orders/:id with status
         }
       }
     } catch (error: any) {
@@ -937,15 +948,14 @@ const CheckOutMain: React.FC = () => {
                       type="radio"
                       id="cashfree"
                       name="payment"
-                      onChange={() => setSelectedPaymentMethod("bank")}
-                    checked={selectedPaymentMethod === "cashfree"}
-
+                      onChange={() => setSelectedPaymentMethod("cashfree")}
+                      checked={selectedPaymentMethod === "cashfree"}
                     />
-                    <label htmlFor="cashfree" style={{ opacity: 0.5 }}>
-                   pay with CashFree
+                    <label htmlFor="cashfree" style={{ opacity: 0.9 }}>
+                      Pay with Cashfree
                     </label>
                   </li>
-        
+
                   <li>
                     <input
                       type="radio"
@@ -956,13 +966,9 @@ const CheckOutMain: React.FC = () => {
                     />
                     <label htmlFor="cod">Cash On Delivery</label>
                   </li>
-        
                 </ul>
                 {validationErrors.payment && (
-                  <span
-                    className="error-message"
-                    style={{ color: "red", fontSize: 12 }}
-                  >
+                  <span className="error-message" style={{ color: "red", fontSize: 12 }}>
                     {validationErrors.payment}
                   </span>
                 )}
@@ -975,21 +981,10 @@ const CheckOutMain: React.FC = () => {
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                   />
-                  <label htmlFor="terms">
-                    {" "}
-                    I have read and agree to terms and conditions *
-                  </label>
+                  <label htmlFor="terms"> I have read and agree to terms and conditions *</label>
                 </div>
                 {validationErrors.terms && (
-                  <span
-                    className="error-message"
-                    style={{
-                      color: "red",
-                      fontSize: 12,
-                      display: "block",
-                      marginBottom: 10,
-                    }}
-                  >
+                  <span className="error-message" style={{ color: "red", fontSize: 12, display: "block", marginBottom: 10 }}>
                     {validationErrors.terms}
                   </span>
                 )}
@@ -998,10 +993,7 @@ const CheckOutMain: React.FC = () => {
                   className="rts-btn btn-primary"
                   onClick={handlePlaceOrder}
                   disabled={isCreatingOrder || safeCartItems.length === 0}
-                  style={{
-                    width: "100%",
-                    cursor: isCreatingOrder ? "not-allowed" : "pointer",
-                  }}
+                  style={{ width: "100%", cursor: isCreatingOrder ? "not-allowed" : "pointer" }}
                 >
                   {isCreatingOrder ? "Processing..." : "Place Order"}
                 </button>
@@ -1010,6 +1002,8 @@ const CheckOutMain: React.FC = () => {
           </div>
         </div>
       </div>
+      {/* Cashfree SDK */}
+      <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="afterInteractive" />
     </div>
   );
 };
