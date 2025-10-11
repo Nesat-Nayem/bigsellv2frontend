@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCreateOrderMutation } from "@/store/ordersApi";
 import { useInitiateCashfreePaymentMutation } from "@/store/paymentApi";
+import { useApplyMutation } from "@/store/couponApi";
+
 import Script from "next/script";
 import { toast } from "react-toastify";
 import { useSelector, useDispatch } from "react-redux";
@@ -42,6 +44,7 @@ const CheckOutMain: React.FC = () => {
   const [createOrder, { isLoading: isCreatingOrder }] =
     useCreateOrderMutation();
   const [initiateCashfreePayment] = useInitiateCashfreePaymentMutation();
+  const [applyCouponMut] = useApplyMutation();
 
   const isAuthenticated = useSelector((state: any) => !!state?.auth?.token);
   const user = useSelector((state: any) => state?.auth?.user);
@@ -163,13 +166,35 @@ const CheckOutMain: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user]);
 
-  const handleCouponApply = () => {
-    if (coupon === "12345") {
-      setDiscount(0.25);
-      setCouponMessage("Coupon applied -25% Discount");
-    } else {
+  const handleCouponApply = async () => {
+    try {
+      const itemsPayload = safeCartItems.map((item: any) => ({
+        productId: String(
+          item.productId || item?.raw?._id || (isValidObjectId(item.id) ? item.id : "")
+        ),
+        quantity: Math.max(1, Number(item.quantity) || 1),
+      })).filter((x: any) => isValidObjectId(x.productId));
+
+      if (!coupon || !itemsPayload.length) {
+        setDiscount(0);
+        setCouponMessage("Invalid coupon or empty cart");
+        return;
+      }
+
+      const resp = await applyCouponMut({ code: coupon, items: itemsPayload }).unwrap();
+      const discAmount = Number(resp?.discountAmount || 0);
+      if (discAmount > 0 && subtotal > 0) {
+        // store as fraction for local UI; backend will re-validate on order
+        const frac = Math.min(1, discAmount / subtotal);
+        setDiscount(frac);
+        setCouponMessage(`Coupon applied (₹ ${discAmount.toFixed(2)})`);
+      } else {
+        setDiscount(0);
+        setCouponMessage("Coupon not applicable");
+      }
+    } catch (e: any) {
       setDiscount(0);
-      setCouponMessage("Coupon code is incorrect");
+      setCouponMessage(e?.data?.message || "Failed to apply coupon");
     }
   };
 
