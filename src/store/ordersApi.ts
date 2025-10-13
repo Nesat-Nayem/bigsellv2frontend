@@ -291,6 +291,13 @@ export const ordersApi = createApi({
       transformResponse: (response: ApiResponse<any>) => response?.data,
       providesTags: [{ type: "Orders", id: "SUMMARY" }],
     }),
+
+    // Delhivery: Track shipment for current user's order
+    trackDelhivery: builder.query<any, { id: string }>({
+      query: ({ id }) => `/orders/${encodeURIComponent(id)}/delhivery/track`,
+      transformResponse: (response: ApiResponse<any>) => response?.data ?? response,
+      providesTags: (_r, _e, { id }) => [{ type: "Orders", id }],
+    }),
   }),
 });
 
@@ -305,6 +312,7 @@ export const {
   useReturnOrderMutation,
   useUpdatePaymentMutation,
   useGetOrderSummaryQuery,
+  useTrackDelhiveryQuery,
 } = ordersApi;
 
 export default ordersApi;

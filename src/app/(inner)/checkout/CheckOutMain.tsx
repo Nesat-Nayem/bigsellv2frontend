@@ -408,6 +408,7 @@ const CheckOutMain: React.FC = () => {
           }
 
           // Initiate Cashfree payment to get paymentSessionId
+          console.log("Initiating Cashfree payment for order ID:", orderId);
           const pay = await initiateCashfreePayment({ orderId }).unwrap();
           const paymentSessionId = (pay as any)?.paymentSessionId;
           if (!paymentSessionId) {
