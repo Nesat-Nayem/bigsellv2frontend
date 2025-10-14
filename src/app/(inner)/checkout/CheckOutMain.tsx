@@ -747,7 +747,7 @@ const CheckOutMain: React.FC = () => {
                             onChange={(e) =>
                               setAddressForm({
                                 ...addressForm,
-                                addressType: e.target.value,
+                                addressType: e.target.value as IAddress["addressType"],
                               })
                             }
                           >
