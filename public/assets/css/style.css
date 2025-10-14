@@ -1,48 +1,3 @@
-/*=================Scss Indexing=============
-1.variables
-2.typography
-3.spacing
-4.reset
-5.forms
-6.mixins
-7.shortcode
-8.animations
-9.text-animation
-10.sal
-11.header
-12.mobile-menu
-13.button
-14.nav
-15.banner
-16.swiper
-17.funfacts
-18.cta
-19.about
-20.common
-21.service
-22.projects
-23.working-process
-24.blog
-25.blog-details
-26.footer
-27.search-input
-28./side-bar
-29.team
-30.testimonials
-31.faq
-32.pricing
-33.date-picker
-34.time-picker
-35.appoinment
-36.awesome-feedback
-37.contact
-38.pre-loader.scss
-39.back-to-top
-40. Print Css
-
-
-
-==============================================  */
 /* Default  */
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 @import url("https://fonts.googleapis.com/css2?family=Barlow:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
@@ -9535,7 +9490,6 @@ input {
 
 input[type="text"],
 input[type="password"],
-input[type="email"],
 input[type="number"],
 input[type="tel"],
 textarea {
@@ -9548,9 +9502,24 @@ textarea {
   box-shadow: none;
   padding: 0 5px;
   outline: none;
-  border: var(--border-width) solid var(--color-border);
+  border: 1px solid #ced4da;
   border-radius: var(--radius);
+  background-color: #fff;
   /* -- Placeholder -- */
+}
+input[type="email"] {
+  border: 1px solid #ced4da;
+  border-radius: var(--radius);
+  font-size: var(--font-size-b2);
+  font-weight: 400;
+  height: auto;
+  line-height: 28px;
+  background: transparent;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  padding: 0 5px;
+  outline: none;
+  background-color: #fff;
 }
 
 input[type="text"]::placeholder,
@@ -9795,6 +9764,7 @@ input[type="radio"] {
   height: auto !important;
   max-width: 18px;
   width: max-content;
+  display: none;
 }
 
 /* Hide native checkbox visuals when a custom label pseudo-element is used.

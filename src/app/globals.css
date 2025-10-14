@@ -182,3 +182,22 @@ a {
 .pricing-card button:hover {
   transform: scale(1.05);
 }
+
+.uniform-inputs .form-control,
+.uniform-inputs .form-select,
+.uniform-inputs textarea {
+  min-height: 45px;
+  font-size: 15px;
+  border-radius: 8px;
+}
+
+.uniform-inputs label {
+  font-weight: 500;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.uniform-inputs .form-control:focus,
+.uniform-inputs .form-select:focus {
+  box-shadow: 0 0 0 0.15rem rgba(13, 110, 253, 0.25);
+}

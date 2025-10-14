@@ -134,13 +134,19 @@ export default function Home() {
                   <div key={idx} className="flex-fill">
                     <div
                       className={`rounded-circle mx-auto mb-2 d-flex align-items-center justify-content-center ${
-                        step === idx + 1 ? "bg-dark text-white" : "bg-light border"
+                        step === idx + 1
+                          ? "bg-dark text-white"
+                          : "bg-light border"
                       }`}
                       style={{ width: 40, height: 40 }}
                     >
                       {idx + 1}
                     </div>
-                    <small className={step === idx + 1 ? "fw-bold text-dark" : "text-muted"}>
+                    <small
+                      className={
+                        step === idx + 1 ? "fw-bold text-dark" : "text-muted"
+                      }
+                    >
                       {label}
                     </small>
                   </div>
@@ -148,7 +154,8 @@ export default function Home() {
               </div>
 
               {/* Step Forms */}
-              <form onSubmit={handleSubmit}
+              <form
+                onSubmit={handleSubmit}
                 className="card p-5 shadow-lg border-0 rounded-4"
               >
                 {/* Step 1: Basic Details */}
@@ -443,11 +450,11 @@ export default function Home() {
                       onClick={nextStep}
                       className="btn btn-dark px-4 py-3"
                       disabled={
-                        (step === 2 &&
-                          (isUploadingAadhar ||
-                            isUploadingPan ||
-                            !formData.aadhar ||
-                            !formData.pan))
+                        step === 2 &&
+                        (isUploadingAadhar ||
+                          isUploadingPan ||
+                          !formData.aadhar ||
+                          !formData.pan)
                       }
                     >
                       Next →

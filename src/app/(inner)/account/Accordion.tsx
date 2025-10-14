@@ -6,10 +6,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { useGetMyOrdersQuery } from "@/store/ordersApi";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials, clearCredentials, setUser } from "@/store/authSlice";
-import { 
-  useGetMyProfileQuery, 
-  useUpdateMyProfileMutation, 
-  useChangePasswordMutation 
+import {
+  useGetMyProfileQuery,
+  useUpdateMyProfileMutation,
+  useChangePasswordMutation,
 } from "@/store/userApi";
 import {
   useGetMyAddressesQuery,
@@ -74,13 +74,25 @@ const AccountTabs = () => {
 
   // API Hooks
   const { data: orders = [], isLoading: ordersLoading } = useGetMyOrdersQuery();
-  const { data: profile, isLoading: profileLoading, refetch: refetchProfile } = useGetMyProfileQuery();
-  const { data: addresses = [], isLoading: addressesLoading, refetch: refetchAddresses } = useGetMyAddressesQuery();
-  
-  const [updateProfile, { isLoading: updatingProfile }] = useUpdateMyProfileMutation();
-  const [changePassword, { isLoading: changingPassword }] = useChangePasswordMutation();
-  const [createAddress, { isLoading: creatingAddress }] = useCreateAddressMutation();
-  const [updateAddress, { isLoading: updatingAddress }] = useUpdateAddressMutation();
+  const {
+    data: profile,
+    isLoading: profileLoading,
+    refetch: refetchProfile,
+  } = useGetMyProfileQuery();
+  const {
+    data: addresses = [],
+    isLoading: addressesLoading,
+    refetch: refetchAddresses,
+  } = useGetMyAddressesQuery();
+
+  const [updateProfile, { isLoading: updatingProfile }] =
+    useUpdateMyProfileMutation();
+  const [changePassword, { isLoading: changingPassword }] =
+    useChangePasswordMutation();
+  const [createAddress, { isLoading: creatingAddress }] =
+    useCreateAddressMutation();
+  const [updateAddress, { isLoading: updatingAddress }] =
+    useUpdateAddressMutation();
   const [deleteAddress] = useDeleteAddressMutation();
   const [setDefaultAddress] = useSetDefaultAddressMutation();
 
@@ -138,13 +150,13 @@ const AccountTabs = () => {
     e.preventDefault();
     try {
       const result = await updateProfile(profileForm).unwrap();
-      
+
       // Update token if returned
       if (result.token) {
         localStorage.setItem("authToken", result.token);
         dispatch(setCredentials({ token: result.token, user: result.user }));
       }
-      
+
       toast.success("Profile updated successfully!");
       refetchProfile();
     } catch (error: any) {
@@ -155,7 +167,7 @@ const AccountTabs = () => {
   // Password change handler
   const handlePasswordChange = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
       toast.error("New passwords do not match");
       return;
@@ -171,7 +183,7 @@ const AccountTabs = () => {
         currentPassword: passwordForm.currentPassword,
         newPassword: passwordForm.newPassword,
       }).unwrap();
-      
+
       toast.success("Password changed successfully!");
       setPasswordForm({
         currentPassword: "",
@@ -186,16 +198,19 @@ const AccountTabs = () => {
   // Address save handler
   const handleAddressSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       if (editingAddressId) {
-        await updateAddress({ id: editingAddressId, data: addressForm }).unwrap();
+        await updateAddress({
+          id: editingAddressId,
+          data: addressForm,
+        }).unwrap();
         toast.success("Address updated successfully!");
       } else {
         await createAddress(addressForm as IAddress).unwrap();
         toast.success("Address created successfully!");
       }
-      
+
       setShowAddressForm(false);
       setEditingAddressId(null);
       resetAddressForm();
@@ -213,7 +228,7 @@ const AccountTabs = () => {
 
   const handleDeleteAddress = async (id: string) => {
     if (!confirm("Are you sure you want to delete this address?")) return;
-    
+
     try {
       await deleteAddress(id).unwrap();
       toast.success("Address deleted successfully!");
@@ -267,7 +282,9 @@ const AccountTabs = () => {
           <div className="col-lg-3">
             <div className="nav accout-dashborard-nav flex-column nav-pills me-3">
               <button
-                className={`nav-link ${activeTab === "dashboard" ? "active" : ""}`}
+                className={`nav-link ${
+                  activeTab === "dashboard" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("dashboard")}
               >
                 <i className="fa-regular fa-chart-line"></i> Dashboard
@@ -279,13 +296,17 @@ const AccountTabs = () => {
                 <i className="fa-regular fa-bag-shopping"></i> Orders
               </button>
               <button
-                className={`nav-link ${activeTab === "address" ? "active" : ""}`}
+                className={`nav-link ${
+                  activeTab === "address" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("address")}
               >
                 <i className="fa-regular fa-location-dot"></i> Addresses
               </button>
               <button
-                className={`nav-link ${activeTab === "account" ? "active" : ""}`}
+                className={`nav-link ${
+                  activeTab === "account" ? "active" : ""
+                }`}
                 onClick={() => setActiveTab("account")}
               >
                 <i className="fa-regular fa-user"></i> Account Details
@@ -310,7 +331,8 @@ const AccountTabs = () => {
                   </h2>
                   <p className="disc">
                     From your account dashboard you can view your recent orders,
-                    manage your shipping addresses, and edit your password and account details.
+                    manage your shipping addresses, and edit your password and
+                    account details.
                   </p>
                 </div>
               )}
@@ -343,11 +365,16 @@ const AccountTabs = () => {
                               <td>{o.status}</td>
                               <td>
                                 {o.totalAmount
-                                  ? `₹ ${o.totalAmount} for ${o.items?.length || 0} item(s)`
+                                  ? `₹ ${o.totalAmount} for ${
+                                      o.items?.length || 0
+                                    } item(s)`
                                   : "-"}
                               </td>
                               <td>
-                                <Link href={`/orders/${o._id}`} className="btn-small d-block">
+                                <Link
+                                  href={`/orders/${o._id}`}
+                                  className="btn-small d-block"
+                                >
                                   View
                                 </Link>
                               </td>
@@ -369,7 +396,7 @@ const AccountTabs = () => {
                 <div className="address-management-area">
                   <div className="d-flex justify-content-between align-items-center mb-4">
                     <h2 className="title mb-0">My Addresses</h2>
-                    <button 
+                    <button
                       className="rts-btn btn-primary"
                       onClick={() => {
                         resetAddressForm();
@@ -383,8 +410,13 @@ const AccountTabs = () => {
 
                   {showAddressForm && (
                     <div className="address-form-wrapper mb-4 p-4 border rounded">
-                      <h4>{editingAddressId ? "Edit Address" : "Add New Address"}</h4>
-                      <form onSubmit={handleAddressSave}>
+                      <h4>
+                        {editingAddressId ? "Edit Address" : "Add New Address"}
+                      </h4>
+                      <form
+                        onSubmit={handleAddressSave}
+                        className="border rounded p-3 uniform-inputs bg-light"
+                      >
                         <div className="row">
                           <div className="col-md-6 mb-3">
                             <label>Full Name *</label>
@@ -392,7 +424,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.fullName || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  fullName: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -402,7 +439,12 @@ const AccountTabs = () => {
                               type="tel"
                               className="form-control"
                               value={addressForm.phone || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  phone: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -412,7 +454,12 @@ const AccountTabs = () => {
                               type="email"
                               className="form-control"
                               value={addressForm.email || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, email: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  email: e.target.value,
+                                })
+                              }
                             />
                           </div>
                           <div className="col-md-6 mb-3">
@@ -420,7 +467,12 @@ const AccountTabs = () => {
                             <select
                               className="form-control"
                               value={addressForm.addressType || "home"}
-                              onChange={(e) => setAddressForm({ ...addressForm, addressType: e.target.value as any })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  addressType: e.target.value as any,
+                                })
+                              }
                             >
                               <option value="home">Home</option>
                               <option value="work">Work</option>
@@ -433,7 +485,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.addressLine1 || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  addressLine1: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -443,7 +500,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.addressLine2 || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  addressLine2: e.target.value,
+                                })
+                              }
                             />
                           </div>
                           <div className="col-md-4 mb-3">
@@ -452,7 +514,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.city || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  city: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -462,7 +529,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.state || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  state: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -472,7 +544,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.postalCode || ""}
-                              onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  postalCode: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -482,7 +559,12 @@ const AccountTabs = () => {
                               type="text"
                               className="form-control"
                               value={addressForm.country || "India"}
-                              onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
+                              onChange={(e) =>
+                                setAddressForm({
+                                  ...addressForm,
+                                  country: e.target.value,
+                                })
+                              }
                               required
                             />
                           </div>
@@ -493,24 +575,34 @@ const AccountTabs = () => {
                                 className="form-check-input"
                                 id="isDefault"
                                 checked={addressForm.isDefault || false}
-                                onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
+                                onChange={(e) =>
+                                  setAddressForm({
+                                    ...addressForm,
+                                    isDefault: e.target.checked,
+                                  })
+                                }
                               />
-                              <label className="form-check-label" htmlFor="isDefault">
+                              <label
+                                className="form-check-label"
+                                htmlFor="isDefault"
+                              >
                                 Set as default address
                               </label>
                             </div>
                           </div>
                         </div>
                         <div className="d-flex gap-2">
-                          <button 
-                            type="submit" 
+                          <button
+                            type="submit"
                             className="rts-btn btn-primary"
                             disabled={creatingAddress || updatingAddress}
                           >
-                            {creatingAddress || updatingAddress ? "Saving..." : "Save Address"}
+                            {creatingAddress || updatingAddress
+                              ? "Saving..."
+                              : "Save Address"}
                           </button>
-                          <button 
-                            type="button" 
+                          <button
+                            type="button"
                             className="rts-btn btn-secondary"
                             onClick={() => {
                               setShowAddressForm(false);
@@ -525,49 +617,65 @@ const AccountTabs = () => {
                     </div>
                   )}
 
-                  <div className="row">
+                  <div className="row" style={{ fontSize: "12px" }}>
                     {addressesLoading ? (
                       <div>Loading addresses...</div>
                     ) : addresses && addresses.length > 0 ? (
                       addresses.map((addr) => (
                         <div key={addr._id} className="col-md-6 mb-3">
-                          <div className={`address-card p-3 border rounded ${addr.isDefault ? "border-primary" : ""}`}>
+                          <div
+                            className={`address-card p-3 border rounded ${
+                              addr.isDefault ? "border-primary" : ""
+                            }`}
+                          >
                             <div className="d-flex justify-content-between align-items-start mb-2">
                               <h5 className="mb-0">
                                 {addr.fullName}
                                 {addr.isDefault && (
-                                  <span className="badge bg-primary ms-2">Default</span>
+                                  <span className="badge bg-primary ms-2">
+                                    Default
+                                  </span>
                                 )}
                               </h5>
-                              <span className="badge bg-secondary">{addr.addressType}</span>
+                              <span className="badge bg-secondary">
+                                {addr.addressType}
+                              </span>
                             </div>
                             <p className="mb-1">{addr.addressLine1}</p>
-                            {addr.addressLine2 && <p className="mb-1">{addr.addressLine2}</p>}
-                            <p className="mb-1">{addr.city}, {addr.state} {addr.postalCode}</p>
+                            {addr.addressLine2 && (
+                              <p className="mb-1">{addr.addressLine2}</p>
+                            )}
+                            <p className="mb-1">
+                              {addr.city}, {addr.state} {addr.postalCode}
+                            </p>
                             <p className="mb-1">{addr.country}</p>
                             <p className="mb-1">Phone: {addr.phone}</p>
-                            {addr.email && <p className="mb-1">Email: {addr.email}</p>}
-                            
+                            {addr.email && (
+                              <p className="mb-1">Email: {addr.email}</p>
+                            )}
+
                             <div className="d-flex gap-2 mt-3">
-                              <button 
-                                className="btn btn-sm btn-outline-primary"
+                              <button
+                                className="btn btn-md btn-primary"
                                 onClick={() => handleEditAddress(addr)}
                               >
-                                Edit
+                                <i className="fa fa-edit"></i>
                               </button>
                               {!addr.isDefault && (
-                                <button 
-                                  className="btn btn-sm btn-outline-success"
-                                  onClick={() => handleSetDefaultAddress(addr._id!)}
+                                <button
+                                  className="btn btn-sm btn-success"
+                                  onClick={() =>
+                                    handleSetDefaultAddress(addr._id!)
+                                  }
                                 >
-                                  Set Default
+                                  <i className="fa fa-check"></i>
                                 </button>
                               )}
-                              <button 
-                                className="btn btn-sm btn-outline-danger"
+                              <button
+                                className="btn btn-sm btn-danger"
                                 onClick={() => handleDeleteAddress(addr._id!)}
                               >
-                                Delete
+                                <i className="fa fa-trash"></i>
                               </button>
                             </div>
                           </div>
@@ -586,9 +694,9 @@ const AccountTabs = () => {
               {activeTab === "account" && (
                 <div className="account-details-area">
                   <h2 className="title mb-4">Account Details</h2>
-                  
+
                   {/* Profile Update Form */}
-                  <div className="profile-form-wrapper mb-5">
+                  <div className="profile-form-wrapper mb-5 bg-light p-4">
                     <h4>Update Profile</h4>
                     <form onSubmit={handleProfileUpdate}>
                       <div className="row">
@@ -598,7 +706,12 @@ const AccountTabs = () => {
                             type="text"
                             className="form-control"
                             value={profileForm.name}
-                            onChange={(e) => setProfileForm({ ...profileForm, name: e.target.value })}
+                            onChange={(e) =>
+                              setProfileForm({
+                                ...profileForm,
+                                name: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -608,7 +721,12 @@ const AccountTabs = () => {
                             type="email"
                             className="form-control"
                             value={profileForm.email}
-                            onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
+                            onChange={(e) =>
+                              setProfileForm({
+                                ...profileForm,
+                                email: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -618,13 +736,18 @@ const AccountTabs = () => {
                             type="tel"
                             className="form-control"
                             value={profileForm.phone}
-                            onChange={(e) => setProfileForm({ ...profileForm, phone: e.target.value })}
+                            onChange={(e) =>
+                              setProfileForm({
+                                ...profileForm,
+                                phone: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
                       </div>
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         className="rts-btn btn-primary"
                         disabled={updatingProfile}
                       >
@@ -634,7 +757,7 @@ const AccountTabs = () => {
                   </div>
 
                   {/* Password Change Form */}
-                  <div className="password-form-wrapper">
+                  <div className="password-form-wrapper bg-light p-4">
                     <h4>Change Password</h4>
                     <form onSubmit={handlePasswordChange}>
                       <div className="row">
@@ -644,7 +767,12 @@ const AccountTabs = () => {
                             type="password"
                             className="form-control"
                             value={passwordForm.currentPassword}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
+                            onChange={(e) =>
+                              setPasswordForm({
+                                ...passwordForm,
+                                currentPassword: e.target.value,
+                              })
+                            }
                             required
                           />
                         </div>
@@ -654,7 +782,12 @@ const AccountTabs = () => {
                             type="password"
                             className="form-control"
                             value={passwordForm.newPassword}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+                            onChange={(e) =>
+                              setPasswordForm({
+                                ...passwordForm,
+                                newPassword: e.target.value,
+                              })
+                            }
                             required
                             minLength={6}
                           />
@@ -665,14 +798,19 @@ const AccountTabs = () => {
                             type="password"
                             className="form-control"
                             value={passwordForm.confirmPassword}
-                            onChange={(e) => setPasswordForm({ ...passwordForm, confirmPassword: e.target.value })}
+                            onChange={(e) =>
+                              setPasswordForm({
+                                ...passwordForm,
+                                confirmPassword: e.target.value,
+                              })
+                            }
                             required
                             minLength={6}
                           />
                         </div>
                       </div>
-                      <button 
-                        type="submit" 
+                      <button
+                        type="submit"
                         className="rts-btn btn-primary"
                         disabled={changingPassword}
                       >

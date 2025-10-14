@@ -6,6 +6,17 @@ import { useRouter } from "next/navigation";
 import { useCreateOrderMutation } from "@/store/ordersApi";
 import { useInitiateCashfreePaymentMutation } from "@/store/paymentApi";
 import { useApplyMutation } from "@/store/couponApi";
+import {
+  Container,
+  Row,
+  Col,
+  Form,
+  Button,
+  Card,
+  Spinner,
+  Badge,
+  Alert,
+} from "react-bootstrap";
 
 import Script from "next/script";
 import { toast } from "react-toastify";
@@ -56,10 +67,20 @@ const CheckOutMain: React.FC = () => {
   const [agreedToTerms, setAgreedToTerms] = useState(false);
 
   // Saved addresses for the logged-in user
-  const { data: addresses = [], isLoading: addressesLoading, refetch: refetchAddresses } =
-    useGetMyAddressesQuery(undefined, { refetchOnMountOrArgChange: true, refetchOnFocus: true, refetchOnReconnect: true });
-  const [createAddress, { isLoading: isCreatingAddress }] = useCreateAddressMutation();
-  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(null);
+  const {
+    data: addresses = [],
+    isLoading: addressesLoading,
+    refetch: refetchAddresses,
+  } = useGetMyAddressesQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+  const [createAddress, { isLoading: isCreatingAddress }] =
+    useCreateAddressMutation();
+  const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
+    null
+  );
   const [showAddressForm, setShowAddressForm] = useState(false);
   const [addressForm, setAddressForm] = useState<Partial<IAddress>>({
     fullName: "",
@@ -168,12 +189,16 @@ const CheckOutMain: React.FC = () => {
 
   const handleCouponApply = async () => {
     try {
-      const itemsPayload = safeCartItems.map((item: any) => ({
-        productId: String(
-          item.productId || item?.raw?._id || (isValidObjectId(item.id) ? item.id : "")
-        ),
-        quantity: Math.max(1, Number(item.quantity) || 1),
-      })).filter((x: any) => isValidObjectId(x.productId));
+      const itemsPayload = safeCartItems
+        .map((item: any) => ({
+          productId: String(
+            item.productId ||
+              item?.raw?._id ||
+              (isValidObjectId(item.id) ? item.id : "")
+          ),
+          quantity: Math.max(1, Number(item.quantity) || 1),
+        }))
+        .filter((x: any) => isValidObjectId(x.productId));
 
       if (!coupon || !itemsPayload.length) {
         setDiscount(0);
@@ -181,7 +206,10 @@ const CheckOutMain: React.FC = () => {
         return;
       }
 
-      const resp = await applyCouponMut({ code: coupon, items: itemsPayload }).unwrap();
+      const resp = await applyCouponMut({
+        code: coupon,
+        items: itemsPayload,
+      }).unwrap();
       const discAmount = Number(resp?.discountAmount || 0);
       if (discAmount > 0 && subtotal > 0) {
         // store as fraction for local UI; backend will re-validate on order
@@ -265,12 +293,12 @@ const CheckOutMain: React.FC = () => {
     return /^[0-9a-fA-F]{24}$/.test(s);
   };
 
-  
-
   const handleSaveNewAddress = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const created = (await createAddress(addressForm as IAddress).unwrap()) as IAddress;
+      const created = (await createAddress(
+        addressForm as IAddress
+      ).unwrap()) as IAddress;
       toast.success("Address added");
       await refetchAddresses();
       setSelectedAddressId(created._id || null);
@@ -283,7 +311,11 @@ const CheckOutMain: React.FC = () => {
 
   const handlePlaceOrder = async () => {
     // Clear any existing toasts for a cleaner UX
-    try { toast.dismiss(); } catch { /* noop */ }
+    try {
+      toast.dismiss();
+    } catch {
+      /* noop */
+    }
 
     if (!isAuthenticated) {
       toast.error("⚠️ Please login to place an order", {
@@ -314,18 +346,24 @@ const CheckOutMain: React.FC = () => {
       // Build request items with strict productId validation and fallback
       const itemsForRequest = safeCartItems.map((item: any) => {
         const candidate =
-          item.productId || item?.raw?._id || (isValidObjectId(item.id) ? String(item.id) : undefined);
+          item.productId ||
+          item?.raw?._id ||
+          (isValidObjectId(item.id) ? String(item.id) : undefined);
         return {
           productId: candidate,
           quantity: item.quantity || 1,
           price:
-            typeof item.price === "string" ? parseFloat(item.price) : item.price,
+            typeof item.price === "string"
+              ? parseFloat(item.price)
+              : item.price,
           selectedColor: item.selectedColor,
           selectedSize: item.selectedSize,
         };
       });
 
-      const invalidItems = itemsForRequest.filter((it: any) => !isValidObjectId(it.productId));
+      const invalidItems = itemsForRequest.filter(
+        (it: any) => !isValidObjectId(it.productId)
+      );
       if (invalidItems.length > 0) {
         toast.error(
           "❌ Some items in your cart are not available to purchase. Please remove them and try again.",
@@ -363,7 +401,8 @@ const CheckOutMain: React.FC = () => {
           country: billingInfo.country,
           isDefault: true,
         },
-        paymentMethod: selectedPaymentMethod === "cod" ? "cash_on_delivery" : "card",
+        paymentMethod:
+          selectedPaymentMethod === "cod" ? "cash_on_delivery" : "card",
         shippingMethod: "standard", // Required field
         notes: billingInfo.orderNotes || undefined,
         couponCode: discount > 0 ? coupon : undefined,
@@ -375,18 +414,24 @@ const CheckOutMain: React.FC = () => {
       console.log("Order response:", response);
 
       if (response) {
-        try { toast.dismiss(); } catch { /* noop */ }
+        try {
+          toast.dismiss();
+        } catch {
+          /* noop */
+        }
         // Get order ID for redirect and display
         const orderId =
           response._id || response.orderNumber || (response as any).id;
-        
+
         if (selectedPaymentMethod === "cod") {
           // Clear cart first
           if (typeof clearCart === "function") clearCart();
 
           // Show success toast with order ID and redirect
           toast.success(
-            `🎉 Order placed successfully! ${orderId ? `Order ID: ${orderId}` : ''}`,
+            `🎉 Order placed successfully! ${
+              orderId ? `Order ID: ${orderId}` : ""
+            }`,
             {
               position: "top-right",
               autoClose: 5000,
@@ -408,7 +453,6 @@ const CheckOutMain: React.FC = () => {
           }
 
           // Initiate Cashfree payment to get paymentSessionId
-          console.log("Initiating Cashfree payment for order ID:", orderId);
           const pay = await initiateCashfreePayment({ orderId }).unwrap();
           const paymentSessionId = (pay as any)?.paymentSessionId;
           if (!paymentSessionId) {
@@ -416,8 +460,13 @@ const CheckOutMain: React.FC = () => {
           }
 
           // Ensure SDK is available and open checkout
-          const mode = process.env.NEXT_PUBLIC_CASHFREE_MODE === 'production' ? 'production' : 'sandbox';
-          const cf = (window as any).Cashfree ? (window as any).Cashfree({ mode }) : null;
+          const mode =
+            process.env.NEXT_PUBLIC_CASHFREE_MODE === "production"
+              ? "production"
+              : "sandbox";
+          const cf = (window as any).Cashfree
+            ? (window as any).Cashfree({ mode })
+            : null;
           if (!cf) {
             throw new Error("Cashfree SDK not loaded");
           }
@@ -456,29 +505,39 @@ const CheckOutMain: React.FC = () => {
         shouldRedirectToLogin = true;
       } else if (error?.status === 400 || error?.response?.status === 400) {
         errorMessage =
-          "❌ " + (error?.data?.message ||
-          error?.response?.data?.message ||
-          "Invalid order data. Please check your information.");
+          "❌ " +
+          (error?.data?.message ||
+            error?.response?.data?.message ||
+            "Invalid order data. Please check your information.");
       } else if (error?.status === 404 || error?.response?.status === 404) {
         errorMessage = "❌ Product not found. Please refresh your cart.";
       } else if (error?.status === 500 || error?.response?.status === 500) {
         errorMessage = "⚠️ Server error. Please try again later.";
       } else if (error?.status === 409 || error?.response?.status === 409) {
-        errorMessage = "❌ " + (error?.data?.message || "Order conflict. Some items may be out of stock.");
+        errorMessage =
+          "❌ " +
+          (error?.data?.message ||
+            "Order conflict. Some items may be out of stock.");
       } else {
         errorMessage = "❌ " + errorMessage;
       }
 
       // Normalize common backend validation messages to be more user-friendly
       if (/Invalid product ID/i.test(errorMessage)) {
-        errorMessage = "❌ Some items in your cart are invalid. Please remove them and try again.";
+        errorMessage =
+          "❌ Some items in your cart are invalid. Please remove them and try again.";
       }
       if (/Product not found/i.test(errorMessage)) {
-        errorMessage = "❌ One or more products are no longer available. Please refresh your cart.";
+        errorMessage =
+          "❌ One or more products are no longer available. Please refresh your cart.";
       }
 
       // Show error toast with configuration
-      try { toast.dismiss(); } catch { /* noop */ }
+      try {
+        toast.dismiss();
+      } catch {
+        /* noop */
+      }
       toast.error(errorMessage, {
         position: "top-right",
         autoClose: 5000,
@@ -555,348 +614,404 @@ const CheckOutMain: React.FC = () => {
             </div>
 
             {/* Billing Form */}
-            <div className="rts-billing-details-area">
-              <h3 className="title">Billing Details</h3>
-              {/* Saved Addresses Selector */}
-              <div className="mb-4">
-                <div className="d-flex justify-content-between align-items-center">
-                  <h5 className="mb-3">Saved Addresses</h5>
-                  {addresses && addresses.length > 0 && (
-                    <button
-                      type="button"
-                      className="btn btn-sm btn-outline-primary"
-                      onClick={() => setShowAddressForm((s) => !s)}
-                    >
-                      {showAddressForm ? "Close" : "Add New Address"}
-                    </button>
-                  )}
-                </div>
-                {addressesLoading ? (
-                  <div className="list-group mb-3">
-                    {[1, 2, 3].map((k) => (
-                      <div key={k} className="list-group-item">
-                        <div className="placeholder-glow">
-                          <span className="placeholder col-8" style={{ display: 'block', height: 14 }}></span>
-                          <span className="placeholder col-6 mt-2" style={{ display: 'block', height: 12 }}></span>
-                          <span className="placeholder col-4 mt-2" style={{ display: 'block', height: 12 }}></span>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                ) : addresses && addresses.length > 0 ? (
-                  <div className="list-group mb-3">
-                    {addresses.map((a) => (
-                      <label key={a._id} className="list-group-item d-flex align-items-start gap-2">
-                        <input
-                          type="radio"
-                          name="selectedAddress"
-                          className="form-check-input mt-1"
-                          value={a._id}
-                          checked={selectedAddressId === a._id}
-                          onChange={(e) => setSelectedAddressId(e.currentTarget.value || null)}
-                        />
-                        <div>
-                          <div className="fw-semibold">
-                            {a.fullName}
-                            {a.isDefault && <span className="badge bg-primary ms-2">Default</span>}
-                            <span className="badge bg-secondary ms-2">{a.addressType}</span>
-                          </div>
-                          <div className="small text-muted">
-                            {a.addressLine1}
-                            {a.addressLine2 ? `, ${a.addressLine2}` : ""}, {a.city}, {a.state} {a.postalCode}, {a.country}
-                          </div>
-                          <div className="small text-muted">Phone: {a.phone} {a.email ? `· ${a.email}` : ""}</div>
-                        </div>
-                      </label>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="alert alert-info">You don't have any saved addresses. Please add one below.</div>
-                )}
+            <Card className="shadow-sm border-0">
+              <Card.Body>
+                <h3 className="mb-4 fw-semibold text-dark">Billing Details</h3>
 
-                {(showAddressForm || (addresses && addresses.length === 0)) && (
-                  <form onSubmit={handleSaveNewAddress} className="border rounded p-3">
-                    <div className="row">
-                      <div className="col-md-6 mb-3">
-                        <label>Full Name *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.fullName || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, fullName: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label>Phone *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.phone || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, phone: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label>Email</label>
-                        <input
-                          type="email"
-                          className="form-control"
-                          value={addressForm.email || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, email: e.target.value })}
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label>Address Type</label>
-                        <select
-                          className="form-control"
-                          value={addressForm.addressType || "home"}
-                          onChange={(e) => setAddressForm({ ...addressForm, addressType: e.target.value as any })}
-                        >
-                          <option value="home">Home</option>
-                          <option value="work">Work</option>
-                          <option value="other">Other</option>
-                        </select>
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label>Address Line 1 *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.addressLine1 || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, addressLine1: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-12 mb-3">
-                        <label>Address Line 2</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.addressLine2 || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, addressLine2: e.target.value })}
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <label>City *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.city || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, city: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <label>State *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.state || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, state: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-4 mb-3">
-                        <label>Postal Code *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.postalCode || ""}
-                          onChange={(e) => setAddressForm({ ...addressForm, postalCode: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <label>Country *</label>
-                        <input
-                          className="form-control"
-                          value={addressForm.country || "India"}
-                          onChange={(e) => setAddressForm({ ...addressForm, country: e.target.value })}
-                          required
-                        />
-                      </div>
-                      <div className="col-md-6 mb-3">
-                        <div className="form-check mt-4">
-                          <input
-                            type="checkbox"
-                            className="form-check-input"
-                            id="addrIsDefault"
-                            checked={addressForm.isDefault || false}
-                            onChange={(e) => setAddressForm({ ...addressForm, isDefault: e.target.checked })}
-                          />
-                          <label className="form-check-label" htmlFor="addrIsDefault">
-                            Set as default address
-                          </label>
-                        </div>
-                      </div>
+                {/* Saved Addresses Section */}
+                <div className="mb-4">
+                  <div className="d-flex justify-content-between align-items-center mb-3">
+                    <h5 className="mb-0 fw-semibold">Saved Addresses</h5>
+                    {addresses && addresses.length > 0 && (
+                      <Button
+                        variant="outline-primary"
+                        size="sm"
+                        onClick={() => setShowAddressForm((s) => !s)}
+                      >
+                        {showAddressForm ? "Close" : "Add New Address"}
+                      </Button>
+                    )}
+                  </div>
+
+                  {/* Address Loading Skeleton */}
+                  {addressesLoading ? (
+                    <div className="text-center my-3">
+                      <Spinner animation="border" variant="secondary" />
                     </div>
-                    <button type="submit" className="rts-btn btn-primary" disabled={isCreatingAddress}>
-                      {isCreatingAddress ? "Saving..." : "Save Address"}
-                    </button>
-                  </form>
-                )}
-              </div>
-              <form onSubmit={(e) => e.preventDefault()}>
-                <div className="single-input">
-                  <label htmlFor="email">Email Address*</label>
-                  <input
-                    id="email"
-                    type="email"
-                    value={billingInfo.email}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.email ? "error" : ""}
-                  />
-                  {validationErrors.email && (
-                    <span className="error-message">
-                      {validationErrors.email}
-                    </span>
+                  ) : addresses && addresses.length > 0 ? (
+                    <div className="list-group mb-3">
+                      {addresses.map((a) => (
+                        <label
+                          key={a._id}
+                          className="list-group-item d-flex align-items-start gap-2"
+                          style={{ cursor: "pointer" }}
+                        >
+                          <Form.Check
+                            type="radio"
+                            name="selectedAddress"
+                            value={a._id}
+                            checked={selectedAddressId === a._id}
+                            onChange={(e) =>
+                              setSelectedAddressId(
+                                e.currentTarget.value || null
+                              )
+                            }
+                            className="mt-1"
+                          />
+                          <div>
+                            <div className="fw-semibold">
+                              {a.fullName}{" "}
+                              {a.isDefault && (
+                                <Badge bg="primary" className="ms-2">
+                                  Default
+                                </Badge>
+                              )}
+                              <Badge bg="secondary" className="ms-2">
+                                {a.addressType}
+                              </Badge>
+                            </div>
+                            <div className="text-muted small">
+                              {a.addressLine1}
+                              {a.addressLine2
+                                ? `, ${a.addressLine2}`
+                                : ""}, {a.city}, {a.state} {a.postalCode},{" "}
+                              {a.country}
+                            </div>
+                            <div className="text-muted small">
+                              Phone: {a.phone}{" "}
+                              {a.email ? <span>· {a.email}</span> : ""}
+                            </div>
+                          </div>
+                        </label>
+                      ))}
+                    </div>
+                  ) : (
+                    <Alert variant="info" style={{ fontSize: "12px" }}>
+                      You don't have any saved addresses. Please add one below.
+                    </Alert>
+                  )}
+
+                  {/* Add / Edit Address Form */}
+                  {(showAddressForm ||
+                    (addresses && addresses.length === 0)) && (
+                    <Form
+                      onSubmit={handleSaveNewAddress}
+                      className="border rounded p-3 uniform-inputs bg-light"
+                    >
+                      <Row>
+                        <Col md={6} className="mb-3">
+                          <Form.Label>Full Name *</Form.Label>
+                          <Form.Control
+                            value={addressForm.fullName || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                fullName: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+                        <Col md={6} className="mb-3">
+                          <Form.Label>Phone *</Form.Label>
+                          <Form.Control
+                            value={addressForm.phone || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                phone: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                          <Form.Label>Email</Form.Label>
+                          <Form.Control
+                            type="email"
+                            value={addressForm.email || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                email: e.target.value,
+                              })
+                            }
+                          />
+                        </Col>
+                        <Col md={6} className="mb-3">
+                          <Form.Label>Address Type</Form.Label>
+                          <Form.Select
+                            value={addressForm.addressType || "home"}
+                            style={{ fontSize: "12px" }}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                addressType: e.target.value,
+                              })
+                            }
+                          >
+                            <option value="home">Home</option>
+                            <option value="work">Work</option>
+                            <option value="other">Other</option>
+                          </Form.Select>
+                        </Col>
+
+                        <Col xs={12} className="mb-3">
+                          <Form.Label>Address Line 1 *</Form.Label>
+                          <Form.Control
+                            value={addressForm.addressLine1 || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                addressLine1: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+                        <Col xs={12} className="mb-3">
+                          <Form.Label>Address Line 2</Form.Label>
+                          <Form.Control
+                            value={addressForm.addressLine2 || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                addressLine2: e.target.value,
+                              })
+                            }
+                          />
+                        </Col>
+
+                        <Col md={4} className="mb-3">
+                          <Form.Label>City *</Form.Label>
+                          <Form.Control
+                            value={addressForm.city || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                city: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+                        <Col md={4} className="mb-3">
+                          <Form.Label>State *</Form.Label>
+                          <Form.Control
+                            value={addressForm.state || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                state: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+                        <Col md={4} className="mb-3">
+                          <Form.Label>Postal Code *</Form.Label>
+                          <Form.Control
+                            value={addressForm.postalCode || ""}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                postalCode: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+
+                        <Col md={6} className="mb-3">
+                          <Form.Label>Country *</Form.Label>
+                          <Form.Control
+                            value={addressForm.country || "India"}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                country: e.target.value,
+                              })
+                            }
+                            required
+                          />
+                        </Col>
+                        <Col md={6} className="d-flex align-items-center mt-3">
+                          <Form.Check
+                            type="checkbox"
+                            id="addrIsDefault"
+                            label="Set as default address"
+                            checked={addressForm.isDefault || false}
+                            onChange={(e) =>
+                              setAddressForm({
+                                ...addressForm,
+                                isDefault: e.target.checked,
+                              })
+                            }
+                          />
+                        </Col>
+                      </Row>
+                      <Button
+                        type="submit"
+                        variant="primary"
+                        disabled={isCreatingAddress}
+                        className="mt-3 rts-btn btn-primary"
+                      >
+                        {isCreatingAddress ? "Saving..." : "Save Address"}
+                      </Button>
+                    </Form>
                   )}
                 </div>
 
-                <div className="single-input">
-                  <label htmlFor="firstName">First Name*</label>
-                  <input
-                    id="firstName"
-                    value={billingInfo.firstName}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.firstName ? "error" : ""}
-                  />
-                  {validationErrors.firstName && (
-                    <span className="error-message">
-                      {validationErrors.firstName}
-                    </span>
-                  )}
-                </div>
+                {/* Billing Info Form */}
+                {/* <Form className="uniform-inputs">
+                  <Row>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Email Address *</Form.Label>
+                      <Form.Control
+                        type="email"
+                        id="email"
+                        value={billingInfo.email}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.email}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.email}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="lastName">Last Name*</label>
-                  <input
-                    id="lastName"
-                    value={billingInfo.lastName}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.lastName ? "error" : ""}
-                  />
-                  {validationErrors.lastName && (
-                    <span className="error-message">
-                      {validationErrors.lastName}
-                    </span>
-                  )}
-                </div>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Phone *</Form.Label>
+                      <Form.Control
+                        id="phone"
+                        value={billingInfo.phone}
+                        onChange={handleInputChange}
+                        placeholder="10-digit mobile number"
+                        isInvalid={!!validationErrors.phone}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.phone}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="company">Company Name (Optional)</label>
-                  <input
-                    id="company"
-                    value={billingInfo.company}
-                    onChange={handleInputChange}
-                  />
-                </div>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>First Name *</Form.Label>
+                      <Form.Control
+                        id="firstName"
+                        value={billingInfo.firstName}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.firstName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.firstName}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="country">Country / Region*</label>
-                  <select
-                    id="country"
-                    value={billingInfo.country}
-                    onChange={handleInputChange}
-                    required
-                  >
-                    <option value="India">India</option>
-                    <option value="USA">USA</option>
-                    <option value="UK">UK</option>
-                    <option value="Canada">Canada</option>
-                  </select>
-                </div>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Last Name *</Form.Label>
+                      <Form.Control
+                        id="lastName"
+                        value={billingInfo.lastName}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.lastName}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.lastName}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="street">Street Address*</label>
-                  <input
-                    id="street"
-                    value={billingInfo.street}
-                    onChange={handleInputChange}
-                    placeholder="House number and street name"
-                    required
-                    className={validationErrors.street ? "error" : ""}
-                  />
-                  {validationErrors.street && (
-                    <span className="error-message">
-                      {validationErrors.street}
-                    </span>
-                  )}
-                </div>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Company Name (Optional)</Form.Label>
+                      <Form.Control
+                        id="company"
+                        value={billingInfo.company}
+                        onChange={handleInputChange}
+                      />
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="city">Town / City*</label>
-                  <input
-                    id="city"
-                    value={billingInfo.city}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.city ? "error" : ""}
-                  />
-                  {validationErrors.city && (
-                    <span className="error-message">
-                      {validationErrors.city}
-                    </span>
-                  )}
-                </div>
+                    <Col md={6} className="mb-3">
+                      <Form.Label>Country / Region *</Form.Label>
+                      <Form.Select
+                        id="country"
+                        value={billingInfo.country}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="India">India</option>
+                        <option value="USA">USA</option>
+                        <option value="UK">UK</option>
+                        <option value="Canada">Canada</option>
+                      </Form.Select>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="state">State*</label>
-                  <input
-                    id="state"
-                    value={billingInfo.state}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.state ? "error" : ""}
-                  />
-                  {validationErrors.state && (
-                    <span className="error-message">
-                      {validationErrors.state}
-                    </span>
-                  )}
-                </div>
+                    <Col md={12} className="mb-3">
+                      <Form.Label>Street Address *</Form.Label>
+                      <Form.Control
+                        id="street"
+                        value={billingInfo.street}
+                        onChange={handleInputChange}
+                        placeholder="House number and street name"
+                        isInvalid={!!validationErrors.street}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.street}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="zip">Zip Code*</label>
-                  <input
-                    id="zip"
-                    value={billingInfo.zip}
-                    onChange={handleInputChange}
-                    required
-                    className={validationErrors.zip ? "error" : ""}
-                  />
-                  {validationErrors.zip && (
-                    <span className="error-message">
-                      {validationErrors.zip}
-                    </span>
-                  )}
-                </div>
+                    <Col md={4} className="mb-3">
+                      <Form.Label>City *</Form.Label>
+                      <Form.Control
+                        id="city"
+                        value={billingInfo.city}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.city}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.city}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="phone">Phone*</label>
-                  <input
-                    id="phone"
-                    value={billingInfo.phone}
-                    onChange={handleInputChange}
-                    placeholder="10 digit mobile number"
-                    required
-                    className={validationErrors.phone ? "error" : ""}
-                  />
-                  {validationErrors.phone && (
-                    <span className="error-message">
-                      {validationErrors.phone}
-                    </span>
-                  )}
-                </div>
+                    <Col md={4} className="mb-3">
+                      <Form.Label>State *</Form.Label>
+                      <Form.Control
+                        id="state"
+                        value={billingInfo.state}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.state}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.state}
+                      </Form.Control.Feedback>
+                    </Col>
 
-                <div className="single-input">
-                  <label htmlFor="orderNotes">Order Notes (Optional)</label>
-                  <textarea
-                    id="orderNotes"
-                    value={billingInfo.orderNotes}
-                    onChange={handleInputChange}
-                    placeholder="Notes about your order, e.g. special notes for delivery"
-                  ></textarea>
-                </div>
-              </form>
-            </div>
+                    <Col md={4} className="mb-3">
+                      <Form.Label>Zip Code *</Form.Label>
+                      <Form.Control
+                        id="zip"
+                        value={billingInfo.zip}
+                        onChange={handleInputChange}
+                        isInvalid={!!validationErrors.zip}
+                      />
+                      <Form.Control.Feedback type="invalid">
+                        {validationErrors.zip}
+                      </Form.Control.Feedback>
+                    </Col>
+
+                    <Col xs={12} className="mb-3">
+                      <Form.Label>Order Notes (Optional)</Form.Label>
+                      <Form.Control
+                        as="textarea"
+                        id="orderNotes"
+                        rows={3}
+                        value={billingInfo.orderNotes}
+                        onChange={handleInputChange}
+                        placeholder="Notes about your order, e.g. delivery instructions"
+                      />
+                    </Col>
+                  </Row>
+                </Form> */}
+              </Card.Body>
+            </Card>
           </div>
 
           {/* Right: Order Summary */}
@@ -1003,7 +1118,10 @@ const CheckOutMain: React.FC = () => {
                   </li>
                 </ul>
                 {validationErrors.payment && (
-                  <span className="error-message" style={{ color: "red", fontSize: 12 }}>
+                  <span
+                    className="error-message"
+                    style={{ color: "red", fontSize: 12 }}
+                  >
                     {validationErrors.payment}
                   </span>
                 )}
@@ -1016,10 +1134,21 @@ const CheckOutMain: React.FC = () => {
                     checked={agreedToTerms}
                     onChange={(e) => setAgreedToTerms(e.target.checked)}
                   />
-                  <label htmlFor="terms"> I have read and agree to terms and conditions *</label>
+                  <label htmlFor="terms">
+                    {" "}
+                    I have read and agree to terms and conditions *
+                  </label>
                 </div>
                 {validationErrors.terms && (
-                  <span className="error-message" style={{ color: "red", fontSize: 12, display: "block", marginBottom: 10 }}>
+                  <span
+                    className="error-message"
+                    style={{
+                      color: "red",
+                      fontSize: 12,
+                      display: "block",
+                      marginBottom: 10,
+                    }}
+                  >
                     {validationErrors.terms}
                   </span>
                 )}
@@ -1028,7 +1157,10 @@ const CheckOutMain: React.FC = () => {
                   className="rts-btn btn-primary"
                   onClick={handlePlaceOrder}
                   disabled={isCreatingOrder || safeCartItems.length === 0}
-                  style={{ width: "100%", cursor: isCreatingOrder ? "not-allowed" : "pointer" }}
+                  style={{
+                    width: "100%",
+                    cursor: isCreatingOrder ? "not-allowed" : "pointer",
+                  }}
                 >
                   {isCreatingOrder ? "Processing..." : "Place Order"}
                 </button>
@@ -1038,7 +1170,10 @@ const CheckOutMain: React.FC = () => {
         </div>
       </div>
       {/* Cashfree SDK */}
-      <Script src="https://sdk.cashfree.com/js/v3/cashfree.js" strategy="afterInteractive" />
+      <Script
+        src="https://sdk.cashfree.com/js/v3/cashfree.js"
+        strategy="afterInteractive"
+      />
     </div>
   );
 };
