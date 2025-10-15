@@ -8,11 +8,7 @@ import FooterOne from "@/components/footer/FooterOne";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import {
-  useGetProductsQuery,
-  useGetFeaturedProductsQuery,
-  useGetTrendingProductsQuery,
-  useGetNewArrivalsQuery,
-  useSearchProductsQuery,
+  useGetProductsPagedQuery,
   useGetProductFiltersQuery,
 } from "@/store/productApi";
 import HeaderThree from "@/components/header/HeaderThree";
@@ -144,25 +140,40 @@ function ShopContent() {
   const pssc = (searchParams.get('pssc') || '').trim();
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
+  const [limit, setLimit] = useState<number>(10);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(100000);
   const [showFeatured, setShowFeatured] = useState<boolean>(false);
   const [showTrending, setShowTrending] = useState<boolean>(false);
   const [showNewArrivals, setShowNewArrivals] = useState<boolean>(false);
 
-  // Product data queries
-  const {
-    data: allProducts = [],
-    isLoading: productsLoading,
-    error: productsError,
-  } = useGetProductsQuery();
+  // Build server-side query params (prioritize deep link pssc > psc > pc)
+  const paramsCategory = !pssc && !psc ? (selectedCategoryId || (pc || undefined)) : undefined;
+  const paramsSubcategory = !pssc ? (psc || undefined) : undefined;
+  const paramsSubSubcategory = pssc || undefined;
 
-  const { data: featuredProducts = [] } = useGetFeaturedProductsQuery();
-  const { data: trendingProducts = [] } = useGetTrendingProductsQuery();
-  const { data: newArrivals = [] } = useGetNewArrivalsQuery();
-  const { data: searchResults = [] } = useSearchProductsQuery(searchQuery, {
-    skip: !searchQuery,
+  // Server-side products with pagination and filters
+  const {
+    data: paged,
+    isLoading: productsLoading,
+    isFetching: productsFetching,
+    error: productsError,
+  } = useGetProductsPagedQuery({
+    page,
+    limit,
+    sort: "createdAt",
+    order: "desc",
+    category: paramsCategory as any,
+    subcategory: paramsSubcategory as any,
+    subSubcategory: paramsSubSubcategory as any,
+    minPrice,
+    maxPrice,
+    isFeatured: showFeatured || undefined,
+    isTrending: showTrending || undefined,
+    isNewArrival: showNewArrivals || undefined,
+    search: searchQuery || undefined,
   });
 
   // NEW: fetch filter options from API
@@ -198,98 +209,32 @@ function ShopContent() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [apiPriceMin, apiPriceMax]);
 
-  const shouldUseFallback =
-    !!productsError || (Array.isArray(allProducts) && allProducts.length === 0);
+  const items = useMemo(() => (paged?.items || []).map(transformProductToPost), [paged]);
+  const meta = paged?.meta || { page: 1, limit: limit, total: 0, totalPages: 1 };
+  const startIdx = (meta.page - 1) * meta.limit + 1;
+  const endIdx = startIdx + items.length - 1;
 
-  // Fallback products normalized so UI always receives consistent shape
-  const fallbackProducts = shouldUseFallback
-    ? (allProducts || []).map((p: any, index: number) => ({
-        name: p.title || "Unknown Product",
-        price: parseFloat(String(p.price || 0)) || 0,
-        category: p.category || "Unknown",
-        brand: "Local Brand",
-        sku: p.slug || `product-${index}`,
-        thumbnail: p.image || "/images/default.jpg",
-        images: [p.image || "/images/default.jpg"],
-        description: "Local product description",
-        shortDescription: "Local product",
-        originalPrice: (parseFloat(String(p.price || 0)) || 0) * 1.2,
-        discount: p.discount || 0,
-        discountType: p.discountType ? "percentage" : "fixed",
-        stock: 100,
-        minStock: 10,
-        weight: 1,
-        dimensions: { length: 10, width: 10, height: 10 },
-        colors: [],
-        sizes: [],
-        tags: [],
-        features: [],
-        specifications: [],
-        status: "active" as const,
-        isFeatured: Math.random() > 0.5,
-        isTrending: Math.random() > 0.5,
-        isNewArrival: Math.random() > 0.5,
-        seoTitle: p.title || "Product",
-        seoDescription: "Product description",
-        seoKeywords: [],
-        vendor: "Local Store",
-        shippingInfo: {
-          weight: 1,
-          freeShipping: true,
-          shippingCost: 0,
-          estimatedDelivery: "2-3 days",
-        },
-      }))
-    : [];
+  const pageItems = useMemo<(number | string)[]>(() => {
+    const total = meta.totalPages || 1;
+    const current = meta.page || 1;
+    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
 
-  const effectiveProducts = shouldUseFallback ? fallbackProducts : allProducts;
-
-
-  const currentProducts = useMemo(() => {
-    let products = allProducts;
-
-    if (searchQuery && (searchResults?.length ?? 0) > 0) {
-      products = searchResults;
-    } else if (showFeatured) {
-      products = featuredProducts;
-    } else if (showTrending) {
-      products = trendingProducts;
-    } else if (showNewArrivals) {
-      products = newArrivals;
+    const pages: (number | string)[] = [];
+    pages.push(1);
+    if (current <= 4) {
+      pages.push(2, 3, 4, 5, "...");
+    } else if (current >= total - 3) {
+      pages.push("...", total - 4, total - 3, total - 2, total - 1);
+    } else {
+      pages.push("...", current - 1, current, current + 1, "...");
     }
+    pages.push(total);
+    return pages;
+  }, [meta.page, meta.totalPages]);
 
-    // Apply product-category deep link filters (prefer deepest specified)
-    const idOf = (v: any) => (v && typeof v === 'object' ? v?._id : v);
-    if (pssc) {
-      products = (products || []).filter((p: any) => String(idOf(p?.subSubcategory) || '') === String(pssc));
-    } else if (psc) {
-      products = (products || []).filter((p: any) => String(idOf(p?.subcategory) || '') === String(psc));
-    } else if (pc) {
-      products = (products || []).filter((p: any) => String(idOf(p?.category) || '') === String(pc));
-    }
-
-    return (products || []).map(transformProductToPost);
-  }, [
-    allProducts,
-    searchResults,
-    featuredProducts,
-    trendingProducts,
-    newArrivals,
-    searchQuery,
-    showFeatured,
-    showTrending,
-    showNewArrivals,
-    pc,
-    psc,
-    pssc,
-  ]);
-
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(category)
-        ? prev.filter((cat) => cat !== category)
-        : [...prev, category]
-    );
+  const handleCategoryChange = (categoryId: string) => {
+    setSelectedCategoryId((prev) => (prev === categoryId ? "" : categoryId));
+    setPage(1);
   };
 
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -302,40 +247,17 @@ function ShopContent() {
     if (!isNaN(val)) setMaxPrice(val);
   };
 
-  const filteredProducts: PostType[] = useMemo(() => {
-    let products = currentProducts;
-
-    const idOf = (v: any) => (v && typeof v === "object" ? v._id : v);
-
-    if (selectedCategories.length > 0) {
-      products = products.filter((product) => {
-        const catId = idOf(product.productData?.category);
-        return selectedCategories.includes(String(catId || ""));
-      });
-    }
-
-    products = products.filter((product) => {
-      const productPrice = parseFloat(product.price || "0");
-      return productPrice >= minPrice && productPrice <= maxPrice;
-    });
-
-    if (searchQuery) {
-      products = products.filter((product) => {
-        const title = product.title?.toLowerCase() || "";
-        const category = product.category?.toLowerCase() || "";
-        return title.includes(searchQuery) || category.includes(searchQuery);
-      });
-    }
-
-    return products;
-  }, [currentProducts, selectedCategories, minPrice, maxPrice, searchQuery]);
+  // Reset page when core filters change
+  useEffect(() => {
+    setPage(1);
+  }, [minPrice, maxPrice, showFeatured, showTrending, showNewArrivals, searchQuery, pc, psc, pssc]);
 
   const handlePriceFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
   };
 
   // Loading / error states
-  if (productsLoading || filtersLoading) {
+  if (productsLoading || productsFetching || filtersLoading) {
     return (
       <div className="shop-page">
         {/* Breadcrumb Skeleton */}
@@ -906,8 +828,9 @@ function ShopContent() {
                           <div className="single-category" key={cat._id || i}>
                             <input
                               id={`cat${i + 1}`}
-                              type="checkbox"
-                              checked={selectedCategories.includes(String(cat._id))}
+                              type="radio"
+                              name="category"
+                              checked={selectedCategoryId === String(cat._id)}
                               onChange={() => handleCategoryChange(String(cat._id))}
                             />
                             <label htmlFor={`cat${i + 1}`}>{cat.title}</label>
@@ -928,7 +851,9 @@ function ShopContent() {
             <div className="col-xl-9 col-lg-12">
               <div className="filter-select-area">
                 <div className="top-filter">
-                  <span>Showing {filteredProducts.length} results</span>
+                  <span>
+                    Showing {items.length > 0 ? `${startIdx}-${endIdx}` : 0} of {meta.total} results
+                  </span>
                   {/* <div className="right-end">
                     <span>Sort: Short By Latest</span>
                     <div className="button-tab-area">
@@ -992,8 +917,8 @@ function ShopContent() {
                 <div className="product-area-wrapper-shopgrid-list mt--20 tab-pane fade show active">
                   {activeTab === "tab1" && (
                     <div className="row g-4">
-                      {filteredProducts.length > 0 ? (
-                        filteredProducts.map(
+                      {items.length > 0 ? (
+                        items.map(
                           (post: PostType, index: number) => {
                             return (
                               <div
@@ -1031,8 +956,8 @@ function ShopContent() {
                 <div className="product-area-wrapper-shopgrid-list with-list mt--20">
                   {activeTab === "tab2" && (
                     <div className="row">
-                      {filteredProducts.length > 0 ? (
-                        filteredProducts.map(
+                      {items.length > 0 ? (
+                        items.map(
                           (post: PostType, index: number) => (
                             <div key={index} className="col-lg-6">
                               <div className="single-shopping-card-one discount-offer">
@@ -1053,6 +978,53 @@ function ShopContent() {
                       )}
                     </div>
                   )}
+                </div>
+
+                {/* Pagination Controls */}
+                <div className="d-flex justify-content-between align-items-center mt-4">
+                  <div className="d-flex gap-2 align-items-center flex-wrap">
+                    <button
+                      className="rts-btn btn-primary"
+                      disabled={meta.page <= 1}
+                      onClick={() => setPage((p) => Math.max(1, p - 1))}
+                    >
+                      Prev
+                    </button>
+                    {pageItems.map((p, idx) =>
+                      typeof p === "number" ? (
+                        <button
+                          key={`${p}-${idx}`}
+                          className={`rts-btn btn-primary ${meta.page === p ? "active" : ""}`}
+                          disabled={meta.page === p}
+                          onClick={() => setPage(p)}
+                        >
+                          {p}
+                        </button>
+                      ) : (
+                        <span key={`dots-${idx}`} className="px-2">...</span>
+                      )
+                    )}
+                    <button
+                      className="rts-btn btn-primary"
+                      disabled={meta.page >= meta.totalPages}
+                      onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+                    >
+                      Next
+                    </button>
+                  </div>
+                  <div>
+                    <select
+                      value={limit}
+                      onChange={(e) => {
+                        setLimit(parseInt(e.target.value, 10));
+                        setPage(1);
+                      }}
+                    >
+                      <option value={10}>10</option>
+                      <option value={20}>20</option>
+                      <option value={30}>30</option>
+                    </select>
+                  </div>
                 </div>
               </div>
             </div>

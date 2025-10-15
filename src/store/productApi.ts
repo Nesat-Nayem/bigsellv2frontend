@@ -118,6 +118,61 @@ export const productsApi = createApi({
           : [productListTag()],
     }),
 
+    // Get products with pagination and filters
+    getProductsPaged: builder.query<
+      { items: IProducts[]; meta: { page: number; limit: number; total: number; totalPages: number } },
+      Partial<{
+        page: number;
+        limit: number;
+        sort: string;
+        order: 'asc' | 'desc';
+        category: string;
+        subcategory: string;
+        subSubcategory: string;
+        minPrice: number;
+        maxPrice: number;
+        isFeatured: boolean;
+        isTrending: boolean;
+        isNewArrival: boolean;
+        search: string;
+      }>
+    >({
+      query: (params = {}) => {
+        const qp = new URLSearchParams();
+        const add = (k: string, v: any) => {
+          if (v === undefined || v === null || v === '') return;
+          qp.set(k, String(v));
+        };
+        add('page', params.page ?? 1);
+        add('limit', params.limit ?? 10);
+        add('sort', params.sort ?? 'createdAt');
+        add('order', params.order ?? 'desc');
+        add('category', params.category);
+        add('subcategory', params.subcategory);
+        add('subSubcategory', params.subSubcategory);
+        add('minPrice', params.minPrice);
+        add('maxPrice', params.maxPrice);
+        add('isFeatured', params.isFeatured);
+        add('isTrending', params.isTrending);
+        add('isNewArrival', params.isNewArrival);
+        add('search', params.search);
+        const qs = qp.toString();
+        return `/products${qs ? `?${qs}` : ''}`;
+      },
+      transformResponse: (response: any) => {
+        const items = normalizeToArray<IProducts>(response?.data);
+        const meta = response?.meta || { page: 1, limit: items.length, total: items.length, totalPages: 1 };
+        return { items, meta };
+      },
+      providesTags: (result) =>
+        result && result.items.length
+          ? [
+              productListTag(),
+              ...result.items.map((p) => productTag(p._id ?? 'UNKNOWN')),
+            ]
+          : [productListTag()],
+    }),
+
     // Get all products
     getProducts: builder.query<IProducts[], void>({
       query: () => "/products",
@@ -308,6 +363,7 @@ export const productsApi = createApi({
 
 export const {
   useCreateProductMutation,
+  useGetProductsPagedQuery,
   useGetProductsQuery,
   useGetProductByIdQuery,
   useSearchProductsQuery,
