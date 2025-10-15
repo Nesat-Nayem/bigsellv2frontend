@@ -16,8 +16,110 @@ function CategoryBannerBottom() {
 
   if (isLoading)
     return (
-      <div className="d-flex justify-content-center align-items-center">
-        Loading...
+      <div className="rts-category-area-one pt--0">
+        <div className="container">
+          {/* Top Banner Skeleton */}
+          <div className="mt-0 text-center mb-0 mb-sm-5">
+            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+          </div>
+
+          {/* Section 1: First 10 categories skeleton */}
+          <div className="row mb-0 mb-sm-5">
+            <div className="col-lg-12">
+              <div className="d-flex gap-3 overflow-hidden">
+                {[...Array(10)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0" style={{ width: '140px' }}>
+                    <div className="skeleton-category-card"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Banner Between Sections Skeleton */}
+          <div className="text-center mb-0 mb-sm-5">
+            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+          </div>
+
+          {/* Section 2: Next 10 categories skeleton */}
+          <div className="row mb-0 mb-sm-5">
+            <div className="col-lg-12">
+              <div className="d-flex gap-3 overflow-hidden">
+                {[...Array(10)].map((_, i) => (
+                  <div key={i} className="flex-shrink-0" style={{ width: '140px' }}>
+                    <div className="skeleton-category-card"></div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Banner Skeleton */}
+          <div className="mt-0 mb-0 mb-sm-5 text-center">
+            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+          </div>
+
+          {/* Section 3: Grid categories skeleton */}
+          <div className="mt-3">
+            <div className="row g-4 d-flex justify-content-center">
+              {[...Array(12)].map((_, i) => (
+                <div key={i} className="col-6 col-md-3 col-lg-2">
+                  <div className="skeleton-category-grid"></div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% {
+              background-position: -200% 0;
+            }
+            100% {
+              background-position: 200% 0;
+            }
+          }
+
+          .skeleton-banner {
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+          }
+
+          .skeleton-category-card {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+          }
+
+          .skeleton-category-grid {
+            width: 100%;
+            height: 250px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 25%,
+              #e0e0e0 50%,
+              #f0f0f0 75%
+            );
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+            border-radius: 8px;
+          }
+        `}</style>
       </div>
     );
 

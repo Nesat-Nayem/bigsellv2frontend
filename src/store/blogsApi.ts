@@ -29,7 +29,7 @@ export const blogsApi = createApi({
   reducerPath: "blogsApi",
   baseQuery: fetchBaseQuery({
     credentials: "include",
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
     // prepareHeaders: (headers, { getState }) => {...} // optional auth
   }),
   tagTypes: ["blogs"],
