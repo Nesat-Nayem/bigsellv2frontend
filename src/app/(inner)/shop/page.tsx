@@ -16,6 +16,7 @@ import {
   useGetProductFiltersQuery,
 } from "@/store/productApi";
 import HeaderThree from "@/components/header/HeaderThree";
+import { useGetRootCategoriesQuery } from "@/store/productCategoryApi";
 
 interface PostType {
   id: string;
@@ -144,7 +145,6 @@ function ShopContent() {
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
-  const [selectedBrands, setSelectedBrands] = useState<string[]>([]);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(100000);
   const [showFeatured, setShowFeatured] = useState<boolean>(false);
@@ -171,6 +171,9 @@ function ShopContent() {
     isLoading: filtersLoading,
     error: filtersError,
   } = useGetProductFiltersQuery();
+
+  // Root (main) categories for sidebar filter
+  const { data: rootCategories = [] } = useGetRootCategoriesQuery();
 
   // Extracted lists from API (safely)
   const apiBrands: string[] = filtersResponse?.data?.brands ?? [];
@@ -241,37 +244,6 @@ function ShopContent() {
 
   const effectiveProducts = shouldUseFallback ? fallbackProducts : allProducts;
 
-  // Categories derived from actual products (keeps existing behavior)
-  const allCategories = useMemo(() => {
-    const categories = new Set<string>();
-    (allProducts || []).forEach((p: any) => {
-      if (p && p.category) {
-        const category =
-          typeof p.category === "object"
-            ? p.category.title || p.category._id || p.category.name
-            : p.category;
-        if (category && typeof category === "string") categories.add(category);
-      }
-    });
-    return Array.from(categories);
-  }, [allProducts]);
-
-  // Brands: prefer API list if available, else derive from products
-  const derivedBrands = useMemo(() => {
-    const brands = new Set<string>();
-    (allProducts || []).forEach((p: any) => {
-      if (p && p.brand) {
-        const brand =
-          typeof p.brand === "object"
-            ? p.brand.title || p.brand._id || p.brand.name
-            : p.brand;
-        if (brand && typeof brand === "string") brands.add(brand);
-      }
-    });
-    return Array.from(brands);
-  }, [allProducts]);
-
-  const allBrands = apiBrands.length > 0 ? apiBrands : derivedBrands;
 
   const currentProducts = useMemo(() => {
     let products = allProducts;
@@ -320,12 +292,6 @@ function ShopContent() {
     );
   };
 
-  const handleBrandChange = (brand: string) => {
-    setSelectedBrands((prev) =>
-      prev.includes(brand) ? prev.filter((b) => b !== brand) : [...prev, brand]
-    );
-  };
-
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     if (!isNaN(val)) setMinPrice(val);
@@ -339,32 +305,12 @@ function ShopContent() {
   const filteredProducts: PostType[] = useMemo(() => {
     let products = currentProducts;
 
+    const idOf = (v: any) => (v && typeof v === "object" ? v._id : v);
+
     if (selectedCategories.length > 0) {
-      products = products.filter((product) =>
-        selectedCategories.includes(product.category || "")
-      );
-    }
-
-    if (selectedBrands.length > 0) {
-      // Build a map of slug -> brand from effectiveProducts
-      const brandsMap = new Map<string, string>();
-      (effectiveProducts || []).forEach((p: any) => {
-        const slug =
-          p.sku ||
-          p._id ||
-          (p.name && typeof p.name === "string"
-            ? p.name.toLowerCase().replace(/\s+/g, "-")
-            : "unknown");
-        const brand =
-          p?.brand && typeof p.brand === "object"
-            ? p.brand?.title || p.brand?._id || p.brand?.name
-            : p?.brand;
-        brandsMap.set(slug, brand || "");
-      });
-
       products = products.filter((product) => {
-        const brand = brandsMap.get(product.slug);
-        return selectedBrands.includes(brand || "");
+        const catId = idOf(product.productData?.category);
+        return selectedCategories.includes(String(catId || ""));
       });
     }
 
@@ -382,15 +328,7 @@ function ShopContent() {
     }
 
     return products;
-  }, [
-    currentProducts,
-    selectedCategories,
-    selectedBrands,
-    minPrice,
-    maxPrice,
-    searchQuery,
-    effectiveProducts,
-  ]);
+  }, [currentProducts, selectedCategories, minPrice, maxPrice, searchQuery]);
 
   const handlePriceFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -899,9 +837,6 @@ function ShopContent() {
                         <span>
                           Price: ₹{minPrice} — ₹{maxPrice}
                         </span>
-                        <button type="submit" className="rts-btn btn-primary">
-                          Filter
-                        </button>
                       </div>
                     </form>
                   </div>
@@ -966,16 +901,16 @@ function ShopContent() {
                   <h5 className="title">Product Categories</h5>
                   <div className="filterbox-body">
                     <div className="category-wrapper ">
-                      {allCategories.length > 0 ? (
-                        allCategories.map((cat, i) => (
-                          <div className="single-category" key={i}>
+                      {rootCategories && rootCategories.length > 0 ? (
+                        rootCategories.map((cat: any, i: number) => (
+                          <div className="single-category" key={cat._id || i}>
                             <input
                               id={`cat${i + 1}`}
                               type="checkbox"
-                              checked={selectedCategories.includes(cat)}
-                              onChange={() => handleCategoryChange(cat)}
+                              checked={selectedCategories.includes(String(cat._id))}
+                              onChange={() => handleCategoryChange(String(cat._id))}
                             />
-                            <label htmlFor={`cat${i + 1}`}>{cat}</label>
+                            <label htmlFor={`cat${i + 1}`}>{cat.title}</label>
                           </div>
                         ))
                       ) : (
@@ -985,29 +920,7 @@ function ShopContent() {
                   </div>
                 </div>
 
-                {/* Brands */}
-                <div className="single-filter-box">
-                  <h5 className="title">Select Brands</h5>
-                  <div className="filterbox-body">
-                    <div className="category-wrapper">
-                      {allBrands.length > 0 ? (
-                        allBrands.map((brand, i) => (
-                          <div className="single-category" key={i}>
-                            <input
-                              id={`brand${i + 1}`}
-                              type="checkbox"
-                              checked={selectedBrands.includes(brand)}
-                              onChange={() => handleBrandChange(brand)}
-                            />
-                            <label htmlFor={`brand${i + 1}`}>{brand}</label>
-                          </div>
-                        ))
-                      ) : (
-                        <p>Loading brands...</p>
-                      )}
-                    </div>
-                  </div>
-                </div>
+                {/* Brands removed as per request */}
               </div>
             </div>
 
