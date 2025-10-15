@@ -258,6 +258,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
         }
         productTitle={ProductTitle ?? "Default Product Title"}
         productPrice={Price ?? "0"}
+        productData={productData}
       />
     </>
   );

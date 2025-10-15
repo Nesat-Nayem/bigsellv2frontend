@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Modal from "react-bootstrap/Modal";
 import { useCart } from "@/components/header/CartContext";
 import { ToastContainer, toast } from "react-toastify";
@@ -27,7 +27,7 @@ const ProductDetails: React.FC<ModalProps> = ({
   productData,
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [activeTab, setActiveTab] = useState<string>("tab1");
+  const [selectedImage, setSelectedImage] = useState<string>(productImage || "");
   const { addToCart } = useCart();
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -35,12 +35,42 @@ const ProductDetails: React.FC<ModalProps> = ({
     setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   const addcart = () => toast.success("Successfully Added To Cart!");
+
+  const resolveUrl = (img: any): string => {
+    if (!img) return "";
+    if (typeof img === "string") return img;
+    if (typeof img === "object") return img.url || img.src || img.path || img.filename || "";
+    return "";
+  };
+
+  const candidateImages = [
+    productData?.thumbnail,
+    ...(Array.isArray(productData?.images) ? productData?.images : []),
+  ]
+    .map(resolveUrl)
+    .filter(Boolean);
+
+  const uniqueImages = Array.from(
+    new Set(candidateImages.length > 0 ? candidateImages : [productImage])
+  );
+
+  useEffect(() => {
+    const first = uniqueImages[0] || productImage || "";
+    setSelectedImage(first);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [show, productImage, productData]);
   const handleAdd = () => {
     const item = {
-      id: Date.now(),
-      image: productImage,
-      title: productTitle,
-      price: productPrice,
+      id: productData?._id ?? Date.now(),
+      image: selectedImage || productImage,
+      title:
+        (typeof productData?.name === "string"
+          ? productData?.name
+          : productData?.name?.title) || productTitle,
+      price:
+        typeof productData?.price === "number"
+          ? productData.price
+          : parseFloat(productPrice || "0"),
       originalPrice: productOriginalPrice,
       quantity: quantity,
       active: true,
@@ -72,32 +102,20 @@ const ProductDetails: React.FC<ModalProps> = ({
                 <div className="product-thumb-area">
                   <div className="cursor" />
                   <div className="thumb-wrapper one filterd-items figure">
-                    {activeTab === "tab1" && (
-                      <div className="product-thumb zoom">
-                        <img src={productImage} alt="product-thumb" />
-                      </div>
-                    )}
-                    {activeTab === "tab2" && (
-                      <div className="product-thumb zoom">
-                        <img src={productImage} alt="product-thumb" />
-                      </div>
-                    )}
-                    {activeTab === "tab3" && (
-                      <div className="product-thumb zoom">
-                        <img src={productImage} alt="product-thumb" />
-                      </div>
-                    )}
+                    <div className="product-thumb zoom">
+                      <img src={selectedImage || productImage} alt="product-thumb" />
+                    </div>
                   </div>
                   <div className="product-thumb-filter-group">
-                    {["tab1", "tab2", "tab3"].map((tab) => (
+                    {uniqueImages.map((url, idx) => (
                       <div
-                        key={tab}
-                        onClick={() => setActiveTab(tab)}
+                        key={url || idx}
+                        onClick={() => setSelectedImage(url)}
                         className={`thumb-filter filter-btn ${
-                          activeTab === tab ? "active" : ""
+                          (selectedImage || productImage) === url ? "active" : ""
                         }`}
                       >
-                        <img src={productImage} alt={`thumb-${tab}`} />
+                        <img src={url} alt={`thumb-${idx}`} />
                       </div>
                     ))}
                   </div>
@@ -132,19 +150,21 @@ const ProductDetails: React.FC<ModalProps> = ({
                   </div>
 
                   <h2 className="product-title">
-                    {productTitle.slice(0, 50)} ...
+                    {(
+                      (typeof productData?.name === "string"
+                        ? productData?.name
+                        : productData?.name?.title) || productTitle || ""
+                    ).slice(0, 50)}
+                    {" "}...
                     <span className="stock">In Stock</span>
                   </h2>
 
                   <span className="product-price">
-                    {/* <span className="old-price">₹ {productOriginalPrice}</span>{" "} */}
-                    ₹ {productPrice}
+                    ₹ {typeof productData?.price === "number" ? productData.price : productPrice}
                   </span>
 
                   <p>
-                    Priyoshop has brought to you the Hijab 3 Pieces Combo Pack
-                    PS23. Priyoshop has brought to you the Hijab 3 Pieces Combo
-                    Pack PS23
+                    {productData?.shortDescription || productData?.description || ""}
                   </p>
 
                   <div className="product-bottom-action">
@@ -195,13 +215,19 @@ const ProductDetails: React.FC<ModalProps> = ({
 
                   <div className="product-uniques">
                     <span className="sku product-unipue">
-                      <span>SKU: </span> BO1D0MX8SJ
+                      <span>SKU: </span> {productData?.sku || productData?._id || ""}
                     </span>
                     <span className="catagorys product-unipue">
-                      <span>Categories: </span> Electronics
+                      <span>Categories: </span>
+                      {typeof productData?.category === "object"
+                        ? productData?.category?.title || productData?.category?._id || ""
+                        : productData?.category || ""}
                     </span>
                     <span className="tags product-unipue">
-                      <span>Tags: </span> fashion, t-shirts, Men
+                      <span>Tags: </span>
+                      {Array.isArray(productData?.tags)
+                        ? productData?.tags.join(", ")
+                        : ""}
                     </span>
                   </div>
 
