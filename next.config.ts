@@ -21,8 +21,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*", // proxy path
-        destination: "https://api.atpuae.com/v1/api/:path*", // your backend https://api.atpuae.com/v1/api/:path*
-        //prodApi: https://api.atpuae.com/:path*
+        destination: "http://localhost:8080/v1/api/:path*", // your backend http://localhost:8080/v1/api/:path*
+        //prodApi: http://localhost:8080/:path*
       },
     ];
   },

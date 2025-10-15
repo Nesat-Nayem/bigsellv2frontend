@@ -18,7 +18,7 @@ export const PaymentPolicyApi = createApi({
   reducerPath: "PaymentPolicyApi",
   baseQuery: fetchBaseQuery({
     credentials: "include",
-    baseUrl: "https://api.atpuae.com/v1/api",
+    baseUrl: "http://localhost:8080/v1/api",
   }),
   tagTypes: ["PaymentPolicy"],
   endpoints: (builder) => ({
