@@ -142,12 +142,23 @@ function ShopContent() {
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
   const [page, setPage] = useState<number>(1);
-  const [limit, setLimit] = useState<number>(10);
+  const [limit, setLimit] = useState<number>(9);
   const [minPrice, setMinPrice] = useState<number>(0);
   const [maxPrice, setMaxPrice] = useState<number>(100000);
+  const [debouncedMinPrice, setDebouncedMinPrice] = useState<number>(0);
+  const [debouncedMaxPrice, setDebouncedMaxPrice] = useState<number>(100000);
   const [showFeatured, setShowFeatured] = useState<boolean>(false);
   const [showTrending, setShowTrending] = useState<boolean>(false);
   const [showNewArrivals, setShowNewArrivals] = useState<boolean>(false);
+
+  // Debounce price changes (3.5 seconds delay)
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedMinPrice(minPrice);
+      setDebouncedMaxPrice(maxPrice);
+    }, 3500);
+    return () => clearTimeout(timer);
+  }, [minPrice, maxPrice]);
 
   // Build server-side query params (prioritize deep link pssc > psc > pc)
   const paramsCategory = !pssc && !psc ? (selectedCategoryId || (pc || undefined)) : undefined;
@@ -168,8 +179,8 @@ function ShopContent() {
     category: paramsCategory as any,
     subcategory: paramsSubcategory as any,
     subSubcategory: paramsSubSubcategory as any,
-    minPrice,
-    maxPrice,
+    minPrice: debouncedMinPrice,
+    maxPrice: debouncedMaxPrice,
     isFeatured: showFeatured || undefined,
     isTrending: showTrending || undefined,
     isNewArrival: showNewArrivals || undefined,
@@ -217,18 +228,34 @@ function ShopContent() {
   const pageItems = useMemo<(number | string)[]>(() => {
     const total = meta.totalPages || 1;
     const current = meta.page || 1;
-    if (total <= 7) return Array.from({ length: total }, (_, i) => i + 1);
+    
+    // Show all if 5 or fewer pages
+    if (total <= 5) {
+      return Array.from({ length: total }, (_, i) => i + 1);
+    }
 
     const pages: (number | string)[] = [];
+    
+    // Always show first page
     pages.push(1);
-    if (current <= 4) {
-      pages.push(2, 3, 4, 5, "...");
-    } else if (current >= total - 3) {
-      pages.push("...", total - 4, total - 3, total - 2, total - 1);
+    
+    if (current <= 3) {
+      // Near start: show 1, 2, 3, 4, ..., last
+      pages.push(2, 3, 4);
+      if (total > 5) pages.push("...");
+      pages.push(total);
+    } else if (current >= total - 2) {
+      // Near end: show 1, ..., last-3, last-2, last-1, last
+      pages.push("...");
+      pages.push(total - 3, total - 2, total - 1, total);
     } else {
-      pages.push("...", current - 1, current, current + 1, "...");
+      // Middle: show 1, ..., current-1, current, current+1, ..., last
+      pages.push("...");
+      pages.push(current - 1, current, current + 1);
+      pages.push("...");
+      pages.push(total);
     }
-    pages.push(total);
+    
     return pages;
   }, [meta.page, meta.totalPages]);
 
@@ -250,7 +277,7 @@ function ShopContent() {
   // Reset page when core filters change
   useEffect(() => {
     setPage(1);
-  }, [minPrice, maxPrice, showFeatured, showTrending, showNewArrivals, searchQuery, pc, psc, pssc]);
+  }, [debouncedMinPrice, debouncedMaxPrice, showFeatured, showTrending, showNewArrivals, searchQuery, pc, psc, pssc]);
 
   const handlePriceFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -328,47 +355,44 @@ function ShopContent() {
                   </div>
                 </div>
 
-                {/* Product Grid Skeleton - 5 per row */}
+                {/* Product Grid Skeleton - Modern Design */}
                 <div className="row g-4">
-                  {[...Array(15)].map((_, index) => (
+                  {[...Array(9)].map((_, index) => (
                     <div
                       key={index}
-                      className="col-lg-20 col-lg-4 col-md-6 col-sm-6 col-12"
+                      className="col-lg-4 col-md-6 col-sm-6 col-12"
                     >
-                      <div className="single-shopping-card-one skeleton-product-card">
+                      <div className="skeleton-product-card-modern">
                         {/* Image Skeleton */}
-                        <div className="skeleton-product-image"></div>
-
-                        {/* Badge Skeleton */}
-                        <div className="skeleton-badge"></div>
+                        <div className="skeleton-image-wrapper">
+                          <div className="skeleton-image"></div>
+                          <div className="skeleton-badge-top"></div>
+                        </div>
 
                         {/* Content Skeleton */}
-                        <div className="skeleton-product-content">
-                          {/* Category */}
-                          <div className="skeleton-line short"></div>
-
+                        <div className="skeleton-content">
                           {/* Title */}
-                          <div className="skeleton-line long"></div>
-                          <div className="skeleton-line medium"></div>
+                          <div className="skeleton-title"></div>
+                          <div className="skeleton-title-short"></div>
 
                           {/* Rating */}
-                          <div className="skeleton-rating">
+                          <div className="skeleton-rating-row">
                             {[...Array(5)].map((_, i) => (
-                              <div key={i} className="skeleton-star"></div>
+                              <div key={i} className="skeleton-star-modern"></div>
                             ))}
                           </div>
 
                           {/* Price */}
-                          <div className="skeleton-price-wrapper">
-                            <div className="skeleton-price"></div>
-                            <div className="skeleton-price-old"></div>
+                          <div className="skeleton-price-row">
+                            <div className="skeleton-price-main"></div>
+                            <div className="skeleton-price-discount"></div>
                           </div>
 
                           {/* Actions */}
-                          <div className="skeleton-actions">
-                            <div className="skeleton-icon-btn"></div>
-                            <div className="skeleton-add-btn"></div>
-                            <div className="skeleton-icon-btn"></div>
+                          <div className="skeleton-actions-row">
+                            <div className="skeleton-icon-circle"></div>
+                            <div className="skeleton-add-to-cart"></div>
+                            <div className="skeleton-icon-circle"></div>
                           </div>
                         </div>
                       </div>
@@ -502,165 +526,204 @@ function ShopContent() {
             border-radius: 6px;
           }
 
-          .skeleton-product-card {
-            position: relative;
+          .skeleton-product-card-modern {
             background: #fff;
-            border-radius: 8px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 1px solid #f0f0f0;
-            animation: pulse 2s ease-in-out infinite;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+            transition: transform 0.2s;
           }
 
-          .skeleton-product-image {
+          .skeleton-image-wrapper {
+            position: relative;
             width: 100%;
             padding-bottom: 100%;
-            background: linear-gradient(
-              90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+            background: #f8f9fa;
+            overflow: hidden;
           }
 
-          .skeleton-badge {
+          .skeleton-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+          }
+
+          .skeleton-badge-top {
             position: absolute;
             top: 12px;
             right: 12px;
-            width: 50px;
-            height: 24px;
+            width: 60px;
+            height: 28px;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #e8e8e8 0%,
+              #f4f4f4 20%,
+              #e8e8e8 40%,
+              #e8e8e8 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 12px;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 14px;
           }
 
-          .skeleton-product-content {
+          .skeleton-content {
             padding: 16px;
           }
 
-          .skeleton-line {
-            height: 12px;
+          .skeleton-title {
+            height: 16px;
+            width: 85%;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
             border-radius: 4px;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
           }
 
-          .skeleton-line.short {
-            width: 40%;
-            height: 10px;
+          .skeleton-title-short {
+            height: 16px;
+            width: 60%;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 4px;
+            margin-bottom: 12px;
           }
 
-          .skeleton-line.medium {
-            width: 70%;
-            height: 14px;
-          }
-
-          .skeleton-line.long {
-            width: 90%;
-            height: 14px;
-          }
-
-          .skeleton-rating {
+          .skeleton-rating-row {
             display: flex;
             gap: 4px;
-            margin: 12px 0;
+            margin-bottom: 12px;
           }
 
-          .skeleton-star {
-            width: 14px;
-            height: 14px;
-            background: linear-gradient(
-              90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 2px;
-          }
-
-          .skeleton-price-wrapper {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-            margin: 12px 0;
-          }
-
-          .skeleton-price {
-            width: 60px;
-            height: 20px;
-            background: linear-gradient(
-              90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
-            );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-          }
-
-          .skeleton-price-old {
-            width: 50px;
+          .skeleton-star-modern {
+            width: 16px;
             height: 16px;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 3px;
+          }
+
+          .skeleton-price-row {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 16px;
+          }
+
+          .skeleton-price-main {
+            width: 80px;
+            height: 24px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+          }
+
+          .skeleton-price-discount {
+            width: 60px;
+            height: 18px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
             border-radius: 4px;
           }
 
-          .skeleton-actions {
+          .skeleton-actions-row {
             display: flex;
-            gap: 8px;
-            margin-top: 16px;
+            align-items: center;
+            gap: 10px;
           }
 
-          .skeleton-icon-btn {
-            width: 40px;
-            height: 40px;
+          .skeleton-icon-circle {
+            width: 44px;
+            height: 44px;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 50%;
           }
 
-          .skeleton-add-btn {
+          .skeleton-add-to-cart {
             flex: 1;
-            height: 40px;
+            height: 44px;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #e8e8e8 0%,
+              #f4f4f4 20%,
+              #e8e8e8 40%,
+              #e8e8e8 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 6px;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 8px;
+          }
+
+          @media (max-width: 991px) {
+            .skeleton-content {
+              padding: 12px;
+            }
+            .skeleton-title {
+              height: 14px;
+            }
+            .skeleton-actions-row {
+              gap: 8px;
+            }
+            .skeleton-icon-circle {
+              width: 38px;
+              height: 38px;
+            }
+            .skeleton-add-to-cart {
+              height: 38px;
+            }
           }
         `}</style>
       </div>
@@ -759,6 +822,11 @@ function ShopContent() {
                         <span>
                           Price: ₹{minPrice} — ₹{maxPrice}
                         </span>
+                        {(minPrice !== debouncedMinPrice || maxPrice !== debouncedMaxPrice) && (
+                          <small style={{ display: 'block', marginTop: '4px', color: '#6c757d', fontSize: '11px' }}>
+                            Updating in 3.5s...
+                          </small>
+                        )}
                       </div>
                     </form>
                   </div>
@@ -981,51 +1049,352 @@ function ShopContent() {
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="d-flex justify-content-between align-items-center mt-4">
-                  <div className="d-flex gap-2 align-items-center flex-wrap">
-                    <button
-                      className="rts-btn btn-primary"
-                      disabled={meta.page <= 1}
-                      onClick={() => setPage((p) => Math.max(1, p - 1))}
-                    >
-                      Prev
-                    </button>
-                    {pageItems.map((p, idx) =>
-                      typeof p === "number" ? (
-                        <button
-                          key={`${p}-${idx}`}
-                          className={`rts-btn btn-primary ${meta.page === p ? "active" : ""}`}
-                          disabled={meta.page === p}
-                          onClick={() => setPage(p)}
+                {meta.totalPages > 0 && (
+                  <div className="pagination-wrapper-outer mt-5">
+                    <div className="pagination-wrapper">
+                      <div className="pagination-scroll-container">
+                        <div className="pagination-controls">
+                          <button
+                          style={{
+                            width:"70px"
+                          }}
+                            className="pagination-btn pagination-prev"
+                            disabled={meta.page <= 1}
+                            onClick={() => setPage((p) => Math.max(1, p - 1))}
+                          >
+                            <i className="fa-solid fa-chevron-left"></i>
+                            <span className="btn-text">Prev</span>
+                          </button>
+                          {pageItems.map((p, idx) =>
+                            typeof p === "number" ? (
+                              <button
+                                key={`${p}-${idx}`}
+                                className={`pagination-btn pagination-number ${meta.page === p ? "active" : ""}`}
+                                disabled={meta.page === p}
+                                onClick={() => setPage(p)}
+                              >
+                                {p}
+                              </button>
+                            ) : (
+                              <span key={`dots-${idx}`} className="pagination-dots">...</span>
+                            )
+                          )}
+                          <button
+                               style={{
+                            width:"70px"
+                          }}
+                            className="pagination-btn pagination-next"
+                            disabled={meta.page >= meta.totalPages}
+                            onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
+                          >
+                            <span className="btn-text">Next</span>
+                            <i className="fa-solid fa-chevron-right"></i>
+                          </button>
+                        </div>
+                      </div>
+                      <div className="items-per-page">
+                        <label htmlFor="itemsPerPage" className="per-page-label">Per page:</label>
+                        <select
+                          id="itemsPerPage"
+                          className="pagination-select"
+                          value={limit}
+                          onChange={(e) => {
+                            setLimit(parseInt(e.target.value, 10));
+                            setPage(1);
+                          }}
                         >
-                          {p}
-                        </button>
-                      ) : (
-                        <span key={`dots-${idx}`} className="px-2">...</span>
-                      )
-                    )}
-                    <button
-                      className="rts-btn btn-primary"
-                      disabled={meta.page >= meta.totalPages}
-                      onClick={() => setPage((p) => Math.min(meta.totalPages, p + 1))}
-                    >
-                      Next
-                    </button>
+                          <option value={9}>9</option>
+                          <option value={18}>18</option>
+                          <option value={27}>27</option>
+                          <option value={36}>36</option>
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                  <div>
-                    <select
-                      value={limit}
-                      onChange={(e) => {
-                        setLimit(parseInt(e.target.value, 10));
-                        setPage(1);
-                      }}
-                    >
-                      <option value={10}>10</option>
-                      <option value={20}>20</option>
-                      <option value={30}>30</option>
-                    </select>
-                  </div>
-                </div>
+                )}
+
+                <style jsx>{`
+                  .pagination-wrapper-outer {
+                    width: 100%;
+                  }
+
+                  .pagination-wrapper {
+                    background: #fff;
+                    padding: 16px 20px;
+                    border-radius: 12px;
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+                    display: flex;
+                    align-items: center;
+                    justify-content: space-between;
+                    gap: 16px;
+                    width: 100%;
+                  }
+
+                  .pagination-scroll-container {
+                    flex: 1;
+                    overflow-x: auto;
+                    overflow-y: hidden;
+                    -webkit-overflow-scrolling: touch;
+                    scrollbar-width: thin;
+                    scrollbar-color: #ddd transparent;
+                    min-width: 0;
+                  }
+
+                  .pagination-scroll-container::-webkit-scrollbar {
+                    height: 6px;
+                  }
+
+                  .pagination-scroll-container::-webkit-scrollbar-track {
+                    background: transparent;
+                  }
+
+                  .pagination-scroll-container::-webkit-scrollbar-thumb {
+                    background: #ddd;
+                    border-radius: 3px;
+                  }
+
+                  .pagination-scroll-container::-webkit-scrollbar-thumb:hover {
+                    background: #bbb;
+                  }
+
+                  .pagination-controls {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    white-space: nowrap;
+                    width: max-content;
+                    padding: 0;
+                    margin: 0;
+                  }
+
+                  .pagination-controls > * {
+                    margin-left: 0 !important;
+                    margin-right: 0 !important;
+                  }
+
+                  .pagination-controls > * + * {
+                    margin-left: 8px !important;
+                  }
+
+                  .pagination-btn {
+                    min-width: 40px;
+                    height: 40px;
+                    padding: 0 12px;
+                    border: 1px solid #e0e0e0;
+                    background: #fff;
+                    color: #333;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    font-weight: 500;
+                    cursor: pointer;
+                    transition: all 0.2s ease;
+                    display: inline-flex !important;
+                    align-items: center;
+                    justify-content: center;
+                    gap: 4px;
+                    flex-shrink: 0;
+                    visibility: visible !important;
+                    opacity: 1 !important;
+                    margin: 0;
+                    text-decoration: none;
+                    box-sizing: border-box;
+                  }
+
+                  .pagination-btn i {
+                    font-size: 12px;
+                  }
+
+                  .pagination-btn.pagination-prev,
+                  .pagination-btn.pagination-next {
+                    padding: 0 10px;
+                  }
+
+                  .pagination-btn:hover:not(:disabled) {
+                    background: #f8f9fa;
+                    border-color: #007bff;
+                    color: #007bff;
+                    transform: translateY(-1px);
+                  }
+
+                  .pagination-btn:disabled {
+                    opacity: 0.5;
+                    cursor: not-allowed;
+                  }
+
+                  .pagination-btn.active {
+                    background: #007bff !important;
+                    color: #fff !important;
+                    border-color: #007bff !important;
+                  }
+
+                  .pagination-btn.pagination-number {
+                    min-width: 40px;
+                    width: 40px;
+                    padding: 0;
+                    margin: 0;
+                  }
+
+                  .pagination-dots {
+                    padding: 0 4px;
+                    color: #999;
+                    font-weight: 600;
+                    flex-shrink: 0;
+                    display: inline-block;
+                    line-height: 40px;
+                  }
+
+                  .items-per-page {
+                    display: flex;
+                    align-items: center;
+                    gap: 8px;
+                    flex-shrink: 0;
+                  }
+
+                  .per-page-label {
+                    font-size: 14px;
+                    color: #666;
+                    white-space: nowrap;
+                    margin: 0;
+                  }
+
+                  .pagination-select {
+                    padding: 8px 32px 8px 12px;
+                    border: 1px solid #e0e0e0;
+                    border-radius: 8px;
+                    font-size: 14px;
+                    background: #fff;
+                    cursor: pointer;
+                    transition: border-color 0.2s ease;
+                    min-width: 70px;
+                  }
+
+                  .pagination-select:hover {
+                    border-color: #007bff;
+                  }
+
+                  .pagination-select:focus {
+                    outline: none;
+                    border-color: #007bff;
+                    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+                  }
+
+                  /* Tablet and below - hide Prev/Next text */
+                  @media (max-width: 1199px) {
+                    .btn-text {
+                      display: none;
+                    }
+
+                    .pagination-btn.pagination-prev,
+                    .pagination-btn.pagination-next {
+                      min-width: 40px;
+                      width: 40px;
+                      padding: 0;
+                    }
+                  }
+
+                  /* Tablet */
+                  @media (max-width: 991px) {
+                    .pagination-wrapper {
+                      padding: 12px 16px;
+                      gap: 10px;
+                    }
+
+                    .pagination-controls {
+                      gap: 6px;
+                    }
+
+                    .pagination-controls > * + * {
+                      margin-left: 6px !important;
+                    }
+
+                    .pagination-btn {
+                      min-width: 36px;
+                      height: 36px;
+                      padding: 0 8px;
+                      font-size: 13px;
+                    }
+
+                    .pagination-btn.pagination-number {
+                      min-width: 36px;
+                      width: 36px;
+                      padding: 0;
+                    }
+
+                    .pagination-btn.pagination-prev,
+                    .pagination-btn.pagination-next {
+                      min-width: 36px;
+                      width: 36px;
+                      padding: 0;
+                    }
+
+                    .per-page-label {
+                      font-size: 13px;
+                    }
+
+                    .pagination-select {
+                      font-size: 13px;
+                      padding: 6px 28px 6px 10px;
+                      min-width: 60px;
+                    }
+                  }
+
+                  /* Mobile */
+                  @media (max-width: 576px) {
+                    .pagination-wrapper {
+                      padding: 10px 12px;
+                      gap: 8px;
+                    }
+
+                    .pagination-controls {
+                      gap: 5px;
+                    }
+
+                    .pagination-controls > * + * {
+                      margin-left: 5px !important;
+                    }
+
+                    .pagination-btn {
+                      min-width: 32px;
+                      height: 32px;
+                      padding: 0;
+                      font-size: 12px;
+                      gap: 0;
+                    }
+
+                    .pagination-btn i {
+                      font-size: 10px;
+                    }
+
+                    .pagination-btn.pagination-number {
+                      min-width: 32px;
+                      width: 32px;
+                      padding: 0;
+                    }
+
+                    .pagination-btn.pagination-prev,
+                    .pagination-btn.pagination-next {
+                      min-width: 32px;
+                      width: 32px;
+                      padding: 0;
+                    }
+
+                    .pagination-dots {
+                      padding: 0 3px;
+                      font-size: 12px;
+                      line-height: 32px;
+                    }
+
+                    .per-page-label {
+                      font-size: 11px;
+                    }
+
+                    .pagination-select {
+                      font-size: 12px;
+                      padding: 4px 24px 4px 8px;
+                      min-width: 50px;
+                    }
+                  }
+                `}</style>
               </div>
             </div>
           </div>
