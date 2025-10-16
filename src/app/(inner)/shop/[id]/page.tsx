@@ -1125,12 +1125,7 @@ const CompareElements: React.FC = () => {
                                   <strong>SKU:</strong> {product.sku || "N/A"}
                                 </span>
                               </div>
-                              <div>
-                                <span className="tags product-unipue mb--10">
-                                  <strong>Brand:</strong>{" "}
-                                  {product.brand || "N/A"}
-                                </span>
-                              </div>
+                       
                               <div>
                                 <span className="tags product-unipue mb--10">
                                   <strong>Status:</strong> {product.status}
@@ -1152,14 +1147,7 @@ const CompareElements: React.FC = () => {
                 {/* Sidebar */}
                 <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  rts-sticky-column-item">
                   <div className="theiaStickySidebar">
-                    <div className="shop-sight-sticky-sidevbar mb--20">
-                      <h6 className="title">Available offers</h6>
-                      <div className="single-offer-area">
-                        <div className="details">
-                          <p>Get 5% instant discount using Big Sell UPI</p>
-                        </div>
-                      </div>
-                    </div>
+             
                     <div className="our-payment-method">
                       <h5 className="title">Guaranteed Safe Checkout</h5>
                       <img
