@@ -321,12 +321,200 @@ function HeaderThree() {
     router.push(`/shop?search=${encodeURIComponent(suggestion)}`);
   };
 
-  // If general settings are still loading, render lightweight skeleton
+  // If general settings are still loading, render comprehensive skeleton
   if (isLoading) {
     return (
-      <div className="rts-header-one-area-one">
-        <div style={{ padding: 12 }}>Loading header…</div>
-      </div>
+      <>
+        <header className="header-style-two bg-primary-header">
+          <div className="search-header-area-main bg-color-white">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="logo-search-category-wrapper">
+                    {/* Logo Skeleton */}
+                    <div className="logo-area">
+                      <div className="skeleton-logo"></div>
+                    </div>
+
+                    {/* Search Bar Skeleton */}
+                    <div className="category-search-wrapper" style={{ flex: 1 }}>
+                      <div className="skeleton-search-bar"></div>
+                    </div>
+
+                    {/* Actions Skeleton (mobile) */}
+                    <div className="actions-area">
+                      <div className="skeleton-icon-btn"></div>
+                      <div className="skeleton-icon-btn"></div>
+                    </div>
+
+                    {/* Account/Wishlist/Cart Skeleton */}
+                    <div className="accont-wishlist-cart-area-header d-none d-lg-flex">
+                      <div className="skeleton-action-btn"></div>
+                      <div className="skeleton-action-btn"></div>
+                      <div className="skeleton-action-btn"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Navigation Skeleton */}
+          <div className="rts-header-nav-area-one">
+            <div className="container">
+              <div className="row">
+                <div className="col-lg-12">
+                  <div className="nav-and-btn-wrapper">
+                    <div className="nav-area">
+                      <div className="skeleton-nav-wrapper">
+                        {[120, 100, 140, 90, 110, 130, 95].map((width, i) => (
+                          <div key={i} className="skeleton-nav-item" style={{ width: `${width}px` }}></div>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="right-location-area">
+                      <div className="skeleton-marquee"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <style jsx>{`
+          @keyframes shimmer {
+            0% {
+              background-position: -1000px 0;
+            }
+            100% {
+              background-position: 1000px 0;
+            }
+          }
+
+          .skeleton-logo {
+            width: 150px;
+            height: 60px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 8px;
+          }
+
+          .skeleton-search-bar {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 8px;
+          }
+
+          .skeleton-icon-btn {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+            margin-left: 8px;
+          }
+
+          .skeleton-action-btn {
+            width: 100px;
+            height: 40px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+            margin-left: 12px;
+          }
+
+          .skeleton-nav-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 24px;
+            padding: 12px 0;
+          }
+
+          .skeleton-nav-item {
+            height: 18px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+          }
+
+          .skeleton-marquee {
+            width: 280px;
+            height: 20px;
+            background: linear-gradient(
+              90deg,
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
+            );
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+          }
+
+          @media (max-width: 991px) {
+            .skeleton-logo {
+              width: 120px;
+              height: 50px;
+            }
+            .skeleton-search-bar {
+              height: 40px;
+            }
+            .skeleton-nav-wrapper {
+              gap: 16px;
+            }
+          }
+
+          @media (max-width: 767px) {
+            .skeleton-nav-wrapper {
+              flex-wrap: wrap;
+              gap: 12px;
+            }
+            .skeleton-action-btn {
+              width: 80px;
+              height: 36px;
+            }
+          }
+        `}</style>
+      </>
     );
   }
 
@@ -357,7 +545,6 @@ function HeaderThree() {
                       />
                     </Link>
                     <div className="category-search-wrapper">
-                      {/* make the form wrapper position:relative so the absolute dropdown stays inside */}
                       <form
                         onSubmit={handleSubmit}
                         className="search-header"
@@ -388,7 +575,7 @@ function HeaderThree() {
                           type="submit"
                           className="rts-btn btn-primary radious-sm with-icon"
                         >
-                          {/* <div className="btn-text">Search</div> */}
+
                           <div className="arrow-icon" aria-hidden>
                             <svg
                               width={17}

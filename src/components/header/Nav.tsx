@@ -131,9 +131,9 @@ function NavItem() {
       <div>
         <nav>
           <ul className="parent-nav skeleton-nav-wrapper">
-            {[...Array(7)].map((_, index) => (
+            {[120, 100, 140, 90, 110, 130, 95].map((width, index) => (
               <li key={index} className="parent skeleton-nav-item">
-                <div className="skeleton-nav-link"></div>
+                <div className="skeleton-nav-link" style={{ width: `${width}px` }}></div>
               </li>
             ))}
           </ul>
@@ -142,79 +142,56 @@ function NavItem() {
         <style jsx>{`
           @keyframes shimmer {
             0% {
-              background-position: -200% 0;
+              background-position: -1000px 0;
             }
             100% {
-              background-position: 200% 0;
-            }
-          }
-
-          @keyframes pulse {
-            0%,
-            100% {
-              opacity: 1;
-            }
-            50% {
-              opacity: 0.8;
+              background-position: 1000px 0;
             }
           }
 
           .skeleton-nav-wrapper {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 24px;
             list-style: none;
             margin: 0;
-            padding: 0;
+            padding: 12px 0;
           }
 
           .skeleton-nav-item {
-            animation: pulse 2s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
           }
 
           .skeleton-nav-link {
-            height: 20px;
-            width: ${[120, 100, 140, 90, 110, 130, 95][
-              Math.floor(Math.random() * 7)
-            ]}px;
+            height: 18px;
             background: linear-gradient(
               90deg,
-              #f0f0f0 25%,
-              #e0e0e0 50%,
-              #f0f0f0 75%
+              #f0f0f0 0%,
+              #f8f8f8 20%,
+              #f0f0f0 40%,
+              #f0f0f0 100%
             );
-            background-size: 200% 100%;
-            animation: shimmer 1.5s infinite;
-            border-radius: 4px;
-            display: inline-block;
+            background-size: 1000px 100%;
+            animation: shimmer 2s infinite linear;
+            border-radius: 6px;
+            display: block;
           }
 
-          .skeleton-nav-item:nth-child(1) .skeleton-nav-link {
-            width: 120px;
+          @media (max-width: 991px) {
+            .skeleton-nav-wrapper {
+              gap: 16px;
+            }
+            .skeleton-nav-link {
+              height: 16px;
+            }
           }
 
-          .skeleton-nav-item:nth-child(2) .skeleton-nav-link {
-            width: 100px;
-          }
-
-          .skeleton-nav-item:nth-child(3) .skeleton-nav-link {
-            width: 140px;
-          }
-
-          .skeleton-nav-item:nth-child(4) .skeleton-nav-link {
-            width: 90px;
-          }
-
-          .skeleton-nav-item:nth-child(5) .skeleton-nav-link {
-            width: 110px;
-          }
-
-          .skeleton-nav-item:nth-child(6) .skeleton-nav-link {
-            width: 95px;
-          }
-
-          .skeleton-nav-item:nth-child(7) .skeleton-nav-link {
-            width: 105px;
+          @media (max-width: 767px) {
+            .skeleton-nav-wrapper {
+              flex-wrap: wrap;
+              gap: 12px;
+            }
           }
         `}</style>
       </div>
@@ -260,11 +237,7 @@ function NavItem() {
               CONTACT US
             </Link>
           </li>
-          {/* <li className="parent">
-            <Link href="/payment-policy" className="fs-16">
-              Pricing and Payment{" "}
-            </Link>
-          </li> */}
+   
         </ul>
       </nav>
     </div>
