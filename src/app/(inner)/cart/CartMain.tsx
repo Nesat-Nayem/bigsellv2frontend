@@ -250,7 +250,7 @@ const CartMain: React.FC = () => {
 
               {/* Coupon + Clear */}
               <div className="bottom-cupon-code-cart-area mt-4 d-flex align-items-center">
-                <form
+                {/* <form
                   onSubmit={handleApplyCoupon}
                   style={{ display: "flex", gap: 8, alignItems: "center" }}
                 >
@@ -267,7 +267,7 @@ const CartMain: React.FC = () => {
                   >
                     Apply Coupon
                   </button>
-                </form>
+                </form> */}
 
                 {couponMessage && (
                   <p
