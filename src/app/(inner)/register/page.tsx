@@ -152,10 +152,10 @@ export default function Home() {
                     )}
 
                     <div className="another-way-to-registration">
-                      <div className="registradion-top-text">
+                      {/* <div className="registradion-top-text">
                         <span>Or Register With</span>
-                      </div>
-                      <div className="login-with-brand">
+                      </div> */}
+                      {/* <div className="login-with-brand">
                         <a href="#" className="single">
                           <img
                             src="assets/images/form/google.svg"
@@ -168,7 +168,7 @@ export default function Home() {
                             alt="login"
                           />
                         </a>
-                      </div>
+                      </div> */}
                       <p>
                         Already Have Account? <a href="/login">Login</a>
                       </p>
