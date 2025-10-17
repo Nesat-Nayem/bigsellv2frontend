@@ -452,6 +452,15 @@ const CheckOutMain: React.FC = () => {
             throw new Error("Failed to resolve order ID for Cashfree payment");
           }
 
+          // Clear cart immediately since order was created successfully
+          if (typeof clearCart === "function") clearCart();
+
+          // Show loading toast for payment process
+          toast.info("🔄 Redirecting to payment gateway...", {
+            position: "top-right",
+            autoClose: 3000,
+          });
+
           // Initiate Cashfree payment to get paymentSessionId
           const pay = await initiateCashfreePayment({ orderId }).unwrap();
           const paymentSessionId = (pay as any)?.paymentSessionId;
