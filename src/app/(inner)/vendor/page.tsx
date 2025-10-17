@@ -11,6 +11,8 @@ export default function Home() {
   const [isUploadingAadhar, setIsUploadingAadhar] = useState(false);
   const [isUploadingPan, setIsUploadingPan] = useState(false);
   const [agreeToTerms, setAgreeToTerms] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   // form data state
   const [formData, setFormData] = useState({
@@ -70,6 +72,7 @@ export default function Home() {
       return;
     }
     try {
+      setIsSubmitting(true);
       const payload: any = {
         vendorName: formData.vendorName,
         email: formData.email,
@@ -87,8 +90,7 @@ export default function Home() {
       });
       const json = await res.json();
       if (json?.success) {
-        alert("Vendor Registration Submitted");
-        setStep(3); // stay on Verify step
+        setShowSuccess(true);
       } else {
         const backendMsg = Array.isArray(json?.errorMessages)
           ? json.errorMessages.map((e: any) => e.message).join("\n")
@@ -97,8 +99,335 @@ export default function Home() {
       }
     } catch (err) {
       alert("Failed to submit application");
+    } finally {
+      setIsSubmitting(false);
     }
   };
+
+  // Success Screen Component
+  const SuccessScreen = () => (
+    <div className="text-center py-5" style={{ minHeight: '60vh' }}>
+      <style jsx>{`
+        @keyframes checkmark {
+          0% {
+            transform: scale(0) rotate(45deg);
+            opacity: 0;
+          }
+          50% {
+            transform: scale(1.2) rotate(45deg);
+            opacity: 1;
+          }
+          100% {
+            transform: scale(1) rotate(45deg);
+            opacity: 1;
+          }
+        }
+        
+        @keyframes pulse {
+          0% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+          }
+          70% {
+            transform: scale(1.05);
+            box-shadow: 0 0 0 10px rgba(40, 167, 69, 0);
+          }
+          100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+          }
+        }
+        
+        @keyframes fadeInUp {
+          from {
+            opacity: 0;
+            transform: translateY(30px);
+          }
+          to {
+            opacity: 1;
+            transform: translateY(0);
+          }
+        }
+        
+        @keyframes confetti {
+          0% {
+            transform: rotateZ(15deg) rotateY(0deg) translate(0, 0);
+          }
+          25% {
+            transform: rotateZ(5deg) rotateY(360deg) translate(-5px, -50px);
+          }
+          50% {
+            transform: rotateZ(15deg) rotateY(720deg) translate(5px, -100px);
+          }
+          75% {
+            transform: rotateZ(5deg) rotateY(1080deg) translate(-5px, -150px);
+          }
+          100% {
+            transform: rotateZ(15deg) rotateY(1440deg) translate(0, -200px);
+          }
+        }
+        
+        .success-circle {
+          width: 120px;
+          height: 120px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #28a745, #20c997);
+          margin: 0 auto 30px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          animation: pulse 2s infinite;
+          position: relative;
+          overflow: hidden;
+        }
+        
+        .success-circle::before {
+          content: '';
+          position: absolute;
+          top: -50%;
+          left: -50%;
+          width: 200%;
+          height: 200%;
+          background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+          transform: rotate(45deg);
+          animation: shine 3s ease-in-out infinite;
+        }
+        
+        @keyframes shine {
+          0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+          50% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+          100% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+        }
+        
+        .checkmark {
+          width: 25px;
+          height: 45px;
+          border: 4px solid white;
+          border-top: none;
+          border-left: none;
+          transform: rotate(45deg);
+          animation: checkmark 0.8s ease-in-out 0.3s both;
+          position: relative;
+          z-index: 1;
+        }
+        
+        .success-content {
+          animation: fadeInUp 0.8s ease-out 0.5s both;
+        }
+        
+        .success-title {
+          font-size: 2.5rem;
+          font-weight: 700;
+          color: #28a745;
+          margin-bottom: 15px;
+          background: linear-gradient(135deg, #28a745, #20c997);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+        }
+        
+        .success-subtitle {
+          font-size: 1.2rem;
+          color: #6c757d;
+          margin-bottom: 20px;
+          line-height: 1.6;
+        }
+        
+        .success-message {
+          background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+          border-left: 4px solid #28a745;
+          padding: 25px;
+          border-radius: 10px;
+          margin: 30px 0;
+          box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .success-details {
+          background: white;
+          padding: 25px;
+          border-radius: 15px;
+          box-shadow: 0 8px 25px rgba(0,0,0,0.1);
+          margin: 30px 0;
+          border: 1px solid #e9ecef;
+        }
+        
+        .icon-item {
+          display: flex;
+          align-items: center;
+          margin-bottom: 15px;
+          padding: 10px;
+          background: #f8f9fa;
+          border-radius: 8px;
+          transition: all 0.3s ease;
+        }
+        
+        .icon-item:hover {
+          background: #e9ecef;
+          transform: translateX(5px);
+        }
+        
+        .icon-wrapper {
+          width: 40px;
+          height: 40px;
+          border-radius: 50%;
+          background: linear-gradient(135deg, #007bff, #0056b3);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-right: 15px;
+          color: white;
+          font-size: 16px;
+        }
+        
+        .action-buttons {
+          animation: fadeInUp 0.8s ease-out 1s both;
+        }
+        
+        .btn-primary-gradient {
+          background: linear-gradient(135deg, #007bff, #0056b3);
+          border: none;
+          color: white;
+          padding: 12px 30px;
+          border-radius: 50px;
+          font-weight: 600;
+          transition: all 0.3s ease;
+          box-shadow: 0 4px 15px rgba(0,123,255,0.3);
+        }
+        
+        .btn-primary-gradient:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 6px 20px rgba(0,123,255,0.4);
+          background: linear-gradient(135deg, #0056b3, #004085);
+        }
+        
+        .confetti {
+          position: absolute;
+          width: 10px;
+          height: 10px;
+          background: #ff6b6b;
+          animation: confetti 3s ease-in-out infinite;
+        }
+        
+        .confetti:nth-child(1) { background: #ff6b6b; left: 10%; animation-delay: 0s; }
+        .confetti:nth-child(2) { background: #4ecdc4; left: 20%; animation-delay: 0.5s; }
+        .confetti:nth-child(3) { background: #45b7d1; left: 30%; animation-delay: 1s; }
+        .confetti:nth-child(4) { background: #96ceb4; left: 40%; animation-delay: 1.5s; }
+        .confetti:nth-child(5) { background: #ffeaa7; left: 50%; animation-delay: 2s; }
+        .confetti:nth-child(6) { background: #fd79a8; left: 60%; animation-delay: 2.5s; }
+        .confetti:nth-child(7) { background: #fdcb6e; left: 70%; animation-delay: 3s; }
+        .confetti:nth-child(8) { background: #6c5ce7; left: 80%; animation-delay: 3.5s; }
+        .confetti:nth-child(9) { background: #a29bfe; left: 90%; animation-delay: 4s; }
+      `}</style>
+      
+      {/* Confetti Animation */}
+      <div style={{ position: 'relative', overflow: 'hidden' }}>
+        {[...Array(9)].map((_, i) => (
+          <div key={i} className="confetti" />
+        ))}
+      </div>
+      
+      {/* Success Icon */}
+      <div className="success-circle">
+        <div className="checkmark" />
+      </div>
+      
+      {/* Success Content */}
+      <div className="success-content">
+        <h1 className="success-title">Application Submitted Successfully!</h1>
+        <p className="success-subtitle">
+          Thank you for choosing to become a vendor with us.
+        </p>
+        
+        <div className="success-message">
+          <div className="d-flex align-items-center mb-3">
+            <div className="icon-wrapper me-3">
+              <i className="fa fa-clock" />
+            </div>
+            <div>
+              <h5 className="mb-1 text-start">What happens next?</h5>
+              <p className="mb-0 text-muted text-start">
+                We will review your submission and get back to you soon
+              </p>
+            </div>
+          </div>
+        </div>
+        
+        <div className="success-details">
+          <h5 className="mb-4 text-dark">Application Timeline</h5>
+          
+          <div className="icon-item">
+            <div className="icon-wrapper">
+              <i className="fa fa-check" />
+            </div>
+            <div className="text-start">
+              <strong>Application Received</strong>
+              <div className="text-muted small">Your vendor application has been successfully submitted</div>
+            </div>
+          </div>
+          
+          <div className="icon-item">
+            <div className="icon-wrapper">
+              <i className="fa fa-search" />
+            </div>
+            <div className="text-start">
+              <strong>Under Review</strong>
+              <div className="text-muted small">Our team will review your documents and information (2-3 business days)</div>
+            </div>
+          </div>
+          
+          <div className="icon-item">
+            <div className="icon-wrapper">
+              <i className="fa fa-envelope" />
+            </div>
+            <div className="text-start">
+              <strong>Email Notification</strong>
+              <div className="text-muted small">You'll receive an email at <strong>{formData.email}</strong> with the decision</div>
+            </div>
+          </div>
+          
+          <div className="icon-item">
+            <div className="icon-wrapper">
+              <i className="fa fa-store" />
+            </div>
+            <div className="text-start">
+              <strong>Account Activation</strong>
+              <div className="text-muted small">Upon approval, your vendor account will be activated</div>
+            </div>
+          </div>
+        </div>
+        
+        <div className="action-buttons">
+          <button 
+            className="btn btn-primary-gradient me-3"
+            onClick={() => window.location.href = 'http://localhost:3001'}
+          >
+            <i className="fa fa-tachometer-alt me-2" />
+            Go to Dashboard
+          </button>
+          <button 
+            className="btn mt-4 btn-outline-secondary"
+            onClick={() => window.location.href = '/'}
+          >
+            <i className="fa fa-home  me-2" />
+            Back to Home
+          </button>
+        </div>
+        
+        <div className="mt-4 p-3 border rounded" style={{ background: '#f8f9fa' }}>
+          <small className="text-muted">
+            <i className="fa fa-info-circle me-2" />
+            Need help? Contact our support team at{' '}
+            <a href="mailto:support@bigsell.com" className="text-primary">
+              support@bigsell.com
+            </a>{' '}
+            or call{' '}
+            <a href="tel:+1234567890" className="text-primary">
++91 94722 10440            </a>
+          </small>
+        </div>
+      </div>
+    </div>
+  );
 
   return (
     <div className="demo-one">
@@ -153,11 +482,16 @@ export default function Home() {
                 ))}
               </div>
 
-              {/* Step Forms */}
-              <form
-                onSubmit={handleSubmit}
-                className="card p-5 shadow-lg border-0 rounded-4"
-              >
+              {/* Show Success Screen or Step Forms */}
+              {showSuccess ? (
+                <div className="card p-5 shadow-lg border-0 rounded-4">
+                  <SuccessScreen />
+                </div>
+              ) : (
+                <form
+                  onSubmit={handleSubmit}
+                  className="card p-5 shadow-lg border-0 rounded-4"
+                >
                 {/* Step 1: Basic Details */}
                 {step === 1 && (
                   <>
@@ -463,14 +797,25 @@ export default function Home() {
                   {step === 3 && (
                     <button
                       type="submit"
-                      className="btn btn-success px-4"
-                      disabled={!agreeToTerms}
+                      className="btn btn-success px-4 py-3"
+                      disabled={!agreeToTerms || isSubmitting}
                     >
-                      Submit
+                      {isSubmitting ? (
+                        <>
+                          <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                          Submitting...
+                        </>
+                      ) : (
+                        <>
+                          <i className="fa fa-paper-plane me-2" />
+                          Submit Application
+                        </>
+                      )}
                     </button>
                   )}
                 </div>
               </form>
+              )}
             </div>
           </div>
         </div>
