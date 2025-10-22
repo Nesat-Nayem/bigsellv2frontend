@@ -71,7 +71,7 @@ export const productCategoryApi = createApi({
   baseQuery: fetchBaseQuery({
     credentials: "include",
     baseUrl:
-      process.env.NEXT_PUBLIC_API_BASE || "http://localhost:8080/v1/api",
+      process.env.NEXT_PUBLIC_API_BASE || "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["Category"],
   endpoints: (builder) => ({

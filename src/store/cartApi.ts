@@ -4,7 +4,7 @@ import type { RootState as IRootState } from "@/store";
 import type { ApiResponse } from "./productApi"; // reuse ApiResponse if exported, else redefine
 
 const baseUrl =
-  process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/v1/api";
+  process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.atpuae.com/v1/api";
 
 /** Cart item with optional populated product */
 export interface ICartProduct {
