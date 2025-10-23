@@ -17,7 +17,7 @@ export const categoryApi = createApi({
   reducerPath: "categoryApi",
   baseQuery: fetchBaseQuery({
     credentials: "include",
-    baseUrl: "http://localhost:8080/v1/api", //ProdApis:- http://localhost:8080/
+    baseUrl: "https://api.atpuae.com/v1/api", //ProdApis:- https://api.atpuae.com/
   }),
   tagTypes: ["category"],
   endpoints: (builder) => ({

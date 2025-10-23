@@ -756,7 +756,8 @@ const CheckOutMain: React.FC = () => {
                             onChange={(e) =>
                               setAddressForm({
                                 ...addressForm,
-                                addressType: e.target.value as IAddress["addressType"],
+                                addressType: e.target
+                                  .value as IAddress["addressType"],
                               })
                             }
                           >
@@ -1041,7 +1042,17 @@ const CheckOutMain: React.FC = () => {
                     key={item.id || item.productId}
                   >
                     <div className="left-area">
-                      <img src={item.image} alt={item.title} />
+                      <div style={{ width: "50px", height: "50px" }}>
+                        <img
+                          src={item.image}
+                          alt={item.title}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                          }}
+                        />
+                      </div>
                       <span className="title">
                         {item.title} × {item.quantity}
                       </span>

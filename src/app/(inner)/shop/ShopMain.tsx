@@ -157,7 +157,7 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
                   : `/assets/images/grocery/${ProductImage}`
               }
               alt="grocery"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
         </Link>

@@ -20,7 +20,10 @@ function CategoryBannerBottom() {
         <div className="container">
           {/* Top Banner Skeleton */}
           <div className="mt-0 text-center mb-0 mb-sm-5">
-            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+            <div
+              className="skeleton-banner"
+              style={{ width: "100%", height: "500px", borderRadius: "12px" }}
+            ></div>
           </div>
 
           {/* Section 1: First 10 categories skeleton */}
@@ -28,7 +31,11 @@ function CategoryBannerBottom() {
             <div className="col-lg-12">
               <div className="d-flex gap-3 overflow-hidden">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0" style={{ width: '140px' }}>
+                  <div
+                    key={i}
+                    className="flex-shrink-0"
+                    style={{ width: "140px" }}
+                  >
                     <div className="skeleton-category-card"></div>
                   </div>
                 ))}
@@ -38,7 +45,10 @@ function CategoryBannerBottom() {
 
           {/* Banner Between Sections Skeleton */}
           <div className="text-center mb-0 mb-sm-5">
-            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+            <div
+              className="skeleton-banner"
+              style={{ width: "100%", height: "500px", borderRadius: "12px" }}
+            ></div>
           </div>
 
           {/* Section 2: Next 10 categories skeleton */}
@@ -46,7 +56,11 @@ function CategoryBannerBottom() {
             <div className="col-lg-12">
               <div className="d-flex gap-3 overflow-hidden">
                 {[...Array(10)].map((_, i) => (
-                  <div key={i} className="flex-shrink-0" style={{ width: '140px' }}>
+                  <div
+                    key={i}
+                    className="flex-shrink-0"
+                    style={{ width: "140px" }}
+                  >
                     <div className="skeleton-category-card"></div>
                   </div>
                 ))}
@@ -56,7 +70,10 @@ function CategoryBannerBottom() {
 
           {/* Bottom Banner Skeleton */}
           <div className="mt-0 mb-0 mb-sm-5 text-center">
-            <div className="skeleton-banner" style={{ width: '100%', height: '500px', borderRadius: '12px' }}></div>
+            <div
+              className="skeleton-banner"
+              style={{ width: "100%", height: "500px", borderRadius: "12px" }}
+            ></div>
           </div>
 
           {/* Section 3: Grid categories skeleton */}
@@ -166,16 +183,16 @@ function CategoryBannerBottom() {
   };
 
   const buildShopHref = (cat: any) => {
-    const pc = cat?.productCategory
-    const psc = cat?.productSubcategory
-    const pssc = cat?.productSubSubcategory
-    const params = new URLSearchParams()
-    if (pc) params.set('pc', String(pc))
-    if (psc) params.set('psc', String(psc))
-    if (pssc) params.set('pssc', String(pssc))
-    const qs = params.toString()
-    return `/shop${qs ? `?${qs}` : ''}`
-  }
+    const pc = cat?.productCategory;
+    const psc = cat?.productSubcategory;
+    const pssc = cat?.productSubSubcategory;
+    const params = new URLSearchParams();
+    if (pc) params.set("pc", String(pc));
+    if (psc) params.set("psc", String(psc));
+    if (pssc) params.set("pssc", String(pssc));
+    const qs = params.toString();
+    return `/shop${qs ? `?${qs}` : ""}`;
+  };
 
   const renderSlide = (cat: any, idx: number) => (
     <SwiperSlide key={cat._id || idx}>
@@ -195,7 +212,7 @@ function CategoryBannerBottom() {
               alt={cat.title || "category"}
               fill
               sizes="100px"
-              style={{ objectFit: "contain" }}
+              style={{ objectFit: "cover" }}
             />
           </div>
         </div>
@@ -218,15 +235,15 @@ function CategoryBannerBottom() {
         </div>
 
         {/* Section 1: First 10 categories */}
-            {firstTen.length > 0 && (
-              <div className="row  mb-0 mb-sm-5">
-                <div className="col-lg-12">
-                  <Swiper {...swiperSettings}>
-                    {firstTen.map((cat, idx) => renderSlide(cat, idx))}
-                  </Swiper>
-                </div>
-              </div>
-            )}
+        {firstTen.length > 0 && (
+          <div className="row  mb-0 mb-sm-5">
+            <div className="col-lg-12">
+              <Swiper {...swiperSettings}>
+                {firstTen.map((cat, idx) => renderSlide(cat, idx))}
+              </Swiper>
+            </div>
+          </div>
+        )}
 
         {/* Banner Between Sections */}
         <div className="text-center  mb-0 mb-sm-5">

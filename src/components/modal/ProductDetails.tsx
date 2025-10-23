@@ -27,7 +27,9 @@ const ProductDetails: React.FC<ModalProps> = ({
   productData,
 }) => {
   const [quantity, setQuantity] = useState(1);
-  const [selectedImage, setSelectedImage] = useState<string>(productImage || "");
+  const [selectedImage, setSelectedImage] = useState<string>(
+    productImage || ""
+  );
   const { addToCart } = useCart();
 
   const increaseQuantity = () => setQuantity((prev) => prev + 1);
@@ -39,7 +41,8 @@ const ProductDetails: React.FC<ModalProps> = ({
   const resolveUrl = (img: any): string => {
     if (!img) return "";
     if (typeof img === "string") return img;
-    if (typeof img === "object") return img.url || img.src || img.path || img.filename || "";
+    if (typeof img === "object")
+      return img.url || img.src || img.path || img.filename || "";
     return "";
   };
 
@@ -88,6 +91,8 @@ const ProductDetails: React.FC<ModalProps> = ({
         backdrop="static"
         keyboard={false}
         dialogClassName="modal-compare"
+        size="sm"
+        aria-labelledby="example-modal-sizes-title-sm"
       >
         <div className="product-details-popup-wrapper popup">
           <div className="rts-product-details-section rts-product-details-section2 product-details-popup-section">
@@ -102,8 +107,19 @@ const ProductDetails: React.FC<ModalProps> = ({
                 <div className="product-thumb-area">
                   <div className="cursor" />
                   <div className="thumb-wrapper one filterd-items figure">
-                    <div className="product-thumb zoom">
-                      <img src={selectedImage || productImage} alt="product-thumb" />
+                    <div
+                      className="product-thumb zoom"
+                      style={{ width: "400px", height: "400px" }}
+                    >
+                      <img
+                        src={selectedImage || productImage}
+                        alt="product-thumb"
+                        style={{
+                          width: "100%",
+                          height: "100%",
+                          objectFit: "cover",
+                        }}
+                      />
                     </div>
                   </div>
                   <div className="product-thumb-filter-group">
@@ -112,10 +128,22 @@ const ProductDetails: React.FC<ModalProps> = ({
                         key={url || idx}
                         onClick={() => setSelectedImage(url)}
                         className={`thumb-filter filter-btn ${
-                          (selectedImage || productImage) === url ? "active" : ""
+                          (selectedImage || productImage) === url
+                            ? "active"
+                            : ""
                         }`}
                       >
-                        <img src={url} alt={`thumb-${idx}`} />
+                        <div style={{ width: "40px", height: "40px" }}>
+                          <img
+                            src={url}
+                            alt={`thumb-${idx}`}
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
                       </div>
                     ))}
                   </div>
@@ -150,21 +178,25 @@ const ProductDetails: React.FC<ModalProps> = ({
                   </div>
 
                   <h2 className="product-title">
-                    {(
-                      (typeof productData?.name === "string"
-                        ? productData?.name
-                        : productData?.name?.title) || productTitle || ""
-                    ).slice(0, 50)}
-                    {" "}...
+                    {(typeof productData?.name === "string"
+                      ? productData?.name
+                      : productData?.name?.title) ||
+                      productTitle ||
+                      ""}{" "}
                     <span className="stock">In Stock</span>
                   </h2>
 
                   <span className="product-price">
-                    ₹ {typeof productData?.price === "number" ? productData.price : productPrice}
+                    ₹{" "}
+                    {typeof productData?.price === "number"
+                      ? productData.price
+                      : productPrice}
                   </span>
 
                   <p>
-                    {productData?.shortDescription || productData?.description || ""}
+                    {productData?.shortDescription ||
+                      productData?.description ||
+                      ""}
                   </p>
 
                   <div className="product-bottom-action">
@@ -215,12 +247,15 @@ const ProductDetails: React.FC<ModalProps> = ({
 
                   <div className="product-uniques">
                     <span className="sku product-unipue">
-                      <span>SKU: </span> {productData?.sku || productData?._id || ""}
+                      <span>SKU: </span>{" "}
+                      {productData?.sku || productData?._id || ""}
                     </span>
                     <span className="catagorys product-unipue">
                       <span>Categories: </span>
                       {typeof productData?.category === "object"
-                        ? productData?.category?.title || productData?.category?._id || ""
+                        ? productData?.category?.title ||
+                          productData?.category?._id ||
+                          ""
                         : productData?.category || ""}
                     </span>
                     <span className="tags product-unipue">

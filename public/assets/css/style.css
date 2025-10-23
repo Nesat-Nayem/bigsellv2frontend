@@ -24131,7 +24131,7 @@ body.modal-open {
   display: flex;
   align-items: center;
   gap: 94px;
-  padding: 26px 28px;
+  padding: 26px 8px;
   border-bottom: 1px solid #e2e2e2;
 }
 
@@ -24149,8 +24149,8 @@ body.modal-open {
 .cart-total-area-start-right .shipping {
   display: flex;
   align-items: flex-start;
-  gap: 94px;
-  padding: 26px 28px;
+  gap: 50px;
+  padding: 26px 8px;
   border-bottom: 1px solid #e2e2e2;
 }
 
@@ -24238,14 +24238,14 @@ body.modal-open {
   background: #2c3c28;
   border-radius: 50%;
   border: none;
-  top: 22%;
+  top: 20%;
 }
 
 .cart-total-area-start-right .bottom .wrapper {
   display: flex;
   align-items: flex-start;
   gap: 94px;
-  padding: 26px 28px 15px 28px;
+  padding: 26px 8px 15px 28px;
 }
 
 .cart-total-area-start-right .bottom .button-area {
@@ -25244,7 +25244,7 @@ body.modal-open {
   align-items: center;
   justify-content: space-between;
   padding: 33px 0;
-  margin: 0 36px;
+  margin: 0 12px;
   border-bottom: 1px solid #e2e2e2;
   gap: 20px;
 }

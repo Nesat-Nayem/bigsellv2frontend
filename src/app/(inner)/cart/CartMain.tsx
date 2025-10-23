@@ -182,7 +182,10 @@ const CartMain: React.FC = () => {
                       </div>
 
                       <div className="quantity" style={{ flex: 1 }}>
-                        <div className="quantity-edit d-flex align-items-center">
+                        <div
+                          className="quantity-edit d-flex align-items-center"
+                          style={{ border: "none" }}
+                        >
                           <input
                             type="number"
                             className="input"
@@ -198,7 +201,11 @@ const CartMain: React.FC = () => {
                               );
                             }}
                             min={1}
-                            style={{ width: 70, marginRight: 8 }}
+                            style={{
+                              width: 70,
+                              marginRight: 8,
+                              padding: "5px",
+                            }}
                             key={`qty-${item.productId ?? item.id}-${
                               item.quantity
                             }`}
