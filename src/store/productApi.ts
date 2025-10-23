@@ -129,6 +129,7 @@ export const productsApi = createApi({
         category: string;
         subcategory: string;
         subSubcategory: string;
+        brand: string;
         minPrice: number;
         maxPrice: number;
         isFeatured: boolean;
@@ -150,6 +151,7 @@ export const productsApi = createApi({
         add('category', params.category);
         add('subcategory', params.subcategory);
         add('subSubcategory', params.subSubcategory);
+        add('brand', params.brand);
         add('minPrice', params.minPrice);
         add('maxPrice', params.maxPrice);
         add('isFeatured', params.isFeatured);

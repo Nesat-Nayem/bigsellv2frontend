@@ -1125,7 +1125,16 @@ const CompareElements: React.FC = () => {
                                   <strong>SKU:</strong> {product.sku || "N/A"}
                                 </span>
                               </div>
-                       
+                              {product.brand && (
+                                <div>
+                                  <span className="tags product-unipue mb--10">
+                                    <strong>Brand:</strong>{" "}
+                                    <a href={`/shop?brand=${encodeURIComponent(String(product.brand))}`}>
+                                      {String(product.brand)}
+                                    </a>
+                                  </span>
+                                </div>
+                              )}
                               <div>
                                 <span className="tags product-unipue mb--10">
                                   <strong>Status:</strong> {product.status}

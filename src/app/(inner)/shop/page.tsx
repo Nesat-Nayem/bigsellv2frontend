@@ -138,6 +138,7 @@ function ShopContent() {
   const pc = (searchParams.get('pc') || '').trim();
   const psc = (searchParams.get('psc') || '').trim();
   const pssc = (searchParams.get('pssc') || '').trim();
+  const urlBrand = (searchParams.get('brand') || '').trim();
 
   const [activeTab, setActiveTab] = useState<string>("tab1");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string>("");
@@ -150,6 +151,12 @@ function ShopContent() {
   const [showFeatured, setShowFeatured] = useState<boolean>(false);
   const [showTrending, setShowTrending] = useState<boolean>(false);
   const [showNewArrivals, setShowNewArrivals] = useState<boolean>(false);
+  const [selectedBrand, setSelectedBrand] = useState<string>("");
+
+  // Sync brand from URL when present
+  useEffect(() => {
+    setSelectedBrand(urlBrand);
+  }, [urlBrand]);
 
   // Debounce price changes (3.5 seconds delay)
   useEffect(() => {
@@ -179,6 +186,7 @@ function ShopContent() {
     category: paramsCategory as any,
     subcategory: paramsSubcategory as any,
     subSubcategory: paramsSubSubcategory as any,
+    brand: selectedBrand || undefined,
     minPrice: debouncedMinPrice,
     maxPrice: debouncedMaxPrice,
     isFeatured: showFeatured || undefined,
@@ -264,6 +272,11 @@ function ShopContent() {
     setPage(1);
   };
 
+  const handleBrandChange = (brand: string) => {
+    setSelectedBrand(brand);
+    setPage(1);
+  };
+
   const handleMinPriceChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const val = parseFloat(e.target.value);
     if (!isNaN(val)) setMinPrice(val);
@@ -277,7 +290,7 @@ function ShopContent() {
   // Reset page when core filters change
   useEffect(() => {
     setPage(1);
-  }, [debouncedMinPrice, debouncedMaxPrice, showFeatured, showTrending, showNewArrivals, searchQuery, pc, psc, pssc]);
+  }, [debouncedMinPrice, debouncedMaxPrice, showFeatured, showTrending, showNewArrivals, searchQuery, pc, psc, pssc, selectedBrand]);
 
   const handlePriceFilterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -911,7 +924,40 @@ function ShopContent() {
                   </div>
                 </div>
 
-                {/* Brands removed as per request */}
+                {/* Brands */}
+                <div className="single-filter-box">
+                  <h5 className="title">Brands</h5>
+                  <div className="filterbox-body">
+                    <div className="category-wrapper ">
+                      <div className="single-category">
+                        <input
+                          id={`brandAll`}
+                          type="radio"
+                          name="brand"
+                          checked={selectedBrand === ""}
+                          onChange={() => handleBrandChange("")}
+                        />
+                        <label htmlFor={`brandAll`}>All Brands</label>
+                      </div>
+                      {apiBrands && apiBrands.length > 0 ? (
+                        apiBrands.map((b: string, i: number) => (
+                          <div className="single-category" key={b || i}>
+                            <input
+                              id={`brand${i + 1}`}
+                              type="radio"
+                              name="brand"
+                              checked={selectedBrand === b}
+                              onChange={() => handleBrandChange(b)}
+                            />
+                            <label htmlFor={`brand${i + 1}`}>{b}</label>
+                          </div>
+                        ))
+                      ) : (
+                        <p>No brands available</p>
+                      )}
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
 
