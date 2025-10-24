@@ -35,7 +35,7 @@ const MobileMenu = () => {
     null
   );
 
-  const { data: categories, isLoading } = useGetCategoryTreeQuery(undefined);
+  const { data: categories, isLoading } = useGetCategoryTreeQuery({ maxDepth: 3 });
 
   const toggleMenu = (index: number) => {
     setOpenMenuIndex((prev) => (prev === index ? null : index));
@@ -43,6 +43,15 @@ const MobileMenu = () => {
 
   const toggleThirdMenu = (key: string) => {
     setOpenThirdLevelKey((prev) => (prev === key ? null : key));
+  };
+
+  const buildShopHref = (ids: { pc?: string; psc?: string; pssc?: string }) => {
+    const params = new URLSearchParams();
+    if (ids.pc) params.set('pc', String(ids.pc));
+    if (ids.psc) params.set('psc', String(ids.psc));
+    if (ids.pssc) params.set('pssc', String(ids.pssc));
+    const qs = params.toString();
+    return `/shop${qs ? `?${qs}` : ''}`;
   };
 
   return (
@@ -65,13 +74,13 @@ const MobileMenu = () => {
                 openMenuIndex === index + 1 ? "mm-active" : ""
               }`}
             >
-              <Link
-                href={`/shop/${category.slug}`}
+              <a
+                href="#"
                 className="main"
-                onClick={() => toggleMenu(index + 1)}
+                onClick={(e) => { e.preventDefault(); toggleMenu(index + 1); }}
               >
                 {category.title}
-              </Link>
+              </a>
 
               {/* 2nd Level */}
               {category.children && category.children.length > 0 && (
@@ -87,13 +96,13 @@ const MobileMenu = () => {
                         child.children?.length ? "has-droupdown third-lvl" : ""
                       }`}
                     >
-                      <Link
-                        href={`/shop/${child.slug}`}
+                      <a
+                        href="#"
                         className="main"
-                        onClick={() => toggleThirdMenu(child._id)}
+                        onClick={(e) => { e.preventDefault(); toggleThirdMenu(child._id); }}
                       >
                         {child.title}
-                      </Link>
+                      </a>
 
                       {/* 3rd Level */}
                       {child.children && child.children.length > 0 && (
@@ -104,7 +113,7 @@ const MobileMenu = () => {
                         >
                           {child.children.map((grand) => (
                             <li key={grand._id}>
-                              <Link href={`/shop/${grand.slug}`}>
+                              <Link href={buildShopHref({ pc: category._id, psc: child._id, pssc: grand._id })}>
                                 {grand.title}
                               </Link>
                             </li>
