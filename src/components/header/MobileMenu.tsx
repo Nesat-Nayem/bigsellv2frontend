@@ -134,11 +134,11 @@ const MobileMenu = () => {
             ABOUT US
           </Link>
         </li>
-        <li>
+        {/* <li>
           <Link className="main" href="/blog">
             BLOG
           </Link>
-        </li>
+        </li> */}
         <li>
           <Link className="main" href="/contact">
             CONTACT US

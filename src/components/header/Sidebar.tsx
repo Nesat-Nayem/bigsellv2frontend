@@ -3,10 +3,13 @@ import Link from "next/link";
 import CategoryMenu from "./CategoryMenu";
 import MobileMenu from "./MobileMenu";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 const Sidebar = () => {
   // tab
   const [activeTab, setActiveTab] = useState<string>("tab1");
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const router = useRouter();
 
   const handleMenuClickClose = () => {
     const sidebar = document.querySelector(".side-bar.header-two");
@@ -20,6 +23,17 @@ const Sidebar = () => {
     if (sidebar) {
       sidebar.classList.remove("show");
     }
+  };
+
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const trimmedQuery = searchQuery.trim();
+    if (trimmedQuery) {
+      router.push(`/shop?search=${encodeURIComponent(trimmedQuery)}`);
+    } else {
+      router.push("/shop");
+    }
+    handleSearchClose();
   };
 
   return (
@@ -96,17 +110,19 @@ const Sidebar = () => {
       <div className="search-input-area">
         <div className="container">
           <div className="search-input-inner">
-            <div className="input-div">
+            <form className="input-div" onSubmit={handleSearchSubmit}>
               <input
                 id="searchInput1"
                 className="search-input"
                 type="text"
                 placeholder="Search by keyword or #"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
               />
-              <button>
+              <button type="submit">
                 <i className="far fa-search" />
               </button>
-            </div>
+            </form>
           </div>
         </div>
         <div
