@@ -17,7 +17,7 @@ interface ShippingPolicyResponse {
 export const ShippingPolicyApi = createApi({
   reducerPath: "ShippingPolicyApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["ShippingPolicy"],
   endpoints: (builder) => ({
