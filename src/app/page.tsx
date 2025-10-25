@@ -17,6 +17,7 @@ import { WishlistProvider } from "@/components/header/WishlistContext";
 import { ToastContainer } from "react-toastify";
 import HeaderTwo from "@/components/header/HeaderTwo";
 import HeaderThree from "@/components/header/HeaderThree";
+import BottomNav from "@/components/footer/BottomNav";
 
 export default function Home() {
   const [loading, setLoading] = useState(true);

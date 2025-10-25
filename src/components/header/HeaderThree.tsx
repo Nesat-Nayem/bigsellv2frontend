@@ -337,7 +337,10 @@ function HeaderThree() {
                     </div>
 
                     {/* Search Bar Skeleton */}
-                    <div className="category-search-wrapper" style={{ flex: 1 }}>
+                    <div
+                      className="category-search-wrapper"
+                      style={{ flex: 1 }}
+                    >
                       <div className="skeleton-search-bar"></div>
                     </div>
 
@@ -368,7 +371,11 @@ function HeaderThree() {
                     <div className="nav-area">
                       <div className="skeleton-nav-wrapper">
                         {[120, 100, 140, 90, 110, 130, 95].map((width, i) => (
-                          <div key={i} className="skeleton-nav-item" style={{ width: `${width}px` }}></div>
+                          <div
+                            key={i}
+                            className="skeleton-nav-item"
+                            style={{ width: `${width}px` }}
+                          ></div>
                         ))}
                       </div>
                     </div>
@@ -575,7 +582,6 @@ function HeaderThree() {
                           type="submit"
                           className="rts-btn btn-primary radious-sm with-icon"
                         >
-
                           <div className="arrow-icon" aria-hidden>
                             <svg
                               width={17}
@@ -875,14 +881,12 @@ function HeaderThree() {
                       <div className="accont-wishlist-cart-area-header">
                         <a href="/account" className="btn-border-only account">
                           <i className="fa-light fa-user" />
-                          Account
                         </a>
                         <a
                           href="/wishlist"
                           className="btn-border-only wishlist"
                         >
                           <i className="fa-regular fa-heart" />
-                          Wishlist
                         </a>
                         <div className="btn-border-only cart category-hover-header">
                           <i className="fa-sharp fa-regular fa-cart-shopping" />

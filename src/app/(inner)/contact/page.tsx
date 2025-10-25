@@ -48,7 +48,7 @@ export default function Home() {
       <HeaderThree />
 
       {/* Banner */}
-      <div className="rts-contact-main-wrapper-banner bg_image">
+      {/* <div className="rts-contact-main-wrapper-banner bg_image">
         <div className="container">
           <div className="row">
             <div className="co-lg-12">
@@ -63,79 +63,22 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Contact Info */}
-      <div className="rts-map-contact-area rts-section-gap2">
-        <div className="container">
-          <div className="row">
-            <div className="col-lg-4">
-              <div className="contact-left-area-main-wrapper">
-                <h2 className="title">You can ask us anything!</h2>
-                <p className="disc">
-                  We’re here to help with your questions, feedback, or ideas.
-                  Reach out anytime, and our support team will make sure you get
-                  the answers you need as quickly as possible.
-                </p>
-
-                <div className="location-single-card">
-                  <div className="icon">
-                    <i className="fa-light fa-location-dot" />
-                  </div>
-                  <div className="information">
-                    <h3 className="title">India Store</h3>
-                    <p>{generalSettings?.address}</p>
-                    {generalSettings?.number && (
-                      <Link
-                        href={`tel:${generalSettings.number}`}
-                        className="number"
-                      >
-                        +91 {generalSettings.number}
-                      </Link>
-                    )}
-                    {generalSettings?.email && (
-                      <Link
-                        href={`mailto:${generalSettings.email}`}
-                        className="email"
-                      >
-                        {generalSettings.email}
-                      </Link>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Map */}
-            <div className="col-lg-8 pl--50 pl_sm--5 pl_md--5">
-              {generalSettings?.iframe && (
-                <iframe
-                  src={generalSettings.iframe}
-                  width={600}
-                  height={540}
-                  style={{ border: 0 }}
-                  allowFullScreen
-                  loading="lazy"
-                  referrerPolicy="no-referrer-when-downgrade"
-                ></iframe>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
 
       {/* Contact Form */}
-      <div className="rts-contact-form-area rts-section-gapBottom">
+      <div className="rts-contact-form-area rts-section-gapBottom pt-5">
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
               <div className="bg_light-1 contact-form-wrapper-bg">
+                <h3 className="title mb--50">
+                  Fill Up The Form If You Have Any Question
+                </h3>
                 <div className="row">
                   <div className="col-lg-7 pr--30 pr_md--10 pr_sm--5">
                     <div className="contact-form-wrapper-1">
-                      <h3 className="title mb--50">
-                        Fill Up The Form If You Have Any Question
-                      </h3>
                       <form
                         onSubmit={handleSubmit(onSubmit)}
                         className="contact-form-1"

@@ -173,9 +173,9 @@ function CategoryBannerBottom() {
       disableOnInteraction: false,
     },
     breakpoints: {
-      0: { slidesPerView: 3, spaceBetween: 8 },
-      320: { slidesPerView: 3, spaceBetween: 12 },
-      480: { slidesPerView: 3, spaceBetween: 12 },
+      0: { slidesPerView: 2, spaceBetween: 8 },
+      320: { slidesPerView: 2, spaceBetween: 12 },
+      480: { slidesPerView: 2, spaceBetween: 12 },
       640: { slidesPerView: 4, spaceBetween: 12 },
       840: { slidesPerView: 4, spaceBetween: 12 },
       1140: { slidesPerView: 7, spaceBetween: 8 },
@@ -201,7 +201,7 @@ function CategoryBannerBottom() {
           <div
             style={{
               width: "100%",
-              height: "200px",
+              height: "250px",
               position: "relative",
               borderRadius: "8px",
               overflow: "hidden",
@@ -212,7 +212,6 @@ function CategoryBannerBottom() {
               alt={cat.title || "category"}
               fill
               sizes="100px"
-              style={{ objectFit: "cover" }}
             />
           </div>
         </div>
@@ -224,19 +223,19 @@ function CategoryBannerBottom() {
     <div className="rts-category-area-one pt--0">
       <div className="container">
         {/* Top Banner */}
-        <div className="mt-0 text-center  mb-0 mb-sm-5">
+        <div className="mt-0 text-center mb-4 mb-sm-5">
           <Image
             src="/assets/hero/h1.webp"
             alt="Hero Banner"
             width={1400}
             height={500}
-            className="w-full rounded-xl object-cover"
+            className="w-full rounded-xl"
           />
         </div>
 
         {/* Section 1: First 10 categories */}
         {firstTen.length > 0 && (
-          <div className="row  mb-0 mb-sm-5">
+          <div className="row  mb-4 mb-sm-5">
             <div className="col-lg-12">
               <Swiper {...swiperSettings}>
                 {firstTen.map((cat, idx) => renderSlide(cat, idx))}
@@ -246,7 +245,7 @@ function CategoryBannerBottom() {
         )}
 
         {/* Banner Between Sections */}
-        <div className="text-center  mb-0 mb-sm-5">
+        <div className="text-center  mb-4 mb-sm-5">
           <Image
             src="/assets/hero/banner1.webp"
             alt="Banner"
@@ -258,7 +257,7 @@ function CategoryBannerBottom() {
 
         {/* Section 2: Next 10 categories */}
         {nextTen.length > 0 && (
-          <div className="row  mb-0 mb-sm-5">
+          <div className="row  mb-4 mb-sm-5">
             <div className="col-lg-12">
               <Swiper {...swiperSettings}>
                 {nextTen.map((cat, idx) => renderSlide(cat, idx))}

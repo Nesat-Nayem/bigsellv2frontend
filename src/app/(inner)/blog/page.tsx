@@ -8,6 +8,7 @@ import BlogGridMain from "./BlogGridMain";
 import { IBlogs, useGetBlogsQuery } from "@/store/blogsApi";
 import { useRouter } from "next/navigation";
 import HeaderThree from "@/components/header/HeaderThree";
+import { Placeholder, Card, Row, Col, Container } from "react-bootstrap";
 
 export default function BlogGridPage() {
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,9 +16,6 @@ export default function BlogGridPage() {
 
   const { data: blogData, isLoading, error } = useGetBlogsQuery();
   const router = useRouter();
-
-  if (isLoading) return <div>Loading...</div>;
-  if (error) return <div>Error loading blog posts...</div>;
 
   const totalPages = blogData ? Math.ceil(blogData.length / postsPerPage) : 1;
   const startIndex = (currentPage - 1) * postsPerPage;
@@ -27,6 +25,52 @@ export default function BlogGridPage() {
   const goToDetails = (id: string) => {
     router.push(`/blog/${id}`);
   };
+
+  // ✅ Improved Skeleton Grid
+  if (isLoading) {
+    return (
+      <div className="demo-one">
+        <HeaderThree />
+
+        <Container className="py-5">
+          <Row className="g-4">
+            {[...Array(postsPerPage)].map((_, index) => (
+              <Col key={index} xl={3} lg={4} md={6} sm={12}>
+                <Card className="h-100 shadow-sm">
+                  <Placeholder
+                    as={Card.Img}
+                    variant="top"
+                    animation="wave"
+                    className="w-100"
+                    style={{ height: "200px" }}
+                  />
+                  <Card.Body>
+                    <div className="d-flex justify-content-between mb-2">
+                      <Placeholder xs={4} animation="wave" />
+                      <Placeholder xs={3} animation="wave" />
+                    </div>
+                    <Placeholder
+                      as={Card.Title}
+                      animation="wave"
+                      className="mb-3"
+                    >
+                      <Placeholder xs={8} />
+                    </Placeholder>
+                    <Placeholder.Button variant="primary" xs={6} />
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Container>
+
+        <ShortService />
+        <FooterOne />
+      </div>
+    );
+  }
+
+  if (error) return <div>Error loading blog posts...</div>;
 
   return (
     <div className="demo-one">
@@ -60,7 +104,7 @@ export default function BlogGridPage() {
             {currentPosts.map((post: IBlogs) => (
               <div
                 key={post._id}
-                className="col-xl-3 col-lg-4 col-md-6 col-sm-12 col-12"
+                className="col-xl-3 col-lg-4 col-md-6 col-sm-12"
               >
                 <div
                   className="single-blog-style-card-border cursor-pointer"

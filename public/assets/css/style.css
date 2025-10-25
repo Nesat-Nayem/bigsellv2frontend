@@ -15773,15 +15773,15 @@ body.sal-disabled [data-sal|="flip"] {
 .accont-wishlist-cart-area-header .cart span.number {
   position: absolute;
   left: 33px;
-  top: 2px;
-  height: 20px;
-  width: 20px;
+  top: 0px;
+  height: 15px;
+  width: 15px;
   background: var(--color-primary);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 12px;
+  font-size: 9px;
   color: #fff;
   transition: 0.3s;
 }
@@ -15940,8 +15940,10 @@ a.over_link {
   .img-name
   .details
   .title {
-  margin-bottom: 7px;
-  font-weight: 600;
+    margin-bottom: 7px;
+    font-weight: 600;
+    font-size: 10px;
+
 }
 
 .category-hover-header
@@ -17399,7 +17401,7 @@ li.with-megamenu:hover .rts-megamenu {
 .progress-wrap {
   position: fixed;
   right: 30px;
-  bottom: 30px;
+  bottom: 95px;
   height: 46px;
   width: 46px;
   cursor: pointer;
@@ -18679,7 +18681,7 @@ li.with-megamenu:hover .rts-megamenu {
 
 @media only screen and (max-width: 767px) {
   .btn-border-only.account {
-    display: none;
+    /* display: none; */
   }
 }
 
@@ -19866,7 +19868,7 @@ li.with-megamenu:hover .rts-megamenu {
 }
 
 .single-blog-style-card-border .inner-content-body a.title-main .title {
-  font-size: 18px;
+  font-size: 14px;
   line-height: 26px;
   transition: 0.3s;
 }
@@ -20064,9 +20066,9 @@ li.with-megamenu:hover .rts-megamenu {
   .latest-post-small-area-wrapper
   .single-latest-post-area
   .title-sm-blog {
-  font-size: 16px;
+  font-size: 10px;
   font-weight: 600;
-  line-height: 24px;
+  line-height: 16px;
   transition: 0.3s;
   margin-bottom: 0;
   margin-top: 10px;
@@ -21952,7 +21954,14 @@ body.modal-open {
 }
 
 .rts-copyright-area {
-  padding: 22px 0;
+  padding: 22px 0; /* default for tablets and larger screens */
+}
+
+/* Add extra space on small/mobile devices (for bottom nav) */
+@media (max-width: 767px) {
+  .rts-copyright-area {
+    padding: 22px 0 120px 0;
+  }
 }
 
 .copyright-between-1 {
@@ -23950,7 +23959,7 @@ body.modal-open {
   margin: 0;
   color: var(--color-heading-1);
   font-weight: 600;
-  font-size: 16px;
+  font-size: 12px;
 }
 
 .single-cart-area-list.main .product-main-cart {
@@ -23975,6 +23984,7 @@ body.modal-open {
 
 .single-cart-area-list.main .product-main-cart .information .title {
   margin-bottom: 7px;
+  font-size: 12px;
 }
 
 .single-cart-area-list.main .product-main-cart .close {
@@ -24036,6 +24046,7 @@ body.modal-open {
   padding: 0;
   max-width: max-content;
   font-weight: 600;
+  border: none;
 }
 
 .single-cart-area-list.main .quantity-edit button {
@@ -30414,5 +30425,92 @@ li.has-dropdown .submenu li > a .badge {
   }
   100% {
     transform: translateX(-100%);
+  }
+}
+
+/* bottom nav */
+.bottom-nav-wrapper {
+  position: fixed;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 92%;
+  max-width: 420px;
+  background: transparent;
+  z-index: 1000;
+}
+
+/* Curved Nav Bar */
+.bottom-nav {
+  position: relative;
+  background: #ffffff;
+  border-radius: 40px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  height: 65px;
+  padding: 0 15px;
+}
+
+/* Nav Item */
+.nav-item {
+  color: #000;
+  font-size: 16px;
+  transition: color 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-item i {
+  font-size: 20px;
+  margin-bottom: 3px;
+}
+
+.nav-item.active {
+  color: #261894;
+}
+
+/* Center Floating Home Button */
+.center-btn {
+  position: absolute;
+  top: -28px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 6px solid #ffffff;
+  background: linear-gradient(135deg, #101b4b, #261894);
+  color: #ffffff;
+  font-size: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 18px rgba(16, 27, 75, 0.4);
+  z-index: 3;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+/* prevent hover/active movement */
+.center-btn:hover,
+.center-btn:active,
+.center-btn:focus {
+  transform: translateX(-50%) !important; /* fixed position */
+  background: linear-gradient(
+    135deg,
+    #0d155a,
+    #1c0f94
+  ); /* optional hover color */
+  color: #fff;
+}
+
+/* Hide on tablet/desktop */
+@media (min-width: 768px) {
+  .bottom-nav-wrapper {
+    display: none;
   }
 }

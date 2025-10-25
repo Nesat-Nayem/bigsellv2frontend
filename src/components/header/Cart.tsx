@@ -73,7 +73,7 @@ const CartDropdown: React.FC = () => {
                 return (
                   <div
                     key={`${identifier}-${item.id}`}
-                    className="cart-item-1 border-top d-flex p-2"
+                    className="cart-item-1 border-top d-flex p-4"
                   >
                     <div className="img-name d-flex">
                       <div
@@ -85,12 +85,26 @@ const CartDropdown: React.FC = () => {
                         <i className="fa-regular fa-x" />
                       </div>
 
-                      <div className="thumbanil me-2">
+                      <div
+                        className="thumbnail me-2"
+                        style={{
+                          width: "50px",
+                          height: "50px",
+                          borderRadius: "7px",
+                          overflow: "hidden",
+                        }}
+                      >
                         <Image
                           src={item.image || "/placeholder.png"}
                           alt={item.title || "product"}
-                          width={60}
-                          height={60}
+                          width={50}
+                          height={50}
+                          style={{
+                            width: "100%",
+                            height: "100%",
+                            objectFit: "cover",
+                            borderRadius: "7px",
+                          }}
                         />
                       </div>
 

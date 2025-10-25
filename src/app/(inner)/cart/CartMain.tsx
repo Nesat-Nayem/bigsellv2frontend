@@ -71,7 +71,7 @@ const CartMain: React.FC = () => {
     <div className="rts-cart-area rts-section-gap bg_light-1">
       <div className="container">
         <div className="row g-5">
-          <div className="col-xl-9 col-12 order-2 order-xl-1">
+          <div className="col-xl-9 col-12 order-1 order-xl-1">
             <div className="cart-area-main-wrapper">
               <div className="cart-top-area-note">
                 <p>
@@ -93,7 +93,7 @@ const CartMain: React.FC = () => {
             </div>
 
             <div className="rts-cart-list-area">
-              <div className="single-cart-area-list head d-flex">
+              <div className="single-cart-area-list head d-none d-md-flex">
                 <div className="product-main" style={{ flex: 3 }}>
                   <p>Products</p>
                 </div>
@@ -109,7 +109,7 @@ const CartMain: React.FC = () => {
               </div>
 
               {activeCartItems.length === 0 ? (
-                <div className="empty-cart-message text-center py-5">
+                <div className="empty-cart-message text-center py-5 d-flex flex-column align-items-center">
                   <h4>Your cart is empty</h4>
                   <p>Add some products to get started!</p>
                   <a href="/shop" className="rts-btn btn-primary mt-3">
@@ -164,7 +164,9 @@ const CartMain: React.FC = () => {
                         <div className="information">
                           <h6 className="title">{item.title}</h6>
                           <div className="product-details">
-                            <span>SKU: SKUZNFER</span>
+                            <span style={{ fontSize: "10px" }}>
+                              SKU: SKUZNFER
+                            </span>
                             {selectedColor && (
                               <span className="ms-2">
                                 Color: {selectedColor}
@@ -301,7 +303,7 @@ const CartMain: React.FC = () => {
           </div>
 
           {/* Summary */}
-          <div className="col-xl-3 col-12 order-1 order-xl-2">
+          <div className="col-xl-3 col-12 order-2 order-xl-2">
             <div className="cart-total-area-start-right p-3 border rounded">
               <h5 className="title">Cart Totals</h5>
 

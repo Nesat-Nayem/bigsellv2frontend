@@ -38,14 +38,30 @@ const WishList: React.FC = () => {
               >
                 <i className="fa-regular fa-x" />
               </div>
-              <div className="thumbanil">
+
+              <div
+                className="thumbnail me-2"
+                style={{
+                  width: "50px",
+                  height: "50px",
+                  borderRadius: "7px",
+                  overflow: "hidden",
+                }}
+              >
                 <Image
-                  src={item.image}
-                  alt={item.title}
-                  width={60}
-                  height={60}
+                  src={item.image || "/placeholder.png"}
+                  alt={item.title || "product"}
+                  width={50}
+                  height={50}
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                    borderRadius: "7px",
+                  }}
                 />
               </div>
+
               <div className="details">
                 <Link href="/shop/details-profitable-business-makes-your-profit">
                   <h5 className="title">{item.title}</h5>

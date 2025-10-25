@@ -333,7 +333,7 @@ const CompareElements: React.FC = () => {
                   </div>
 
                   {/* Right: Sidebar */}
-                  <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1">
+                  <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  ">
                     <div className="theiaStickySidebar">
                       <div className="shop-sight-sticky-sidevbar mb--20">
                         <div className="skeleton-sidebar-title"></div>
@@ -1129,7 +1129,11 @@ const CompareElements: React.FC = () => {
                                 <div>
                                   <span className="tags product-unipue mb--10">
                                     <strong>Brand:</strong>{" "}
-                                    <a href={`/shop?brand=${encodeURIComponent(String(product.brand))}`}>
+                                    <a
+                                      href={`/shop?brand=${encodeURIComponent(
+                                        String(product.brand)
+                                      )}`}
+                                    >
                                       {String(product.brand)}
                                     </a>
                                   </span>
@@ -1154,9 +1158,8 @@ const CompareElements: React.FC = () => {
                   </div>
                 </div>
                 {/* Sidebar */}
-                <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  rts-sticky-column-item">
+                <div className="col-xl-3 col-lg-4 col-md-12 offset-xl-1  rts-sticky-column-item d-none d-lg-block">
                   <div className="theiaStickySidebar">
-             
                     <div className="our-payment-method">
                       <h5 className="title">Guaranteed Safe Checkout</h5>
                       <img
@@ -1172,14 +1175,15 @@ const CompareElements: React.FC = () => {
                 </div>
               </div>
               {/* Tabs */}
-              <div className="product-discription-tab-shop mt--50">
-                <ul className="nav nav-tabs" id="myTab" role="tablist">
+              <div className="product-discription-tab-shop mt--0">
+                <ul className="nav nav-tabs gap-2" id="myTab" role="tablist">
                   <li className="nav-item" role="presentation">
                     <button
                       onClick={() => setActiveTab("tab1")}
                       className={`nav-link ${
                         activeTab === "tab1" ? "active" : ""
                       }`}
+                      style={{ fontSize: "10px" }}
                     >
                       Product Details
                     </button>
@@ -1190,6 +1194,7 @@ const CompareElements: React.FC = () => {
                       className={`nav-link ${
                         activeTab === "tab2" ? "active" : ""
                       }`}
+                      style={{ fontSize: "10px" }}
                     >
                       Additional Information
                     </button>

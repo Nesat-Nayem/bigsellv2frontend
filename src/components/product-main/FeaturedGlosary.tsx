@@ -160,7 +160,7 @@ const FeaturedGlosary: React.FC<BlogGridMainProps> = ({
             <img
               src={`${ProductImage}`}
               alt="grocery"
-              style={{ width: "100%", height: "100%", objectFit: "contain" }}
+              style={{ width: "100%", height: "100%", objectFit: "cover" }}
             />
           </div>
         </a>

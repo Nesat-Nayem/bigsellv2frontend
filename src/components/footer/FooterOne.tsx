@@ -36,6 +36,20 @@ function FooterOne() {
                         </Link>
                       </div>
                     </div>
+                    <div className="call-area">
+                      <div className="icon">
+                        <i className="fa-solid fa-envelope" />
+                      </div>
+                      <div className="info">
+                        <span>Have Question? Mail Us</span>
+                        <Link
+                          href={`mailto:${generalSettings?.email}`}
+                          className="number"
+                        >
+                          {generalSettings?.email}
+                        </Link>
+                      </div>
+                    </div>
                   </div>
                   {/* single footer area wrapper */}
                   {/* single footer area wrapper */}

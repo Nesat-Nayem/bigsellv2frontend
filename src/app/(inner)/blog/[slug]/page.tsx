@@ -123,38 +123,7 @@ export default function Home() {
                     </div>
                   </div>
 
-                  {/* Author Info */}
-                  <div className="blog-details-author">
-                    <div className="thumbnail">
-                      <img src="/assets/images/blog/01.png" alt="" />
-                    </div>
-                    <div className="author-information">
-                      <span>Author</span>
-                      <h5 className="title">Venilla Walton</h5>
-                      <p>Donec sollicitudin molestie malesuada…</p>
-                      <div className="social">
-                        <ul>
-                          <li>
-                            <a href="#">
-                              <i className="fa-brands fa-dribbble" />
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <i className="fa-brands fa-facebook-f" />
-                            </a>
-                          </li>
-                          <li>
-                            <a href="#">
-                              <i className="fa-brands fa-instagram" />
-                            </a>
-                          </li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="comment-replay-area-start">
+                  {/* <div className="comment-replay-area-start">
                     <h3 className="title">03 Comments</h3>
                     <div className="single-comment-area">
                       <div className="thumbanil">
@@ -225,7 +194,7 @@ export default function Home() {
                         </button>
                       </form>
                     </div>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -274,10 +243,23 @@ export default function Home() {
                   {allBlogs?.slice(0, 3).map((blog) => (
                     <div className="single-latest-post-area" key={blog._id}>
                       <a href={`/blog/${blog._id}`} className="thumbnail">
-                        <img src={blog.image} alt="thumbnail" />
+                        <div style={{ width: "60px", height: "60px" }}>
+                          <img
+                            src={blog.image}
+                            alt="thumbnail"
+                            style={{
+                              width: "100%",
+                              height: "100%",
+                              objectFit: "cover",
+                            }}
+                          />
+                        </div>
                       </a>
                       <div className="inner-content-area">
-                        <div className="icon-top-area">
+                        <div
+                          className="icon-top-area"
+                          style={{ fontSize: "10px" }}
+                        >
                           <i className="fa-light fa-clock" />
                           <span>
                             {new Date(blog.createdAt).toLocaleDateString(

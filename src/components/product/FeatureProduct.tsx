@@ -360,9 +360,9 @@ function FeatureProduct() {
         <div className="container">
           <div className="row">
             <div className="col-lg-12">
-              <div className="title-area-between">
+              <div className="title-area-between mb-0">
                 {/* <h2 className="title-left">Featured Products</h2> */}
-                <div className="mt-0 text-center mb-0">
+                <div className="mt-4 text-center mb-0">
                   <Image
                     src="/assets/hero/h1.webp"
                     alt="Hero Banner"

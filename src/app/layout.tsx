@@ -12,6 +12,7 @@ import { CompareProvider } from "../components/header/CompareContext";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
 import Providers from "@/providers/ReduxProvider";
+import BottomNav from "@/components/footer/BottomNav";
 
 const archivo = Archivo({
   subsets: ["latin"],
@@ -48,6 +49,7 @@ export default function RootLayout({
             </CartProvider>
           </WishlistProvider>
         </CompareProvider>
+        <BottomNav />
       </body>
     </html>
   );

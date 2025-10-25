@@ -40,9 +40,9 @@ const BlogGridMain: React.FC<BlogGridMainProps> = ({
           </div>
         </div>
         <a className="title-main" href={`/blog/${slug}`}>
-          <h3 className="title animated fadeIn">
+          <h5 className="title animated fadeIn">
             {blogTitle ? blogTitle : "How to growing your business"}
-          </h3>
+          </h5>
         </a>
         <div className="button-area">
           <a
