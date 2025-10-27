@@ -343,7 +343,7 @@ const CartMain: React.FC = () => {
                   </li>
                   <li>
                     <input type="radio" id="s-option" name="selector" />
-                    <label htmlFor="s-option">Flat Rate (₹50)</label>
+                    <label htmlFor="s-option">Flat Rate </label>
                   </li>
                 </ul>
               </div>
