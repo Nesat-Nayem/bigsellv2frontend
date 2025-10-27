@@ -186,7 +186,7 @@ function FooterOne() {
                     </ul>
                   </div>
                   <div className="payment-access">
-                    <span>Payment Accepts:</span>
+                    <span>Payment Accepts :</span>
                     <img src="assets/images/payment/01.png" alt="" />
                   </div>
                 </div>

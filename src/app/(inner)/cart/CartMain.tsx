@@ -326,6 +326,7 @@ const CartMain: React.FC = () => {
                 </div>
               )}
 
+
               <div className="shipping">
                 <span>Shipping</span>
                 <ul>
@@ -337,7 +338,7 @@ const CartMain: React.FC = () => {
                       defaultChecked
                     />
                     <label htmlFor="f-option">
-                      Free Shipping{" "}
+                      Free Shipping
                       {subtotal >= FREE_SHIPPING_THRESHOLD && "(Eligible)"}
                     </label>
                   </li>
