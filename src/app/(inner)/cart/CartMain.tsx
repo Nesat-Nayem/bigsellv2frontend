@@ -67,6 +67,9 @@ const CartMain: React.FC = () => {
       ? Math.min((subtotal / FREE_SHIPPING_THRESHOLD) * 100, 100)
       : 100;
 
+  const eligibleForFree =
+    FREE_SHIPPING_THRESHOLD > 0 && subtotal >= FREE_SHIPPING_THRESHOLD;
+
   return (
     <div className="rts-cart-area rts-section-gap bg_light-1">
       <div className="container">
@@ -335,15 +338,23 @@ const CartMain: React.FC = () => {
                       type="radio"
                       id="f-option"
                       name="selector"
-                      defaultChecked
+                      checked={eligibleForFree}
+                      disabled={!eligibleForFree}
+                      readOnly
                     />
                     <label htmlFor="f-option">
                       Free Shipping
-                      {subtotal >= FREE_SHIPPING_THRESHOLD && "(Eligible)"}
+                      {eligibleForFree && " (Eligible)"}
                     </label>
                   </li>
                   <li>
-                    <input type="radio" id="s-option" name="selector" />
+                    <input
+                      type="radio"
+                      id="s-option"
+                      name="selector"
+                      checked={!eligibleForFree}
+                      readOnly
+                    />
                     <label htmlFor="s-option">Flat Rate </label>
                   </li>
                 </ul>

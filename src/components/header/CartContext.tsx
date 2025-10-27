@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import { useGetGeneralSettingsQuery } from "@/store/generalSettings";
 
 export interface CartItemRaw {
   id?: number | string;
@@ -141,7 +142,11 @@ export const CartProvider = ({ children }: { children: React.ReactNode }) => {
   const [couponMessage, setCouponMessage] = useState("");
   const [discount, setDiscount] = useState(0); // fraction
 
-  const FREE_SHIPPING_THRESHOLD = 5000; // canonical value used across app
+  const { data: generalSettings } = useGetGeneralSettingsQuery();
+  const FREE_SHIPPING_THRESHOLD = useMemo(() => {
+    const n = Number((generalSettings as any)?.freeShippingThreshold ?? 0);
+    return Number.isFinite(n) && n >= 0 ? n : 0;
+  }, [generalSettings]);
 
   const persist = (items: CartItem[]) => {
     try {

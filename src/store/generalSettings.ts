@@ -14,6 +14,7 @@ export interface IGeneralSettings {
   number: string;
   twitter: string;
   youtube: string;
+  freeShippingThreshold?: number;
   createdAt: string;
   updatedAt: string;
 }

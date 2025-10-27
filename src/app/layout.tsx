@@ -41,15 +41,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${archivo.variable} font-sans`}>
-        <CompareProvider>
-          <WishlistProvider>
-            <CartProvider>
-              <Providers>{children}</Providers>
-              <ToastContainer position="top-right" autoClose={3000} />
-            </CartProvider>
-          </WishlistProvider>
-        </CompareProvider>
-        <BottomNav />
+        <Providers>
+          <CompareProvider>
+            <WishlistProvider>
+              <CartProvider>
+                {children}
+                <ToastContainer position="top-right" autoClose={3000} />
+              </CartProvider>
+            </WishlistProvider>
+          </CompareProvider>
+          <BottomNav />
+        </Providers>
       </body>
     </html>
   );
