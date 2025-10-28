@@ -4,7 +4,7 @@ import type { RootState as IRootState } from "@/store";
 /**
  * Use local API proxy routes to avoid CORS issues
  */
-const baseUrl = "/api";
+const baseUrl ="http://localhost:8080/v1/api";
 
 /** Minimal address shape used in orders */
 export interface IAddress {
@@ -298,6 +298,19 @@ export const ordersApi = createApi({
       transformResponse: (response: ApiResponse<any>) => response?.data ?? response,
       providesTags: (_r, _e, { id }) => [{ type: "Orders", id }],
     }),
+
+    // Delhivery: Get shipping quote for checkout
+    quoteDelhivery: builder.mutation<
+      { shippingFee: number; quote: any },
+      { items: { productId: string; quantity: number }[]; destPincode: string; paymentMode?: 'Pre-paid' | 'COD'; service?: string }
+    >({
+      query: (body) => ({
+        url: `/orders/quote/delhivery`,
+        method: "POST",
+        body,
+      }),
+      transformResponse: (response: ApiResponse<any>) => response?.data ?? response,
+    }),
   }),
 });
 
@@ -313,6 +326,7 @@ export const {
   useUpdatePaymentMutation,
   useGetOrderSummaryQuery,
   useTrackDelhiveryQuery,
+  useQuoteDelhiveryMutation,
 } = ordersApi;
 
 export default ordersApi;

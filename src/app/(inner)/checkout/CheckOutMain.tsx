@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import { useCart } from "@/components/header/CartContext";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useCreateOrderMutation } from "@/store/ordersApi";
+import { useCreateOrderMutation, useQuoteDelhiveryMutation } from "@/store/ordersApi";
 import { useInitiateCashfreePaymentMutation } from "@/store/paymentApi";
 import { useApplyMutation } from "@/store/couponApi";
 import {
@@ -56,6 +56,7 @@ const CheckOutMain: React.FC = () => {
     useCreateOrderMutation();
   const [initiateCashfreePayment] = useInitiateCashfreePaymentMutation();
   const [applyCouponMut] = useApplyMutation();
+  const [quoteDelhivery, { isLoading: isQuoting } ] = useQuoteDelhiveryMutation();
 
   const isAuthenticated = useSelector((state: any) => !!state?.auth?.token);
   const user = useSelector((state: any) => state?.auth?.user);
@@ -115,6 +116,10 @@ const CheckOutMain: React.FC = () => {
     Record<string, string>
   >({});
 
+  // Dynamic shipping from Delhivery
+  const [shippingFee, setShippingFee] = useState<number>(DEFAULT_SHIPPING_COST);
+  const [quoteError, setQuoteError] = useState<string>("");
+
   // Map a saved address to the billing form (keep at top-level for reuse)
   const applyAddressToBilling = (addr: IAddress) => {
     const [firstName, ...rest] = (addr.fullName || "").trim().split(" ");
@@ -132,6 +137,8 @@ const CheckOutMain: React.FC = () => {
       phone: addr.phone || prev.phone,
     }));
   };
+
+  // (moved below after safeCartItems definition)
 
   // Preselect default address (or first) once after data loads; do not override user's choice
   // Important: keep this before any early returns to preserve Hooks order
@@ -233,10 +240,52 @@ const CheckOutMain: React.FC = () => {
     return sum + (isNaN(price) ? 0 : price * (item.quantity || 1));
   }, 0);
   const discountAmount = subtotal * discount;
-  // Match backend: standard shipping = 50, tax = 5% of subtotal
+  // Match backend: tax = 5% of subtotal
   const taxAmount = subtotal * 0.05;
-  const shippingCost = DEFAULT_SHIPPING_COST; // always standard in payload
-  const total = subtotal - discountAmount + shippingCost + taxAmount;
+  const shippingCost = shippingFee;
+  const total = subtotal - discountAmount + ((shippingCost ?? DEFAULT_SHIPPING_COST)) + taxAmount;
+
+  // Trigger Delhivery quote whenever cart items, pincode, or payment mode changes
+  useEffect(() => {
+    const destPincode = String(billingInfo?.zip || "").trim();
+    if (!destPincode || destPincode.length < 4) {
+      setShippingFee(DEFAULT_SHIPPING_COST);
+      setQuoteError("");
+      return;
+    }
+
+    // Build items payload
+    const itemsPayload = safeCartItems
+      .map((item: any) => {
+        const candidate =
+          item.productId ||
+          item?.raw?._id ||
+          (isValidObjectId(item.id) ? String(item.id) : undefined);
+        return {
+          productId: candidate,
+          quantity: Math.max(1, Number(item.quantity) || 1),
+        };
+      })
+      .filter((x: any) => isValidObjectId(x.productId));
+
+    if (!itemsPayload.length) return;
+
+    const pmode = selectedPaymentMethod === "cod" ? "COD" : "Pre-paid";
+    setQuoteError("");
+
+    (async () => {
+      try {
+        const data = await quoteDelhivery({ items: itemsPayload, destPincode, paymentMode: pmode }).unwrap();
+        const fee = Number(data?.shippingFee);
+        if (Number.isFinite(fee)) setShippingFee(Math.max(0, fee));
+        else setShippingFee(DEFAULT_SHIPPING_COST);
+      } catch (e: any) {
+        setShippingFee(DEFAULT_SHIPPING_COST);
+        setQuoteError(e?.data?.message || "Failed to fetch shipping quote");
+      }
+    })();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [safeCartItems.length, billingInfo.zip, selectedPaymentMethod]);
 
   if (!isCartLoaded) {
     return <div>Loading checkout...</div>;
@@ -1089,8 +1138,22 @@ const CheckOutMain: React.FC = () => {
                 <div className="left-area">
                   <span>Shipping</span>
                 </div>
-                <span className="price">₹ {shippingCost.toFixed(2)}</span>
+                <span className="price">
+                  {isQuoting ? (
+                    <>
+                      <Spinner animation="border" size="sm" />
+                      <span style={{ marginLeft: 8 }}>Calculating...</span>
+                    </>
+                  ) : (
+                    <>₹ {shippingCost.toFixed(2)}</>
+                  )}
+                </span>
               </div>
+              {quoteError && (
+                <div className="single-shop-list" style={{ marginTop: -8 }}>
+                  <small style={{ color: 'red' }}>{quoteError}</small>
+                </div>
+              )}
 
               <div className="single-shop-list">
                 <div className="left-area">
