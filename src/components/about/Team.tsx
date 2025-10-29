@@ -1,7 +1,10 @@
+'use client'
 import Link from "next/link";
 import React from "react";
+import { useGetTeamsQuery } from "@/store/teamsApi";
 
 function ComponentName() {
+  const { data: teams = [] } = useGetTeamsQuery();
   return (
     <div>
       <>
@@ -28,129 +31,38 @@ function ComponentName() {
               </div>
             </div>
             <div className="row g-5 mt--40">
-              <div className="col-lg-3 col-md-6 col-sm-12 col-12">
-                {/* single team area start */}
-                <div className="single-team-style-one">
-                  <Link href="#" className="thumbnail">
-                    <div style={{ width: "100%", height: "400px" }}>
-                      <img
-                        src="assets/images/team/1.jpg"
-                        alt="team_single"
-                        style={{
-                          width: "100%",
-                          height: "100%;object-fit:cover",
-                        }}
-                      />
-                    </div>
-                  </Link>
-                  <div className="bottom-content-area">
-                    <div className="top">
-                      <h3 className="title">Samuel Alexander</h3>
-                      <span className="designation">CEO</span>
-                    </div>
-                    <div className="bottom">
-                      {/* <a href="#" className="number">
+              {teams.map((member: any, idx: number) => (
+                <div className="col-lg-3 col-md-6 col-sm-12 col-12" key={member._id || idx}>
+                  {/* single team area start */}
+                  <div className="single-team-style-one">
+                    <Link href="#" className="thumbnail">
+                      <div style={{ width: "100%", height: "400px" }}>
+                        <img
+                          src={typeof member.image === "string" && member.image ? member.image : "assets/images/team/1.jpg"}
+                          alt="team_single"
+                          style={{
+                            width: "100%",
+                            height: "100%;object-fit:cover",
+                          }}
+                        />
+                      </div>
+                    </Link>
+                    <div className="bottom-content-area">
+                      <div className="top">
+                        <h3 className="title">{member.name}</h3>
+                        <span className="designation">{member.designation}</span>
+                      </div>
+                      <div className="bottom">
+                        {/* <a href="#" className="number">
                   <i className="fa-solid fa-phone-rotary" />
                   +25896 3158 3228
                 </a> */}
+                      </div>
                     </div>
                   </div>
+                  {/* single team area end */}
                 </div>
-                {/* single team area end */}
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-sm-12 col-12">
-                {/* single team area start */}
-                <div className="single-team-style-one">
-                  <Link href="#" className="thumbnail">
-                    <div style={{ width: "100%", height: "400px" }}>
-                      <img
-                        src="assets/images/team/2.jpg"
-                        alt="team_single"
-                        style={{
-                          width: "100%",
-                          height: "100%;object-fit:cover",
-                        }}
-                      />
-                    </div>
-                  </Link>
-                  <div className="bottom-content-area">
-                    <div className="top">
-                      <h3 className="title">Jen Alexander</h3>
-                      <span className="designation">CEO</span>
-                    </div>
-                    <div className="bottom">
-                      {/* <a href="#" className="number">
-                  <i className="fa-solid fa-phone-rotary" />
-                  +25896 3158 3228
-                </a> */}
-                    </div>
-                  </div>
-                </div>
-                {/* single team area end */}
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-sm-12 col-12">
-                {/* single team area start */}
-                <div className="single-team-style-one">
-                  <Link href="#" className="thumbnail">
-                    <div style={{ width: "100%", height: "400px" }}>
-                      <img
-                        src="assets/images/team/3.jpg"
-                        alt="team_single"
-                        style={{
-                          width: "100%",
-                          height: "100%;object-fit:cover",
-                        }}
-                      />
-                    </div>
-                  </Link>
-                  <div className="bottom-content-area">
-                    <div className="top">
-                      <h3 className="title">Peter Smith</h3>
-                      <span className="designation">Business Partner</span>
-                    </div>
-                    <div className="bottom">
-                      {/* <a href="#" className="number">
-                  <i className="fa-solid fa-phone-rotary" />
-                  +25896 3158 3228
-                </a> */}
-                    </div>
-                  </div>
-                </div>
-                {/* single team area end */}
-              </div>
-
-              <div className="col-lg-3 col-md-6 col-sm-12 col-12">
-                {/* single team area start */}
-                <div className="single-team-style-one">
-                  <Link href="#" className="thumbnail">
-                    <div style={{ width: "100%", height: "400px" }}>
-                      <img
-                        src="assets/images/team/4.jpg"
-                        alt="team_single"
-                        style={{
-                          width: "100%",
-                          height: "100%;object-fit:cover",
-                        }}
-                      />
-                    </div>
-                  </Link>
-                  <div className="bottom-content-area">
-                    <div className="top">
-                      <h3 className="title">Niya Smith</h3>
-                      <span className="designation">Business Partner</span>
-                    </div>
-                    <div className="bottom">
-                      {/* <a href="#" className="number">
-                  <i className="fa-solid fa-phone-rotary" />
-                  +25896 3158 3228
-                </a> */}
-                    </div>
-                  </div>
-                </div>
-                {/* single team area end */}
-              </div>
+              ))}
             </div>
           </div>
         </div>

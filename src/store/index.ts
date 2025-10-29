@@ -8,6 +8,7 @@ import { TermsApi } from "./termsApi";
 import { helpSupportApi } from "./helpSupportApi";
 import { faqApi } from "./faqApi";
 import { blogsApi } from "./blogsApi";
+import { teamsApi } from "./teamsApi";
 import { generalSettingsApi } from "./generalSettings";
 import { DisclaimerResponseApi } from "./disclaimerApi";
 import { PaymentPolicyApi } from "./paymentPolicyApi";
@@ -35,6 +36,7 @@ export const store = configureStore({
     [helpSupportApi.reducerPath]: helpSupportApi.reducer,
     [faqApi.reducerPath]: faqApi.reducer,
     [blogsApi.reducerPath]: blogsApi.reducer,
+    [teamsApi.reducerPath]: teamsApi.reducer,
     [generalSettingsApi.reducerPath]: generalSettingsApi.reducer,
     [DisclaimerResponseApi.reducerPath]: DisclaimerResponseApi.reducer,
     [PaymentPolicyApi.reducerPath]: PaymentPolicyApi.reducer,
@@ -60,6 +62,7 @@ export const store = configureStore({
       helpSupportApi.middleware,
       faqApi.middleware,
       blogsApi.middleware,
+      teamsApi.middleware,
       generalSettingsApi.middleware,
       DisclaimerResponseApi.middleware,
       PaymentPolicyApi.middleware,
