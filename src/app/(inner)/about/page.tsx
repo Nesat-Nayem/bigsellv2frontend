@@ -19,7 +19,6 @@ export default function Home() {
       <AboutOne />
       <Team />
       <ServiceOne />
-      {/* <TestimonilsOne/> */}
       <ShortService />
 
       <FooterOne />
