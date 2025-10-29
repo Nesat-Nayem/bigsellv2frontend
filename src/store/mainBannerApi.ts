@@ -17,7 +17,7 @@ export const mainBannerApi = createApi({
   reducerPath: "mainBannerApi",
   baseQuery: fetchBaseQuery({
     credentials: "include",
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://api.atpuae.com/v1/api",
   }),
   tagTypes: ["mainBanner"],
   endpoints: (builder) => ({
