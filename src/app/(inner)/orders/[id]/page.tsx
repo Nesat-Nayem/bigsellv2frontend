@@ -245,10 +245,10 @@ export default function OrderDetailsPage() {
                     <span>Shipping</span>
                     <strong>{formatCurrency(order.shippingCost)}</strong>
                   </div>
-                  <div className="d-flex justify-content-between mb-1">
+                  {/* <div className="d-flex justify-content-between mb-1">
                     <span>Tax</span>
                     <strong>{formatCurrency(order.tax)}</strong>
-                  </div>
+                  </div> */}
                   {order.discount ? (
                     <div className="d-flex justify-content-between mb-1">
                       <span>Discount</span>

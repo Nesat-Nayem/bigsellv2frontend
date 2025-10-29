@@ -240,10 +240,10 @@ const CheckOutMain: React.FC = () => {
     return sum + (isNaN(price) ? 0 : price * (item.quantity || 1));
   }, 0);
   const discountAmount = subtotal * discount;
-  // Match backend: tax = 5% of subtotal
-  const taxAmount = subtotal * 0.05;
+  // No tax in totals
+  const taxAmount = 0;
   const shippingCost = shippingFee;
-  const total = subtotal - discountAmount + ((shippingCost ?? DEFAULT_SHIPPING_COST)) + taxAmount;
+  const total = subtotal - discountAmount + ((shippingCost ?? DEFAULT_SHIPPING_COST));
 
   // Trigger Delhivery quote whenever cart items, pincode, or payment mode changes
   useEffect(() => {
@@ -1155,12 +1155,7 @@ const CheckOutMain: React.FC = () => {
                 </div>
               )}
 
-              <div className="single-shop-list">
-                <div className="left-area">
-                  <span>Tax (5%)</span>
-                </div>
-                <span className="price">₹ {taxAmount.toFixed(2)}</span>
-              </div>
+              
 
               <div className="single-shop-list">
                 <div className="left-area">
