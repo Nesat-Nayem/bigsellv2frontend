@@ -8,7 +8,7 @@ import FooterOne from "@/components/footer/FooterOne";
 import { useDispatch, useSelector } from "react-redux";
 import { setCredentials } from "@/store/authSlice";
 import { RootState } from "@/store";
-import { useGetOrderByIdQuery } from "@/store/ordersApi";
+import { useGetOrderByIdQuery, useTrackDelhiveryQuery } from "@/store/ordersApi";
 import HeaderThree from "@/components/header/HeaderThree";
 import { useCart } from "@/components/header/CartContext";
 
@@ -66,6 +66,7 @@ export default function OrderDetailsPage() {
   const token = useSelector((s: RootState) => s.auth.token);
   const id = params?.id;
   const { clearCart, isCartLoaded } = useCart();
+  const [shouldTrack, setShouldTrack] = React.useState(false);
 
   // Ensure auth token exists in Redux on direct page load
   useEffect(() => {
@@ -92,6 +93,17 @@ export default function OrderDetailsPage() {
   } = useGetOrderByIdQuery(id, {
     skip: !id || !token,
   });
+
+  const {
+    data: trackData,
+    isLoading: trackLoading,
+    error: trackError,
+  } = useTrackDelhiveryQuery(
+    { id: id || "" },
+    {
+      skip: !id || !token || !shouldTrack || !order?.trackingNumber,
+    }
+  );
 
   const isAuthError = useMemo(() => {
     // RTK Query error shape may vary; handle common cases
@@ -381,16 +393,37 @@ export default function OrderDetailsPage() {
                     Method: {order.shippingMethod || "-"}
                   </div>
                   {order.trackingNumber && (
-                    <div className="mb-2">Tracking: {order.trackingNumber}</div>
+                    <>
+                      <div className="mb-2">Tracking: {order.trackingNumber}</div>
+                      <button
+                        className="rts-btn btn-primary radious-sm with-icon mt-2"
+                        onClick={() => setShouldTrack(true)}
+                        disabled={trackLoading}
+                      >
+                        <div className="btn-text">
+                          {trackLoading ? "Loading..." : "Track Shipment"}
+                        </div>
+                        <div className="arrow-icon">
+                          <i className="fa-regular fa-location-dot" />
+                        </div>
+                      </button>
+                    </>
                   )}
                   {order.estimatedDelivery && (
-                    <div className="mb-2">
+                    <div className="mb-2 mt-2">
                       ETA:{" "}
                       {new Date(order.estimatedDelivery).toLocaleDateString()}
                     </div>
                   )}
                 </div>
               </div>
+
+              {/* Tracking Information */}
+              {trackData && shouldTrack && (
+                <div className="col-12">
+                  <TrackingDisplay trackingData={trackData} />
+                </div>
+              )}
 
               {/* Status History */}
               <div className="col-12">
@@ -427,6 +460,167 @@ export default function OrderDetailsPage() {
       </div>
 
       <FooterOne />
+    </div>
+  );
+}
+
+function TrackingDisplay({ trackingData }: { trackingData: any }) {
+  const shipment =
+    trackingData?.ShipmentData?.[0]?.Shipment ||
+    trackingData?.Shipment ||
+    {};
+  const status = shipment.Status || {};
+  const scans = shipment.Scans || [];
+  const consignee = shipment.Consignee || {};
+
+  const getStatusColor = (statusCode: string) => {
+    if (!statusCode) return "secondary";
+    if (statusCode.includes("DLV") || statusCode.includes("OK"))
+      return "success";
+    if (statusCode.includes("RTO") || statusCode.includes("LOST"))
+      return "danger";
+    if (statusCode.includes("OFD") || statusCode.includes("UD"))
+      return "primary";
+    if (statusCode.includes("PP")) return "info";
+    return "warning";
+  };
+
+  const statusColor = getStatusColor(status.StatusCode);
+
+  return (
+    <div className="card p-4">
+      <div className="d-flex align-items-center justify-content-between mb-4">
+        <div>
+          <h5 className="mb-1">Shipment Tracking</h5>
+          <div className="text-muted small">AWB: {shipment.AWB}</div>
+        </div>
+        <span className={`badge bg-${statusColor} text-uppercase px-3 py-2`}>
+          {status.Status || "Unknown"}
+        </span>
+      </div>
+
+      {/* Current Status */}
+      <div className="mb-4 p-3 bg-light rounded">
+        <div className="d-flex align-items-start gap-3">
+          <div className="mt-1">
+            <i
+              className={`fa-solid fa-box text-${statusColor}`}
+              style={{ fontSize: "24px" }}
+            />
+          </div>
+          <div className="flex-grow-1">
+            <div className="fw-semibold text-dark mb-1">{status.Status}</div>
+            <div className="text-muted small mb-2">
+              {status.Instructions || "No additional information"}
+            </div>
+            <div className="d-flex gap-3 flex-wrap small">
+              <span>
+                <i className="fa-regular fa-location-dot me-1" />
+                {status.StatusLocation || "N/A"}
+              </span>
+              {status.StatusDateTime && (
+                <span>
+                  <i className="fa-regular fa-clock me-1" />
+                  {new Date(status.StatusDateTime).toLocaleString()}
+                </span>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Shipment Details */}
+      <div className="row g-3 mb-4">
+        <div className="col-md-6">
+          <div className="small text-muted">Order Type</div>
+          <div className="fw-medium">{shipment.OrderType || "N/A"}</div>
+        </div>
+        <div className="col-md-6">
+          <div className="small text-muted">Reference Number</div>
+          <div className="fw-medium">{shipment.ReferenceNo || "N/A"}</div>
+        </div>
+        <div className="col-md-6">
+          <div className="small text-muted">Destination</div>
+          <div className="fw-medium">{shipment.Destination || "N/A"}</div>
+        </div>
+        <div className="col-md-6">
+          <div className="small text-muted">Quantity</div>
+          <div className="fw-medium">{shipment.Quantity || "N/A"}</div>
+        </div>
+      </div>
+
+      {/* Consignee Details */}
+      {consignee.Name && (
+        <div className="mb-4">
+          <h6 className="text-muted mb-2">Delivery Address</h6>
+          <div className="p-2 bg-light rounded small">
+            <div className="fw-medium">{consignee.Name}</div>
+            <div>
+              {consignee.City}, {consignee.State} - {consignee.PinCode}
+            </div>
+            <div>{consignee.Country}</div>
+          </div>
+        </div>
+      )}
+
+      {/* Tracking Timeline */}
+      {scans.length > 0 && (
+        <div>
+          <h6 className="text-muted mb-3">Shipment Journey</h6>
+          <div className="position-relative" style={{ paddingLeft: "2rem" }}>
+            {/* Timeline line */}
+            <div
+              className="position-absolute"
+              style={{
+                left: "11px",
+                top: "8px",
+                bottom: "8px",
+                width: "2px",
+                background: "#dee2e6",
+              }}
+            />
+
+            {scans.map((scan: any, idx: number) => {
+              const detail = scan.ScanDetail || {};
+              const scanColor = getStatusColor(detail.StatusCode);
+              return (
+                <div key={idx} className="position-relative mb-3 pb-3">
+                  {/* Timeline dot */}
+                  <div
+                    className="position-absolute bg-white"
+                    style={{ left: "-1.55rem", top: "0" }}
+                  >
+                    <div
+                      className={`rounded-circle bg-${scanColor} d-flex align-items-center justify-content-center`}
+                      style={{ width: "22px", height: "22px" }}
+                    >
+                      <i
+                        className="fa-solid fa-check text-white"
+                        style={{ fontSize: "12px" }}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="ps-2">
+                    <div className="fw-medium text-dark">{detail.Scan}</div>
+                    <div className="text-muted small">{detail.Instructions}</div>
+                    <div className="mt-1 small">
+                      <span className="text-muted">
+                        <i className="fa-regular fa-location-dot me-1" />
+                        {detail.ScannedLocation}
+                      </span>
+                      <span className="text-muted ms-3">
+                        <i className="fa-regular fa-clock me-1" />
+                        {new Date(detail.ScanDateTime).toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
