@@ -1,7 +1,7 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 import type { RootState as IRootState } from "@/store";
 
-const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/v1/api";
+const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.atpuae.com/v1/api";
 
 export interface ApplyCouponItem {
   productId: string;

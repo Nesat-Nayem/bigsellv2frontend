@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const API_BASE_URL ="http://localhost:8080/v1/api";
+const API_BASE_URL ="https://api.atpuae.com/v1/api";
 
 export async function POST(request: NextRequest) {
   try {
