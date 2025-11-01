@@ -201,16 +201,16 @@ export default function Home() {
 
             {/* Sidebar */}
             <div className="col-lg-4 pl--60 order-lg-2 order-md-1 order-sm-1 order-1 pl_md--10 pl_sm--10 rts-sticky-column-item">
-              <div className="blog-sidebar-single-wized">
+              {/* <div className="blog-sidebar-single-wized">
                 <form action="#">
                   <input type="text" placeholder="Search Here" required />
                   <button>
                     <i className="fa-regular fa-magnifying-glass" />
                   </button>
                 </form>
-              </div>
+              </div> */}
 
-              <div className="blog-sidebar-single-wized with-title">
+              {/* <div className="blog-sidebar-single-wized with-title">
                 <h4 className="title">Categories</h4>
                 <div className="category-main-wrapper">
                   <div className="single-category-area">
@@ -235,7 +235,7 @@ export default function Home() {
                     <p>Wine & Drinks</p>
                   </div>
                 </div>
-              </div>
+              </div> */}
 
               <div className="blog-sidebar-single-wized with-title">
                 <h4 className="title">Latest Post</h4>

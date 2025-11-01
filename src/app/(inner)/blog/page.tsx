@@ -111,7 +111,7 @@ export default function BlogGridPage() {
                   onClick={() => goToDetails(post._id)}
                 >
                   <BlogGridMain
-                    slug={post.title}
+                    slug={post._id}
                     blogImage={post.image}
                     blogTitle={post.title}
                     createdAt={post.createdAt}
