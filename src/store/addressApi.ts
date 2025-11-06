@@ -130,6 +130,34 @@ export const addressApi = createApi({
         response?.data as IAddress,
       invalidatesTags: [{ type: "Addresses", id: "LIST" }],
     }),
+
+    // Send OTP to phone number
+    sendAddressOTP: builder.mutation<
+      { phone: string; expiresIn: number },
+      { phone: string }
+    >({
+      query: (data) => ({
+        url: "/addresses/send-otp",
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: ApiResponse<{ phone: string; expiresIn: number }>) =>
+        response?.data as { phone: string; expiresIn: number },
+    }),
+
+    // Verify OTP
+    verifyAddressOTP: builder.mutation<
+      { phone: string; verified: boolean },
+      { phone: string; otp: string }
+    >({
+      query: (data) => ({
+        url: "/addresses/verify-otp",
+        method: "POST",
+        body: data,
+      }),
+      transformResponse: (response: ApiResponse<{ phone: string; verified: boolean }>) =>
+        response?.data as { phone: string; verified: boolean },
+    }),
   }),
 });
 
@@ -140,6 +168,8 @@ export const {
   useUpdateAddressMutation,
   useDeleteAddressMutation,
   useSetDefaultAddressMutation,
+  useSendAddressOTPMutation,
+  useVerifyAddressOTPMutation,
 } = addressApi;
 
 export default addressApi;

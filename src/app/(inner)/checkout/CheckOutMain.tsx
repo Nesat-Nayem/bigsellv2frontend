@@ -25,6 +25,8 @@ import { setCredentials, setUser } from "@/store/authSlice";
 import {
   useGetMyAddressesQuery,
   useCreateAddressMutation,
+  useSendAddressOTPMutation,
+  useVerifyAddressOTPMutation,
   type IAddress,
 } from "@/store/addressApi";
 
@@ -79,6 +81,10 @@ const CheckOutMain: React.FC = () => {
   });
   const [createAddress, { isLoading: isCreatingAddress }] =
     useCreateAddressMutation();
+  const [sendAddressOTP, { isLoading: isSendingOTP }] =
+    useSendAddressOTPMutation();
+  const [verifyAddressOTP, { isLoading: isVerifyingOTP }] =
+    useVerifyAddressOTPMutation();
   const [selectedAddressId, setSelectedAddressId] = useState<string | null>(
     null
   );
@@ -96,6 +102,12 @@ const CheckOutMain: React.FC = () => {
     addressType: "home",
     isDefault: false,
   });
+
+  // OTP verification state
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpVerified, setOtpVerified] = useState(false);
+  const [otpCode, setOtpCode] = useState("");
+  const [otpTimer, setOtpTimer] = useState(0);
 
   const [billingInfo, setBillingInfo] = useState<any>({
     email: user?.email || "",
@@ -342,8 +354,71 @@ const CheckOutMain: React.FC = () => {
     return /^[0-9a-fA-F]{24}$/.test(s);
   };
 
+  // OTP Timer effect
+  useEffect(() => {
+    if (otpTimer > 0) {
+      const timer = setTimeout(() => setOtpTimer(otpTimer - 1), 1000);
+      return () => clearTimeout(timer);
+    }
+  }, [otpTimer]);
+
+  // Send OTP handler
+  const handleSendOTP = async () => {
+    if (!addressForm.phone || addressForm.phone.length < 10) {
+      toast.error("Please enter a valid phone number");
+      return;
+    }
+
+    try {
+      const result = await sendAddressOTP({ phone: addressForm.phone }).unwrap();
+      const attemptsRemaining = (result as any)?.data?.attemptsRemaining || 0;
+      toast.success(`OTP sent to WhatsApp! ${attemptsRemaining} attempt(s) remaining.`);
+      console.log(`📱 OTP sent to ${addressForm.phone}`);
+      console.log(`📊 Attempts remaining: ${attemptsRemaining}`);
+      setOtpSent(true);
+      setOtpTimer(300); // 5 minutes
+      setOtpVerified(false);
+      setOtpCode("");
+    } catch (error: any) {
+      console.error("Failed to send OTP:", error);
+      toast.error(error?.data?.message || "Failed to send OTP");
+    }
+  };
+
+  // Verify OTP handler
+  const handleVerifyOTP = async () => {
+    if (!otpCode || otpCode.length !== 6) {
+      toast.error("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    if (!addressForm.phone) {
+      toast.error("Phone number is missing");
+      return;
+    }
+
+    try {
+      await verifyAddressOTP({ phone: addressForm.phone, otp: otpCode }).unwrap();
+      toast.success("✅ Phone number verified successfully!");
+      console.log(`✅ OTP verified for ${addressForm.phone}`);
+      setOtpVerified(true);
+      setOtpSent(false);
+      setOtpTimer(0);
+    } catch (error: any) {
+      console.error("Failed to verify OTP:", error);
+      toast.error(error?.data?.message || "Invalid OTP. Please try again.");
+    }
+  };
+
   const handleSaveNewAddress = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    // Check if phone is verified
+    if (!otpVerified) {
+      toast.error("Please verify your phone number with OTP before saving address");
+      return;
+    }
+
     try {
       const created = (await createAddress(
         addressForm as IAddress
@@ -353,6 +428,11 @@ const CheckOutMain: React.FC = () => {
       setSelectedAddressId(created._id || null);
       applyAddressToBilling(created);
       setShowAddressForm(false);
+      // Reset OTP states
+      setOtpSent(false);
+      setOtpVerified(false);
+      setOtpCode("");
+      setOtpTimer(0);
     } catch (error: any) {
       toast.error(error?.data?.message || "Failed to add address");
     }
@@ -772,17 +852,90 @@ const CheckOutMain: React.FC = () => {
                         </Col>
                         <Col md={6} className="mb-3">
                           <Form.Label>Phone *</Form.Label>
-                          <Form.Control
-                            value={addressForm.phone || ""}
-                            onChange={(e) =>
-                              setAddressForm({
-                                ...addressForm,
-                                phone: e.target.value,
-                              })
-                            }
-                            required
-                          />
+                          <div className="d-flex gap-2">
+                            <Form.Control
+                              value={addressForm.phone || ""}
+                              onChange={(e) => {
+                                setAddressForm({
+                                  ...addressForm,
+                                  phone: e.target.value,
+                                });
+                                // Reset OTP states when phone changes
+                                if (otpVerified || otpSent) {
+                                  setOtpVerified(false);
+                                  setOtpSent(false);
+                                  setOtpCode("");
+                                }
+                              }}
+                              required
+                            />
+                            <Button
+                              variant={otpVerified ? "success" : "primary"}
+                              onClick={handleSendOTP}
+                              disabled={
+                                !addressForm.phone ||
+                                addressForm.phone.length < 10 ||
+                                isSendingOTP ||
+                                otpVerified ||
+                                otpTimer > 0
+                              }
+                              style={{ whiteSpace: "nowrap" }}
+                            >
+                              {isSendingOTP ? (
+                                <Spinner size="sm" animation="border" />
+                              ) : otpVerified ? (
+                                "✓ Verified"
+                              ) : otpTimer > 0 ? (
+                                `${Math.floor(otpTimer / 60)}:${(otpTimer % 60)
+                                  .toString()
+                                  .padStart(2, "0")}`
+                              ) : (
+                                "Send OTP"
+                              )}
+                            </Button>
+                          </div>
+                          {otpVerified && (
+                            <small className="text-success">
+                              ✅ Phone verified
+                            </small>
+                          )}
                         </Col>
+
+                        {/* OTP Verification Field */}
+                        {otpSent && !otpVerified && (
+                          <Col md={6} className="mb-3">
+                            <Form.Label>Enter OTP *</Form.Label>
+                            <div className="d-flex gap-2">
+                              <Form.Control
+                                type="text"
+                                maxLength={6}
+                                value={otpCode}
+                                onChange={(e) =>
+                                  setOtpCode(e.target.value.replace(/\D/g, ""))
+                                }
+                                placeholder="Enter 6-digit OTP"
+                              />
+                              <Button
+                                variant="success"
+                                onClick={handleVerifyOTP}
+                                disabled={
+                                  !otpCode ||
+                                  otpCode.length !== 6 ||
+                                  isVerifyingOTP
+                                }
+                              >
+                                {isVerifyingOTP ? (
+                                  <Spinner size="sm" animation="border" />
+                                ) : (
+                                  "Verify"
+                                )}
+                              </Button>
+                            </div>
+                            <small className="text-muted">
+                              OTP sent to WhatsApp. Check console for OTP.
+                            </small>
+                          </Col>
+                        )}
 
                         <Col md={6} className="mb-3">
                           <Form.Label>Email</Form.Label>
