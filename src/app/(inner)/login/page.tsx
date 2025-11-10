@@ -124,6 +124,13 @@ export default function Home() {
     phone: string
   ) => {
     try {
+      // Debug logs for Google sign-in
+      // console.log("=== Google Sign-In Debug ===");
+      // console.log("API Endpoint:", `${API}/auth/google-signin`);
+      // console.log("ID Token:", idToken);
+      // console.log("Payload:", { idToken, phone: phone || undefined });
+      // console.log("===========================");
+
       const res = await axios.post(
         `${API}/auth/google-signin`,
         { idToken, phone: phone || undefined }, // Send phone only if provided
@@ -145,6 +152,7 @@ export default function Home() {
 
         setMessage("Login Successful with Google!");
 
+        // Temporarily disabled redirect to see console logs
         setTimeout(() => {
           window.location.href = "/";
         }, 1000);
