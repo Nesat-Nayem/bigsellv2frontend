@@ -21,8 +21,8 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*", // proxy path
-        destination: "http://localhost:8080/v1/api/:path*", // your backend http://localhost:8080/v1/api/:path*
-        //prodApi: http://localhost:8080/:path*
+        destination: "https://api.bigsell.org/v1/api/:path*", // your backend https://api.bigsell.org/v1/api/:path*
+        //prodApi: https://api.bigsell.org/:path*
       },
     ];
   },

@@ -32,7 +32,7 @@ export default function Home() {
 
     try {
       const res = await axios.post(
-        "http://localhost:8080/v1/api/auth/signup",
+        "https://api.bigsell.org/v1/api/auth/signup",
         formData,
         {
           headers: { "Content-Type": "application/json" },
