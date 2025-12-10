@@ -4,7 +4,7 @@ import type { RootState as IRootState } from "@/store";
 /**
  * Use local API proxy routes to avoid CORS issues
  */
-const baseUrl ="https://api.bigsell.org/v1/api";
+const baseUrl ="http://localhost:8080/v1/api";
 
 /** Minimal address shape used in orders */
 export interface IAddress {

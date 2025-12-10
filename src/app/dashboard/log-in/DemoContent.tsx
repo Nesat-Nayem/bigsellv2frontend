@@ -12,7 +12,7 @@ function DemoContent() {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const API =
-    process.env.NEXT_PUBLIC_API_BASE_URL || "https://api.bigsell.org/";
+    process.env.NEXT_PUBLIC_API_BASE_URL || "http://localhost:8080/";
 
   const handleChange = (e: any) => {
     setFormData({
