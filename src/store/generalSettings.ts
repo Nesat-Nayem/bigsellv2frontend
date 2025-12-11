@@ -28,7 +28,7 @@ interface GeneralSettingsResponse {
 export const generalSettingsApi = createApi({
   reducerPath: "generalSettingsApi",
   baseQuery: fetchBaseQuery({
-    baseUrl: "http://localhost:8080/v1/api",
+    baseUrl: "https://api.bigsell.org/v1/api",
     // prepareHeaders: (headers, { getState }) => {...} // optional auth
   }),
   tagTypes: ["generalSettings"],
